@@ -8,42 +8,57 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type Folder struct {
+var (
+	baseDirectory string
+	client string
+	excludedType string
+	path string
+)
+
+type folder struct {
 	name     string
-	children []Folder
+	children []folder
 }
 
-var client string
-var exludedType string
-var path string
-var baseDirectory string
-
-func createDirectory(base string, folders []Folder) {
-	for _, folder := range folders {
-		if folder.name == exludedType {
+func createDirectory(base string, folders []folder) {
+	for _, f := range folders {
+		if f.name == excludedType {
 			continue
 		}
-		current := fmt.Sprintf("%s/%s", base, folder.name)
+		current := fmt.Sprintf("%s/%s", base, f.name)
 		if e := os.Mkdir(current, 0775); e != nil {
 			fmt.Println(e)
 		}
-		if len(folder.children) != 0 {
-			createDirectory(current, folder.children)
+		if len(f.children) != 0 {
+			createDirectory(current, f.children)
 		}
 	}
 }
 
 func copyCherryTreeAndTargets() {
-	os.Link("./trace.ctb", baseDirectory+"/Web-Penetration-Test/trace.ctb")
-	os.Link("./targets.txt", baseDirectory+"/targets.txt")
+	if e := os.Link("./trace.ctb", baseDirectory+"/Web-Penetration-Test/trace.ctb"); e != nil {
+		fmt.Println(e)
+	}
+	if e := os.Link("./targets.txt", baseDirectory+"/targets.txt"); e != nil {
+		fmt.Println(e)
+	}
+}
+
+func folderNameFactory(names ...string) []folder {
+	f := make([]folder, len(names))
+	for _, name := range names {
+		f = append(f, folder{name: name})
+	}
+
+	return f
 }
 
 func main() {
 
 	var createDirectories = &cobra.Command{
-		Use:   "create [string to print]",
+		Use:   "create -c [client name]",
 		Short: "It will create all directories to work",
-		Long:  `Obtain a clean-cut architecture at the launch of a mission`,
+		Long:  "Obtain a clean-cut architecture at the launch of a mission",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("User input: " + client)
@@ -53,29 +68,13 @@ func main() {
 			}
 			baseDirectory = fmt.Sprintf("%s/%s", path, client)
 			_ = os.MkdirAll(baseDirectory, 0775)
-			createDirectory(baseDirectory, []Folder{
-				Folder{
+			createDirectory(baseDirectory, []folder{
+				{
 					name: "Infrastructure-Penetration-Test",
 				},
-				Folder{
+				{
 					name: "Web-Penetration-Test",
-					children: []Folder{
-						Folder{
-							name: "nmap",
-						},
-						Folder{
-							name: "nessus",
-						},
-						Folder{
-							name: "report",
-						},
-						Folder{
-							name: "screenshot",
-						},
-						Folder{
-							name: "ssl",
-						},
-					},
+					children: folderNameFactory("nmap", "nessus", "report", "screenshot", "ssl"),
 				},
 			})
 			copyCherryTreeAndTargets()
@@ -87,8 +86,11 @@ func main() {
 	var rootCmd = createDirectories
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	rootCmd.Flags().StringVarP(&path, "path", "p", "", "path to shared folder")
-	rootCmd.Flags().StringVarP(&exludedType, "excludedType", "e", "", "EXCLUDED TYPE")
-	rootCmd.MarkFlagRequired("client")
-	rootCmd.Execute()
-
+	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "EXCLUDED TYPE")
+	if err := rootCmd.MarkFlagRequired("client"); err != nil {
+		panic(err)
+	}
+	if err := rootCmd.Execute(); err != nil {
+		panic(err)
+	}
 }
