@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
 
@@ -34,14 +35,20 @@ func getRobot(url []string) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		//We Read the response body on the line below.
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalln(err)
+
+		if resp.StatusCode != 404 {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			//Convert the body to type string
+			sb := string(body)
+			//log.Printf(sb)
+			color.Green(sb)
+
+		} else {
+			color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
 		}
-		//Convert the body to type string
-		sb := string(body)
-		log.Printf(sb)
 
 	}
 
@@ -55,15 +62,19 @@ func getSitemap(url []string) {
 		if err != nil {
 			log.Fatalln(err)
 		}
-		//We Read the response body on the line below.
-		body, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			log.Fatalln(err)
+
+		if resp.StatusCode != 404 {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			// add check for 404
+			//Convert the body to type string
+			sb := string(body)
+			color.Green(sb)
+		} else {
+			color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
 		}
-		// add check for 404
-		//Convert the body to type string
-		sb := string(body)
-		log.Printf(sb)
 
 	}
 }
@@ -72,7 +83,7 @@ func readFile() {
 	// add check to / at the end using regex or something and check for domain/CIDR
 
 	file, err := os.Open("./targets.txt")
-	fmt.Println("Loaded targets : ")
+	// color.Cyan("Loaded targets :")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,10 +95,9 @@ func readFile() {
 	for scanner.Scan() {
 		// check if its ip/domain
 		websites = append(websites, scanner.Text())
-		fmt.Println(websites)
-		fmt.Println("check robots.txt")
+		fmt.Println("Looking for robots.txt", scanner.Text())
 		getRobot(websites)
-		fmt.Println("check sitemap.xml")
+		fmt.Println("Looking for sitemap.xml on", scanner.Text())
 		getSitemap(websites)
 	}
 
@@ -138,8 +148,8 @@ func main() {
 		Long:  "Obtain a clean-cut architecture at the launch of a mission",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Setup mission for: " + client)
-			fmt.Println("Target file:  " + targetPath)
+			fmt.Println("Setup mission for: ", client)
+			fmt.Println("Loaded file:  " + targetPath)
 			readFile()
 
 			if path == "" {
