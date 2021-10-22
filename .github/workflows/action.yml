@@ -1,7 +1,7 @@
 name: Build container and publish to docker hub
 
 on:
-  push: github-action
+  push
 
 jobs:
   generate-artifacts:
