@@ -8,7 +8,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Preview scan 
 
-![preview](img/preview-scan)
+![pou](img/preview-scan.png)
 
 ## How to use 
 >-s is optionnal
