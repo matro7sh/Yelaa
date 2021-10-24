@@ -6,6 +6,10 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 ![preview](img/preview.png)
 
+# Preview scan 
+
+![preview](img/preview-scan)
+
 ## How to use 
 >-s is optionnal
 You can run `yelaa create -c <client> -s <PathToSharedFolder>`
