@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -17,9 +18,12 @@ var (
 	baseDirectory string
 	client        string
 	excludedType  string
-	path          string
+	shared        string
 	targetPath    string
+	proxy         string
 )
+
+var GlobalHeaders = []string{"Server", "X-XSS-Protection", "Access-Control-Allow-Credentials", "Content-Security-Policy", "X-Powered-By", "Strict-Transport-Security"}
 
 type folder struct {
 	name     string
@@ -30,8 +34,6 @@ func getRobot(url []string) {
 
 	for _, s := range url {
 		resp, err := http.Get(s + "robots.txt")
-		//	fmt.Println("RESPONSE", resp, err)
-		//	fmt.Println("Domain", s)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -41,9 +43,7 @@ func getRobot(url []string) {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			//Convert the body to type string
 			sb := string(body)
-			//log.Printf(sb)
 			color.Green(sb)
 
 		} else {
@@ -57,8 +57,7 @@ func getRobot(url []string) {
 func getSitemap(url []string) {
 	for _, s := range url {
 		resp, err := http.Get(s + "sitemap.xml")
-		//	fmt.Println("RESPONSE", resp, err)
-		//	fmt.Println("Domain", s)
+
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -68,10 +67,18 @@ func getSitemap(url []string) {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			// add check for 404
-			//Convert the body to type string
+
+			for headerName, headerValue := range resp.Header {
+				if contains(GlobalHeaders, headerName) {
+					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
+					fmt.Printf("Found Header %q => %q\n", headerName, headerValue)
+				} else {
+					// fmt.Println("sorry no headers in global headers variable")
+				}
+			}
 			sb := string(body)
 			color.Green(sb)
+
 		} else {
 			color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
 		}
@@ -91,7 +98,6 @@ func readFile() {
 
 	scanner := bufio.NewScanner(file)
 	var websites []string
-	// optionally, resize scanner's capacity for lines over 64K, see next example
 	for scanner.Scan() {
 		// check if its ip/domain
 		websites = append(websites, scanner.Text())
@@ -140,7 +146,32 @@ func folderNameFactory(names ...string) []folder {
 	return f
 }
 
+func contains(slice []string, item string) bool {
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
+
 func main() {
+
+	var cmdScan = &cobra.Command{
+		Use:   "scan [string to echo]",
+		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
+		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Start scan : " + strings.Join(args, " "))
+			os.Setenv("HTTP_PROXY", proxy)
+			os.Setenv("HTTPS_PROXY", proxy)
+			fmt.Println("proxy =>", proxy)
+			fmt.Println("Loading file: ")
+			readFile()
+		},
+	}
 
 	var createDirectories = &cobra.Command{
 		Use:   "create -c [client name]",
@@ -149,13 +180,11 @@ func main() {
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Setup mission for: ", client)
-			fmt.Println("Loaded file:  " + targetPath)
-			readFile()
 
-			if path == "" {
-				path = "."
+			if shared == "" {
+				shared = "."
 			}
-			baseDirectory = fmt.Sprintf("%s/%s", path, client)
+			baseDirectory = fmt.Sprintf("%s/%s", shared, client)
 			_ = os.MkdirAll(baseDirectory, 0775)
 			createDirectory(baseDirectory, []folder{
 				{
@@ -173,13 +202,21 @@ func main() {
 	}
 
 	var rootCmd = createDirectories
+
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
-	rootCmd.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
-	rootCmd.Flags().StringVarP(&path, "path", "p", "", "path to shared folder")
-	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "EXCLUDED TYPE")
+	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
+	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
+	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
+	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
+	rootCmd.AddCommand(cmdScan)
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
 	}
+
+	if err := cmdScan.MarkFlagRequired("target"); err != nil {
+		panic(err)
+	}
+
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
