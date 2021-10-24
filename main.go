@@ -71,7 +71,7 @@ func getSitemap(url []string) {
 			for headerName, headerValue := range resp.Header {
 				if contains(GlobalHeaders, headerName) {
 					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
-					fmt.Printf("Found Header %q => %q\n", headerName, headerValue)
+					fmt.Printf("Found Header: %q | %q\n", headerName, headerValue)
 				} else {
 					// fmt.Println("sorry no headers in global headers variable")
 				}
@@ -100,10 +100,11 @@ func readFile() {
 	var websites []string
 	for scanner.Scan() {
 		// check if its ip/domain
+
 		websites = append(websites, scanner.Text())
-		fmt.Println("Looking for robots.txt", scanner.Text())
+		fmt.Println("Looking for robots.txt on: ", scanner.Text())
 		getRobot(websites)
-		fmt.Println("Looking for sitemap.xml on", scanner.Text())
+		fmt.Println("Looking for sitemap.xml on: ", scanner.Text())
 		getSitemap(websites)
 	}
 
@@ -164,10 +165,15 @@ func main() {
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Start scan : " + strings.Join(args, " "))
+			fmt.Println("Start scan: " + strings.Join(args, " "))
 			os.Setenv("HTTP_PROXY", proxy)
 			os.Setenv("HTTPS_PROXY", proxy)
-			fmt.Println("proxy =>", proxy)
+			if proxy != "" {
+				fmt.Println("Proxy configuration: ", proxy)
+			} else {
+				fmt.Println("No proxy has been set")
+			}
+
 			fmt.Println("Loading file: ")
 			readFile()
 		},
