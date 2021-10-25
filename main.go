@@ -85,7 +85,6 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	file, err := os.Open(targetPath)
-	// color.Cyan("Loaded targets :")
 	defer file.Close()
 
 	if err != nil {
@@ -93,6 +92,10 @@ func readFile() {
 	}
 
 	scanner := bufio.NewScanner(file)
+
+	body, err := ioutil.ReadFile(targetPath)
+	color.Magenta("Loaded target: \n%v", strings.Replace(string(body), "\n", ", ", -1))
+
 	var websites []string
 
 	for scanner.Scan() {
@@ -102,9 +105,10 @@ func readFile() {
 			website += "/"
 		}
 		websites = append(websites, website)
-		color.Cyan("Looking for robots.txt on: %s", scanner.Text())
+
+		color.Cyan("Looking for robots.txt on: %s", website)
 		getRobot(website)
-		color.Cyan("Looking for sitemap.xml on: %s ", scanner.Text())
+		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
 	}
 
