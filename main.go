@@ -32,58 +32,51 @@ type folder struct {
 	children []folder
 }
 
-func getRobot(url []string) {
-	for _, s := range url {
-		resp, err := http.Get(s + "robots.txt")
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		if resp.StatusCode != http.StatusNotFound {
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			sb := string(body)
-			color.Green(sb)
-
-		} else {
-			color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
-		}
-
+func getRobot(url string) {
+	resp, err := http.Get(url + "robots.txt")
+	if err != nil {
+		log.Fatalln(err)
 	}
 
+	if resp.StatusCode != http.StatusNotFound {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		sb := string(body)
+		color.Green(sb)
+
+	} else {
+		color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
+	}
 }
 
-func getSitemap(url []string) {
-	for _, s := range url {
-		resp, err := http.Get(s + "sitemap.xml")
+func getSitemap(url string) {
+	resp, err := http.Get(url + "sitemap.xml")
 
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	if resp.StatusCode != http.StatusNotFound {
+		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		if resp.StatusCode != http.StatusNotFound {
-			body, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				log.Fatalln(err)
+		for headerName, headerValue := range resp.Header {
+			if contains(GlobalHeaders, headerName) {
+				//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
+				fmt.Printf("Found Header: %s | %s \n", headerName, headerValue)
+			} else {
+				// fmt.Println("sorry no headers in global headers variable")
 			}
-
-			for headerName, headerValue := range resp.Header {
-				if contains(GlobalHeaders, headerName) {
-					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
-					fmt.Printf("Found Header: %q | %q\n", headerName, headerValue)
-				} else {
-					// fmt.Println("sorry no headers in global headers variable")
-				}
-			}
-			sb := string(body)
-			color.Green(sb)
-
-		} else {
-			color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
 		}
+		sb := string(body)
+		color.Green(sb)
 
+	} else {
+		color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
 	}
 }
 
@@ -104,12 +97,12 @@ func readFile() {
 	var websites []string
 	for scanner.Scan() {
 		// check if its ip/domain
-
-		websites = append(websites, scanner.Text())
-		fmt.Println("Looking for robots.txt on: ", scanner.Text())
-		getRobot(websites)
-		fmt.Println("Looking for sitemap.xml on: ", scanner.Text())
-		getSitemap(websites)
+		website := scanner.Text()
+		websites = append(websites, website)
+		color.Cyan("Looking for robots.txt on: %s", scanner.Text())
+		getRobot(website)
+		color.Cyan("Looking for sitemap.xml on: %s ", scanner.Text())
+		getSitemap(website)
 	}
 
 	if err := scanner.Err(); err != nil {
