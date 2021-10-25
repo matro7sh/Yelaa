@@ -22,6 +22,8 @@ You can run `yelaa create -c <client> -s <PathToSharedFolder>`
 
 `yelaa scan -p http://localhost:8080 -target ./targets.txt`
 
+>Flag `-k` is available to skip tls configuration
+
 ## Help 
 
 ``` 
