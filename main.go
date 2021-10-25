@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -21,6 +22,7 @@ var (
 	shared        string
 	targetPath    string
 	proxy         string
+	insecure      bool
 )
 
 var GlobalHeaders = []string{"Server", "X-XSS-Protection", "Access-Control-Allow-Credentials", "Content-Security-Policy", "X-Powered-By", "Strict-Transport-Security"}
@@ -31,14 +33,14 @@ type folder struct {
 }
 
 func getRobot(url []string) {
-
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 	for _, s := range url {
 		resp, err := http.Get(s + "robots.txt")
 		if err != nil {
 			log.Fatalln(err)
 		}
 
-		if resp.StatusCode != 404 {
+		if resp.StatusCode != http.StatusNotFound {
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Fatalln(err)
@@ -55,6 +57,7 @@ func getRobot(url []string) {
 }
 
 func getSitemap(url []string) {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 	for _, s := range url {
 		resp, err := http.Get(s + "sitemap.xml")
 
@@ -62,7 +65,7 @@ func getSitemap(url []string) {
 			log.Fatalln(err)
 		}
 
-		if resp.StatusCode != 404 {
+		if resp.StatusCode != http.StatusNotFound {
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				log.Fatalln(err)
@@ -91,10 +94,11 @@ func readFile() {
 
 	file, err := os.Open("./targets.txt")
 	// color.Cyan("Loaded targets :")
+	defer file.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	var websites []string
@@ -212,6 +216,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
 	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
+	cmdScan.Flags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
 	rootCmd.AddCommand(cmdScan)
