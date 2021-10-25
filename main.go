@@ -33,7 +33,6 @@ type folder struct {
 }
 
 func getRobot(url []string) {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 	for _, s := range url {
 		resp, err := http.Get(s + "robots.txt")
 		if err != nil {
@@ -57,7 +56,6 @@ func getRobot(url []string) {
 }
 
 func getSitemap(url []string) {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 	for _, s := range url {
 		resp, err := http.Get(s + "sitemap.xml")
 
@@ -91,6 +89,8 @@ func getSitemap(url []string) {
 
 func readFile() {
 	// add check to / at the end using regex or something and check for domain/CIDR
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	file, err := os.Open("./targets.txt")
 	// color.Cyan("Loaded targets :")
