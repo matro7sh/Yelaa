@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -35,13 +34,13 @@ type folder struct {
 func getRobot(url string) {
 	resp, err := http.Get(url + "robots.txt")
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Printf("%v", err)
 	}
 
-	if resp.StatusCode != http.StatusNotFound {
+	if resp != nil && resp.StatusCode != http.StatusNotFound {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Fatalln(err)
+			fmt.Printf("%v", err)
 		}
 		sb := string(body)
 		color.Green(sb)
@@ -55,13 +54,13 @@ func getSitemap(url string) {
 	resp, err := http.Get(url + "sitemap.xml")
 
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Printf("%v", err)
 	}
 
-	if resp.StatusCode != http.StatusNotFound {
+	if resp != nil && resp.StatusCode != http.StatusNotFound {
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Fatalln(err)
+			fmt.Printf("%v", err)
 		}
 
 		for headerName, headerValue := range resp.Header {
@@ -85,19 +84,23 @@ func readFile() {
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
-	file, err := os.Open("./targets.txt")
+	file, err := os.Open(targetPath)
 	// color.Cyan("Loaded targets :")
 	defer file.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("%v, %+v", err, targetPath)
 	}
 
 	scanner := bufio.NewScanner(file)
 	var websites []string
+
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
+		if !strings.HasSuffix(website, "/") {
+			website += "/"
+		}
 		websites = append(websites, website)
 		color.Cyan("Looking for robots.txt on: %s", scanner.Text())
 		getRobot(website)
@@ -106,7 +109,7 @@ func readFile() {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		fmt.Printf("%v \n", err)
 	}
 
 }
@@ -157,10 +160,10 @@ func contains(slice []string, item string) bool {
 func main() {
 
 	var cmdScan = &cobra.Command{
-		Use:   "scan [string to echo]",
+		Use:   "scan",
 		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
-		Args:  cobra.MinimumNArgs(1),
+		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Start scan: " + strings.Join(args, " "))
 			os.Setenv("HTTP_PROXY", proxy)
@@ -206,13 +209,14 @@ func main() {
 
 	var rootCmd = createDirectories
 
+	rootCmd.AddCommand(cmdScan)
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
 	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	cmdScan.Flags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
-	rootCmd.AddCommand(cmdScan)
+
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
 	}
