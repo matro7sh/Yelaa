@@ -9,7 +9,9 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
+	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -32,6 +34,7 @@ type folder struct {
 }
 
 func dirsearch(url string) {
+	// use param url
 	out, err := exec.Command("dirsearch -u https://jenaye.fr").Output()
 	if err != nil {
 		fmt.Printf("%s", err)
@@ -116,11 +119,22 @@ func readFile() {
 		}
 		websites = append(websites, website)
 
+		/* count := 100000
+		bar := pb.StartNew(count)
+		for i := 0; i < count; i++ {
+			bar.Increment()
+			time.Sleep(time.Millisecond)
+		}
+
+		// finish bar
+		bar.Finish()
+		*/
+
 		color.Cyan("Looking for robots.txt on: %s", website)
 		getRobot(website)
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
-		dirsearch(website)
+		//	dirsearch(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -174,22 +188,24 @@ func contains(slice []string, item string) bool {
 
 func main() {
 
+	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
+	version.Print()
+
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
 		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Start scan: " + strings.Join(args, " "))
+			currentTime := time.Now()
+			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
 			os.Setenv("HTTP_PROXY", proxy)
 			os.Setenv("HTTPS_PROXY", proxy)
 			if proxy != "" {
-				fmt.Println("Proxy configuration: ", proxy)
+				color.Cyan("Proxy configuration: %s", proxy)
 			} else {
-				fmt.Println("No proxy has been set")
+				color.Cyan("No proxy has been set")
 			}
-
-			fmt.Println("Loading file: ")
 			readFile()
 		},
 	}
