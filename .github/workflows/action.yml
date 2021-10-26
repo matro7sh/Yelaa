@@ -1,7 +1,8 @@
 name: Build container and publish to docker hub
 
 on:
-  push
+  create:
+    tags: ["v*"]
 
 jobs:
   generate-artifacts:
