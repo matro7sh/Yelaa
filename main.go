@@ -35,13 +35,15 @@ type folder struct {
 
 func dirsearch(url string) {
 	// use param url
-	out, err := exec.Command("dirsearch -u https://jenaye.fr").Output()
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("dirsearch", args, args2).Output()
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
-	fmt.Println("\n Command Successfully Executed")
+
 	output := string(out[:])
-	fmt.Println(output)
+	fmt.Println("RETOUR SYSTEM  =>", output)
 }
 
 func getRobot(url string) {
@@ -119,22 +121,11 @@ func readFile() {
 		}
 		websites = append(websites, website)
 
-		/* count := 100000
-		bar := pb.StartNew(count)
-		for i := 0; i < count; i++ {
-			bar.Increment()
-			time.Sleep(time.Millisecond)
-		}
-
-		// finish bar
-		bar.Finish()
-		*/
-
 		color.Cyan("Looking for robots.txt on: %s", website)
 		getRobot(website)
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
-		//	dirsearch(website)
+		dirsearch(website)
 	}
 
 	if err := scanner.Err(); err != nil {
