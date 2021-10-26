@@ -31,6 +31,16 @@ type folder struct {
 	children []folder
 }
 
+func dirsearch(url string) {
+	out, err := exec.Command("dirsearch -u https://jenaye.fr").Output()
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+	fmt.Println("\n Command Successfully Executed")
+	output := string(out[:])
+	fmt.Println(output)
+}
+
 func getRobot(url string) {
 	resp, err := http.Get(url + "robots.txt")
 	if err != nil {
@@ -110,6 +120,7 @@ func readFile() {
 		getRobot(website)
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
+		dirsearch(website)
 	}
 
 	if err := scanner.Err(); err != nil {
