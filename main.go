@@ -9,7 +9,9 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
+	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )
@@ -29,6 +31,45 @@ var GlobalHeaders = []string{"Server", "X-XSS-Protection", "Access-Control-Allow
 type folder struct {
 	name     string
 	children []folder
+}
+
+func dirsearch(url string) {
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("dirsearch", args, args2).Output()
+
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	output := string(out[:])
+	fmt.Println("dirsearch output ", output)
+}
+
+func nuclei(url string) {
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("nuclei", args, args2).Output()
+
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	output := string(out[:])
+	fmt.Println("nuclei output ", output)
+}
+
+func sslscan(url string) {
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("testssl", args, args2).Output()
+
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	output := string(out[:])
+	fmt.Println("testssl output ", output)
 }
 
 func getRobot(url string) {
@@ -80,7 +121,6 @@ func getSitemap(url string) {
 }
 
 func readFile() {
-	// add check to / at the end using regex or something and check for domain/CIDR
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
@@ -110,6 +150,9 @@ func readFile() {
 		getRobot(website)
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
+		color.Cyan("Running Dirsearch on %s", website)
+		dirsearch(website)
+		nuclei(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -163,22 +206,24 @@ func contains(slice []string, item string) bool {
 
 func main() {
 
+	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
+	version.Print()
+
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
 		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("Start scan: " + strings.Join(args, " "))
+			currentTime := time.Now()
+			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
 			os.Setenv("HTTP_PROXY", proxy)
 			os.Setenv("HTTPS_PROXY", proxy)
 			if proxy != "" {
-				fmt.Println("Proxy configuration: ", proxy)
+				color.Cyan("Proxy configuration: %s", proxy)
 			} else {
-				fmt.Println("No proxy has been set")
+				color.Cyan("No proxy has been set")
 			}
-
-			fmt.Println("Loading file: ")
 			readFile()
 		},
 	}
@@ -186,7 +231,7 @@ func main() {
 	var createDirectories = &cobra.Command{
 		Use:   "create -c [client name]",
 		Short: "It will create all directories to work",
-		Long:  "Obtain a clean-cut architecture at the launch of a mission",
+		Long:  "Obtain a clean-cut architecture at the launch of a mission and make some tests",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Setup mission for: ", client)
