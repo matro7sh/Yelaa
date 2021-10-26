@@ -34,16 +34,29 @@ type folder struct {
 }
 
 func dirsearch(url string) {
-	// use param url
 	args := "-u"
 	args2 := url
 	out, err := exec.Command("dirsearch", args, args2).Output()
+
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
 
 	output := string(out[:])
 	fmt.Println("dirsearch output ", output)
+}
+
+func nuclei(url string) {
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("nuclei", args, args2).Output()
+
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	output := string(out[:])
+	fmt.Println("nuclei output ", output)
 }
 
 func getRobot(url string) {
@@ -95,7 +108,6 @@ func getSitemap(url string) {
 }
 
 func readFile() {
-	// add check to / at the end using regex or something and check for domain/CIDR
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
@@ -125,7 +137,9 @@ func readFile() {
 		getRobot(website)
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
+		color.Cyan("Running Dirsearch on %s", website)
 		dirsearch(website)
+		nuclei(website)
 	}
 
 	if err := scanner.Err(); err != nil {
