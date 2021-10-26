@@ -43,7 +43,7 @@ func dirsearch(url string) {
 	}
 
 	output := string(out[:])
-	fmt.Println("RETOUR SYSTEM  =>", output)
+	fmt.Println("dirsearch output ", output)
 }
 
 func getRobot(url string) {
