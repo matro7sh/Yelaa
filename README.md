@@ -2,13 +2,15 @@
 
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
-# Preview
+# Requirements
 
-![preview](img/preview.png)
+Go theses binary in your path : 
+```
+nuclei, dirsearch, testssl
+```
 
-# Preview scan 
 
-![pou](img/preview-scan.png)
+> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'` 
 
 ## How to use 
 >-s is optionnal
@@ -27,7 +29,12 @@ You can run `yelaa create -c <client> -s <PathToSharedFolder>`
 ## Help 
 
 ``` 
-./yelaaa -h
+./yelaa-1.1 -h 
+ __   __         _                                 _       _
+ \ \ / /   ___  | |   __ _    __ _    __   __     / |     / |
+  \ V /   / _ \ | |  / _` |  / _` |   \ \ / /     | |     | |
+   | |   |  __/ | | | (_| | | (_| |    \ V /   _  | |  _  | |
+   |_|    \___| |_|  \__,_|  \__,_|     \_/   (_) |_| (_) |_|
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Usage:
@@ -45,6 +52,15 @@ Flags:
   -s, --shared string         path to shared folder
 
 Use "create [command] --help" for more information about a command.
+
 ``` 
 
 >this script will create a default structure, as well as a cherytree database with payloads for external testing and useful commands for internal testing.
+
+# Preview command create
+
+![preview](img/preview.png)
+
+# Preview command scan 
+
+![pou](img/preview-scan.png)

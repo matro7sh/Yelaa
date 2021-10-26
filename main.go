@@ -59,6 +59,19 @@ func nuclei(url string) {
 	fmt.Println("nuclei output ", output)
 }
 
+func sslscan(url string) {
+	args := "-u"
+	args2 := url
+	out, err := exec.Command("testssl", args, args2).Output()
+
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	output := string(out[:])
+	fmt.Println("testssl output ", output)
+}
+
 func getRobot(url string) {
 	resp, err := http.Get(url + "robots.txt")
 	if err != nil {
@@ -218,7 +231,7 @@ func main() {
 	var createDirectories = &cobra.Command{
 		Use:   "create -c [client name]",
 		Short: "It will create all directories to work",
-		Long:  "Obtain a clean-cut architecture at the launch of a mission",
+		Long:  "Obtain a clean-cut architecture at the launch of a mission and make some tests",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println("Setup mission for: ", client)
