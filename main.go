@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	gobusterCli "github.com/OJ/gobuster/v3/cli"
+	"github.com/OJ/gobuster/v3/libgobuster"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -31,6 +34,12 @@ var GlobalHeaders = []string{"Server", "X-XSS-Protection", "Access-Control-Allow
 type folder struct {
 	name     string
 	children []folder
+}
+
+func gobuster(url string) {
+
+	e := gobusterCli.Gobuster(context.Background(), &libgobuster.Options{}, nil)
+	fmt.Println(e)
 }
 
 func dirsearch(url string) {
@@ -151,7 +160,8 @@ func readFile() {
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		getSitemap(website)
 		color.Cyan("Running Dirsearch on %s", website)
-		dirsearch(website)
+		gobuster(website)
+		// 	dirsearch(website)
 		nuclei(website)
 	}
 
