@@ -32,19 +32,6 @@ type folder struct {
 	children []folder
 }
 
-func dirsearch(url string) {
-	args := "-u"
-	args2 := url
-	out, err := exec.Command("dirsearch", args, args2).Output()
-
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-
-	output := string(out[:])
-	fmt.Println("dirsearch output ", output)
-}
-
 func readFile() {
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
@@ -73,10 +60,14 @@ func readFile() {
 
 		color.Cyan("Looking for robots.txt on: %s", website)
 		tool.GetRobot(website)
+
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		tool.GetSitemap(website)
+
 		color.Cyan("Running Dirsearch on %s", website)
-		dirsearch(website)
+		tool.Dirsearch(website)
+
+		color.Cyan("Running Nuclei on %s", website)
 		tool.Nuclei(website)
 	}
 
@@ -117,16 +108,6 @@ func folderNameFactory(names ...string) []folder {
 	}
 
 	return f
-}
-
-func contains(slice []string, item string) bool {
-	set := make(map[string]struct{}, len(slice))
-	for _, s := range slice {
-		set[s] = struct{}{}
-	}
-
-	_, ok := set[item]
-	return ok
 }
 
 func main() {
