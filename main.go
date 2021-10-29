@@ -32,6 +32,11 @@ type folder struct {
 	children []folder
 }
 
+func commandExists(cmd string) bool {
+	_, err := exec.LookPath(cmd)
+	return err == nil
+}
+
 func readFile() {
 
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
@@ -114,6 +119,20 @@ func main() {
 
 	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
 	version.Print()
+
+	_, err := exec.LookPath("dirsearch")
+	if err != nil {
+		color.Red("Please define Dirsearch in ure path => %q", err)
+		color.Red("you can use alias like this : dirsearch='python /home/<user>/softs/dirsearch/dirsearch.py'")
+		os.Exit(0)
+	}
+
+	_, err = exec.LookPath("nuclei")
+	if err != nil {
+		color.Red("Please define Nuclei in ure path => %q", err)
+		color.Red("you can use alias like this : nuclei='python /home/<user>/softs/nuclei'")
+		os.Exit(0)
+	}
 
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
