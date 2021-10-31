@@ -120,7 +120,7 @@ func main() {
 	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
 	version.Print()
 
-	_, err := exec.LookPath("oiuy")
+	_, err := exec.LookPath("dirsearch")
 	if commandExists("dirsearch") {
 		color.Red("Please define Dirsearch in ure path => %q", err)
 		color.Red("you can use alias like this : dirsearch='python /home/<user>/softs/dirsearch/dirsearch.py'")
