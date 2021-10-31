@@ -120,18 +120,18 @@ func main() {
 	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
 	version.Print()
 
-	_, err := exec.LookPath("dirsearch")
-	if err != nil {
+	_, err := exec.LookPath("oiuy")
+	if commandExists("dirsearch") {
 		color.Red("Please define Dirsearch in ure path => %q", err)
 		color.Red("you can use alias like this : dirsearch='python /home/<user>/softs/dirsearch/dirsearch.py'")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	_, err = exec.LookPath("nuclei")
-	if err != nil {
+	if commandExists("nuclei") {
 		color.Red("Please define Nuclei in ure path => %q", err)
 		color.Red("you can use alias like this : nuclei='python /home/<user>/softs/nuclei'")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	var cmdScan = &cobra.Command{
