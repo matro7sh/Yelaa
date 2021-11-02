@@ -11,7 +11,7 @@ import (
 	"github.com/fatih/color"
 )
 
-type Response []struct {
+type ResponseItem struct {
 	IssuerCaID     int    `json:"issuer_ca_id"`
 	IssuerName     string `json:"issuer_name"`
 	CommonName     string `json:"common_name"`
@@ -24,7 +24,7 @@ type Response []struct {
 }
 
 func GetSubdomains(_url string) {
-	var result Response
+	var result []ResponseItem
 
 	parsed_url, err := url.Parse(_url)
 	if err != nil {
