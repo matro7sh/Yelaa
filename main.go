@@ -120,7 +120,7 @@ func folderNameFactory(names ...string) []folder {
 
 func main() {
 
-	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa", "", "cyan", true)
 	version.Print()
 
 	if !commandExists("dirsearch") {

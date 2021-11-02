@@ -29,12 +29,12 @@ You can run `yelaa create -c <client> -s <PathToSharedFolder>`
 ## Help 
 
 ``` 
-./yelaa-1.1 -h 
- __   __         _                                 _       _
- \ \ / /   ___  | |   __ _    __ _    __   __     / |     / |
-  \ V /   / _ \ | |  / _` |  / _` |   \ \ / /     | |     | |
-   | |   |  __/ | | | (_| | | (_| |    \ V /   _  | |  _  | |
-   |_|    \___| |_|  \__,_|  \__,_|     \_/   (_) |_| (_) |_|
+./yelaa -h 
+ __   __         _
+ \ \ / /   ___  | |
+  \ V /   / _ \ | |  / _` |  / _` |
+   | |   |  __/ | | | (_| | | (_| |
+   |_|    \___| |_|  \__,_|  \__,_|
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Usage:
@@ -64,3 +64,9 @@ Use "create [command] --help" for more information about a command.
 # Preview command scan 
 
 ![pou](img/preview-scan.png)
+
+# Contributors
+
+[darkweak](https://github.com/darkweak)
+[jenaye](https://github.com/jenaye)
+[jarrault](https://github.com/jarrault)
