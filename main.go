@@ -74,6 +74,9 @@ func readFile() {
 
 		color.Cyan("Running Nuclei on %s", website)
 		tool.Nuclei(website)
+
+		color.Cyan("Looking for subdomains on %s", website)
+		tool.GetSubdomains(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -120,16 +123,14 @@ func main() {
 	version := figure.NewColorFigure("Yelaa v.1.1", "", "cyan", true)
 	version.Print()
 
-	_, err := exec.LookPath("dirsearch")
-	if commandExists("dirsearch") {
-		color.Red("Please define Dirsearch in ure path => %q", err)
+	if !commandExists("dirsearch") {
+		color.Red("Please define Dirsearch in ure path => %q")
 		color.Red("you can use alias like this : dirsearch='python /home/<user>/softs/dirsearch/dirsearch.py'")
 		os.Exit(1)
 	}
 
-	_, err = exec.LookPath("nuclei")
-	if commandExists("nuclei") {
-		color.Red("Please define Nuclei in ure path => %q", err)
+	if !commandExists("nuclei") {
+		color.Red("Please define Nuclei in ure path => %q")
 		color.Red("you can use alias like this : nuclei='python /home/<user>/softs/nuclei'")
 		os.Exit(1)
 	}
