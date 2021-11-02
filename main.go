@@ -123,18 +123,6 @@ func main() {
 	version := figure.NewColorFigure("Yelaa 1.2.3", "", "cyan", true)
 	version.Print()
 
-	if !commandExists("dirsearch") {
-		color.Red("Please define Dirsearch in ure path => %q")
-		color.Red("you can use alias like this : dirsearch='python /home/<user>/softs/dirsearch/dirsearch.py'")
-		os.Exit(1)
-	}
-
-	if !commandExists("nuclei") {
-		color.Red("Please define Nuclei in ure path => %q")
-		color.Red("you can use alias like this : nuclei='python /home/<user>/softs/nuclei'")
-		os.Exit(1)
-	}
-
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
 		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
