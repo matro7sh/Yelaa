@@ -150,8 +150,24 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Printf("\nTarget domain: %s\n\n", domain)
 
+			subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+			if err != nil {
+				fmt.Printf("%s", err)
+			}
+
+			ipsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+			if err != nil {
+				fmt.Printf("%s", err)
+			}
+
 			color.Cyan("Searching for subdomains with subfinder")
-			tool.Subfinder(domain)
+			tool.Subfinder(domain, subdomainsFile.Name())
+
+			color.Cyan("Running dnsx on subdomains to find IP address")
+			tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
+
+			subdomainsFile.Close()
+			ipsFile.Close()
 		},
 	}
 

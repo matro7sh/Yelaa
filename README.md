@@ -6,7 +6,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Go theses binary in your path : 
 ```
-nuclei, dirsearch, testssl
+nuclei, dirsearch, testssl, subfinder, dnsx
 ```
 
 
