@@ -146,6 +146,7 @@ func main() {
 	var cmdOsint = &cobra.Command{
 		Use:   "osint",
 		Short: "Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain",
+		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Printf("\nTarget domain: %s\n\n", domain)

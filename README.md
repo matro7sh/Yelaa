@@ -26,6 +26,10 @@ You can run `yelaa create -c <client> -s <PathToSharedFolder>`
 
 >Flag `-k` is available to skip tls configuration
 
+## How to run osint on a domain
+
+`yelaa osint -d example.com`
+
 ## Help 
 
 ``` 
