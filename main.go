@@ -166,6 +166,9 @@ func main() {
 			color.Cyan("Running dnsx on subdomains to find IP address")
 			tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
 
+			color.Cyan("Running httpx to find http servers")
+			tool.Httpx(subdomainsFile.Name())
+
 			subdomainsFile.Close()
 			ipsFile.Close()
 		},
