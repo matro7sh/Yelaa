@@ -24,6 +24,7 @@ var (
 	shared        string
 	targetPath    string
 	proxy         string
+	domain        string
 	insecure      bool
 )
 
@@ -142,6 +143,18 @@ func main() {
 		},
 	}
 
+	var cmdOsint = &cobra.Command{
+		Use:   "osint",
+		Short: "Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain",
+		Args:  cobra.MinimumNArgs(0),
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Printf("\nTarget domain: %s\n\n", domain)
+
+			color.Cyan("Searching for subdomains with subfinder")
+			tool.Subfinder(domain)
+		},
+	}
+
 	var createDirectories = &cobra.Command{
 		Use:   "create -c [client name]",
 		Short: "It will create all directories to work",
@@ -172,19 +185,26 @@ func main() {
 
 	var rootCmd = createDirectories
 
-	rootCmd.AddCommand(cmdScan)
+	rootCmd.AddCommand(cmdScan, cmdOsint)
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
+	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
+	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
+
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
 	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	cmdScan.Flags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
-	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
-	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
+
+	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
 	}
 
 	if err := cmdScan.MarkFlagRequired("target"); err != nil {
+		panic(err)
+	}
+
+	if err := cmdOsint.MarkFlagRequired("domain"); err != nil {
 		panic(err)
 	}
 
