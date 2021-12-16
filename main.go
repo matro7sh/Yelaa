@@ -159,6 +159,7 @@ func scanDomain(domain string) {
 	}
 
 	color.Cyan("Searching for subdomains with subfinder")
+	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
 	tool.Subfinder(domain, subdomainsFile.Name())
 
 	color.Cyan("Running dnsx on subdomains to find IP address")
@@ -173,7 +174,7 @@ func scanDomain(domain string) {
 
 func main() {
 
-	version := figure.NewColorFigure("Yelaa 1.2.3", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.3.0", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
