@@ -119,6 +119,17 @@ func folderNameFactory(names ...string) []folder {
 	return f
 }
 
+func checkProxy() {
+	os.Setenv("HTTP_PROXY", proxy)
+	os.Setenv("HTTPS_PROXY", proxy)
+
+	if proxy != "" {
+		color.Cyan("Proxy configuration: %s", proxy)
+	} else {
+		color.Cyan("No proxy has been set")
+	}
+}
+
 func main() {
 
 	version := figure.NewColorFigure("Yelaa 1.2.3", "", "cyan", true)
@@ -132,13 +143,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			currentTime := time.Now()
 			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
-			os.Setenv("HTTP_PROXY", proxy)
-			os.Setenv("HTTPS_PROXY", proxy)
-			if proxy != "" {
-				color.Cyan("Proxy configuration: %s", proxy)
-			} else {
-				color.Cyan("No proxy has been set")
-			}
+			checkProxy()
 			readFile()
 		},
 	}
@@ -149,6 +154,8 @@ func main() {
 		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			checkProxy()
+
 			fmt.Printf("\nTarget domain: %s\n\n", domain)
 
 			subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
@@ -209,10 +216,10 @@ func main() {
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
+	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
+	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
-	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
-	cmdScan.Flags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 
 	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
 
