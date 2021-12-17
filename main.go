@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -24,6 +26,7 @@ var (
 	shared        string
 	targetPath    string
 	proxy         string
+	domain        string
 	insecure      bool
 )
 
@@ -37,13 +40,13 @@ func commandExists(cmd string) bool {
 	return err == nil
 }
 
-func readFile() {
+type FileScanner struct {
+	io.Closer
+	*bufio.Scanner
+}
 
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
-
+func loadTargetFile() *FileScanner {
 	file, err := os.Open(targetPath)
-	defer file.Close()
-
 	if err != nil {
 		fmt.Printf("%v, %+v", err, targetPath)
 	}
@@ -51,13 +54,27 @@ func readFile() {
 	scanner := bufio.NewScanner(file)
 
 	body, err := ioutil.ReadFile(targetPath)
+
+	if err != nil {
+		fmt.Printf("%v, %+v", err, targetPath)
+	}
+
 	color.Magenta("Loaded target: \n%v", strings.Replace(string(body), "\n", ", ", -1))
+
+	return &FileScanner{file, scanner}
+}
+
+func readFile() {
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var websites []string
 
+	scanner := loadTargetFile()
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
+		defer scanner.Close()
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
 		}
@@ -74,9 +91,6 @@ func readFile() {
 
 		color.Cyan("Running Nuclei on %s", website)
 		tool.Nuclei(website)
-
-		color.Cyan("Looking for subdomains on %s", website)
-		tool.GetSubdomains(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -118,9 +132,73 @@ func folderNameFactory(names ...string) []folder {
 	return f
 }
 
+func checkProxy() {
+	os.Setenv("HTTP_PROXY", proxy)
+	os.Setenv("HTTPS_PROXY", proxy)
+
+	if proxy != "" {
+		color.Cyan("Proxy configuration: %s", proxy)
+	} else {
+		color.Cyan("No proxy has been set")
+	}
+}
+
+func scanDomain(domain string) {
+	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
+
+	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	ipsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	getSubDomainCrt, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
+	color.Cyan("Searching for subdomains with subfinder")
+	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
+	tool.Subfinder(domain, subdomainsFile.Name())
+
+	color.Cyan("Make request to crt.sh on domain")
+	tool.Crt(domain, getSubDomainCrt.Name())
+
+	color.Cyan("Running dnsx on subdomains to find IP address")
+	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
+
+	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
+	var domainBuffer bytes.Buffer
+
+	for _, file := range domainsFiles {
+		newDomain, err := ioutil.ReadFile(file)
+		if err != nil {
+			fmt.Printf("%s", err)
+		}
+
+		domainBuffer.Write(newDomain)
+
+		err = ioutil.WriteFile("/tmp/all-domains.txt", domainBuffer.Bytes(), 0644)
+		if err != nil {
+			fmt.Printf("%s", err)
+		}
+	}
+
+	color.Cyan("Running httpx to find http servers")
+	tool.Httpx("/tmp/all-domains.txt")
+
+	subdomainsFile.Close()
+	ipsFile.Close()
+	getSubDomainCrt.Close()
+}
+
 func main() {
 
-	version := figure.NewColorFigure("Yelaa 1.2.3", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.3.0", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -131,14 +209,31 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			currentTime := time.Now()
 			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
-			os.Setenv("HTTP_PROXY", proxy)
-			os.Setenv("HTTPS_PROXY", proxy)
-			if proxy != "" {
-				color.Cyan("Proxy configuration: %s", proxy)
-			} else {
-				color.Cyan("No proxy has been set")
-			}
+			checkProxy()
 			readFile()
+		},
+	}
+
+	var cmdOsint = &cobra.Command{
+		Use:   "osint",
+		Short: "Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain",
+		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
+		Args:  cobra.MinimumNArgs(0),
+		Run: func(cmd *cobra.Command, args []string) {
+			checkProxy()
+
+			if targetPath == "" {
+				scanDomain(domain)
+				return
+			}
+
+			scanner := loadTargetFile()
+			defer scanner.Close()
+
+			for scanner.Scan() {
+				targetDomain := scanner.Text()
+				scanDomain(targetDomain)
+			}
 		},
 	}
 
@@ -172,13 +267,17 @@ func main() {
 
 	var rootCmd = createDirectories
 
-	rootCmd.AddCommand(cmdScan)
+	rootCmd.AddCommand(cmdScan, cmdOsint)
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
-	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
-	cmdScan.Flags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
-	cmdScan.Flags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
+	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
+	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
+
+	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
+
+	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
+	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)

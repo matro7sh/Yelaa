@@ -6,7 +6,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Go theses binary in your path : 
 ```
-nuclei, dirsearch, testssl
+nuclei, dirsearch, testssl, subfinder, dnsx, httpx
 ```
 
 
@@ -26,6 +26,12 @@ You can run `yelaa create -c <client> -s <PathToSharedFolder>`
 
 >Flag `-k` is available to skip tls configuration
 
+## How to run osint on a domain
+
+`yelaa osint -d example.com`
+
+To run osint command on several domains run `yelaa osint -t domains.txt`
+
 ## Help 
 
 ``` 
@@ -43,12 +49,15 @@ Usage:
 
 Available Commands:
   help        Help about any command
+  osint       Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
   scan        It will run Nuclei templates, sslscan, dirsearch and more.
 
 Flags:
   -c, --client string         Client name
   -e, --excludedType string   excluded type
   -h, --help                  help for create
+  -k, --insecure              Allow insecure certificate
+  -p, --proxy string          Add HTTP proxy
   -s, --shared string         path to shared folder
 
 Use "create [command] --help" for more information about a command.

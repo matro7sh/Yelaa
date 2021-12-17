@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
+	"os"
 	"strings"
 
 	"github.com/fatih/color"
@@ -23,18 +23,19 @@ type ResponseItem struct {
 	SerialNumber   string `json:"serial_number"`
 }
 
-func GetSubdomains(_url string) {
+func Crt(url string, getSubDomainCrt string) {
 	var result []ResponseItem
 
-	parsed_url, err := url.Parse(_url)
+	domain := parseDomain(url)
+
+	resp, err := http.Get("https://crt.sh/?q=" + domain + "&output=json")
 	if err != nil {
 		fmt.Printf("%v", err)
 		return
 	}
 
-	resp, err := http.Get("https://crt.sh/?q=" + parsed_url.Host + "&output=json")
-	if err != nil {
-		fmt.Printf("%v", err)
+	if resp.StatusCode == 502 {
+		color.Yellow("[!] Carrefull crt.sh doesn't respond correctly, you must wait before you retry")
 		return
 	}
 
@@ -43,6 +44,11 @@ func GetSubdomains(_url string) {
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("%v", err)
+		return
+	}
+
+	if resp.Header.Get("Content-Type") != "application/json" {
+		fmt.Printf("Status code : %v\nBody: %v", resp.StatusCode, body)
 		return
 	}
 
@@ -65,6 +71,12 @@ func GetSubdomains(_url string) {
 	if len(subdomains) == 0 {
 		color.Yellow("No subdomains found")
 		return
+	}
+
+	err = os.WriteFile(getSubDomainCrt, []byte(strings.Join(subdomains, "\n")+"\n"), 0644)
+
+	if err != nil {
+		fmt.Printf("%s", err)
 	}
 
 	color.Cyan("------------------")
