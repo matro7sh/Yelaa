@@ -2,18 +2,30 @@ package tool
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
 )
 
+func parseDomain(domain string) string {
+	if strings.HasPrefix(domain, "http") {
+		parsedUrl, err := url.Parse(domain)
+		if err != nil {
+			fmt.Printf("%s", err)
+		}
+
+		domain = parsedUrl.Host
+	}
+
+	return domain
+}
+
 func Subfinder(domain string, filename string) {
 
-	var myrealString = strings.TrimPrefix(domain, "https://")
-	if domain == "" {
-		myrealString = domain
-	}
-	out, err := exec.Command("subfinder", "-d", myrealString).Output()
+	domain = parseDomain(domain)
+
+	out, err := exec.Command("subfinder", "-d", domain).Output()
 
 	if err != nil {
 		fmt.Printf("%s", err)

@@ -166,26 +166,28 @@ func scanDomain(domain string) {
 	tool.Subfinder(domain, subdomainsFile.Name())
 
 	color.Cyan("Make request to crt.sh on domain")
-	tool.GetSubdomains(domain, getSubDomainCrt.Name())
+	tool.Crt(domain, getSubDomainCrt.Name())
 
 	color.Cyan("Running dnsx on subdomains to find IP address")
 	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
 
-	files := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
-	var buf bytes.Buffer
+	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
+	var domainBuffer bytes.Buffer
 
-	for _, file := range files {
-		b, err := ioutil.ReadFile(file)
+	for _, file := range domainsFiles {
+		newDomain, err := ioutil.ReadFile(file)
 		if err != nil {
-			// handle error
+			fmt.Printf("%s", err)
 		}
 
-		buf.Write(b)
-		err = ioutil.WriteFile("/tmp/all-domains.txt", buf.Bytes(), 0644)
+		domainBuffer.Write(newDomain)
+
+		err = ioutil.WriteFile("/tmp/all-domains.txt", domainBuffer.Bytes(), 0644)
 		if err != nil {
-			// handle error
+			fmt.Printf("%s", err)
 		}
 	}
+
 	color.Cyan("Running httpx to find http servers")
 	tool.Httpx("/tmp/all-domains.txt")
 

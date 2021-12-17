@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
@@ -24,23 +23,12 @@ type ResponseItem struct {
 	SerialNumber   string `json:"serial_number"`
 }
 
-func GetSubdomains(_url string, getSubDomainCrt string) {
+func Crt(url string, getSubDomainCrt string) {
 	var result []ResponseItem
 
-	parsed_url, err := url.Parse(_url)
-	if err != nil {
+	domain := parseDomain(url)
 
-		fmt.Printf("%v", err)
-		return
-	}
-
-	var myrealString = strings.TrimPrefix(parsed_url.Host, "https://")
-
-	if parsed_url.Host == "" {
-		myrealString = _url
-	}
-
-	resp, err := http.Get("https://crt.sh/?q=" + myrealString + "&output=json")
+	resp, err := http.Get("https://crt.sh/?q=" + domain + "&output=json")
 	if err != nil {
 		fmt.Printf("%v", err)
 		return
