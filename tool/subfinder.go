@@ -4,10 +4,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func Subfinder(domain string, filename string) {
-	out, err := exec.Command("subfinder", "-d", domain).Output()
+
+	var myrealString = strings.TrimPrefix(domain, "https://")
+	if domain == "" {
+		myrealString = domain
+	}
+	out, err := exec.Command("subfinder", "-d", myrealString).Output()
 
 	if err != nil {
 		fmt.Printf("%s", err)
@@ -18,4 +24,5 @@ func Subfinder(domain string, filename string) {
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
+
 }

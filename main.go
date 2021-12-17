@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -90,9 +91,6 @@ func readFile() {
 
 		color.Cyan("Running Nuclei on %s", website)
 		tool.Nuclei(website)
-
-		color.Cyan("Looking for subdomains on %s", website)
-		tool.GetSubdomains(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -146,7 +144,7 @@ func checkProxy() {
 }
 
 func scanDomain(domain string) {
-	fmt.Printf("\nTarget domain: %s\n\n", domain)
+	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -158,18 +156,42 @@ func scanDomain(domain string) {
 		fmt.Printf("%s", err)
 	}
 
+	getSubDomainCrt, err := ioutil.TempFile(os.TempDir(), "yelaa-")
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+
 	color.Cyan("Searching for subdomains with subfinder")
 	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
 	tool.Subfinder(domain, subdomainsFile.Name())
 
+	color.Cyan("Make request to crt.sh on domain")
+	tool.GetSubdomains(domain, getSubDomainCrt.Name())
+
 	color.Cyan("Running dnsx on subdomains to find IP address")
 	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
 
+	files := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
+	var buf bytes.Buffer
+
+	for _, file := range files {
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			// handle error
+		}
+
+		buf.Write(b)
+		err = ioutil.WriteFile("/tmp/all-domains.txt", buf.Bytes(), 0644)
+		if err != nil {
+			// handle error
+		}
+	}
 	color.Cyan("Running httpx to find http servers")
-	tool.Httpx(subdomainsFile.Name())
+	tool.Httpx("/tmp/all-domains.txt")
 
 	subdomainsFile.Close()
 	ipsFile.Close()
+	getSubDomainCrt.Close()
 }
 
 func main() {

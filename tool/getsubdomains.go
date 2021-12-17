@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/fatih/color"
@@ -23,16 +24,23 @@ type ResponseItem struct {
 	SerialNumber   string `json:"serial_number"`
 }
 
-func GetSubdomains(_url string) {
+func GetSubdomains(_url string, getSubDomainCrt string) {
 	var result []ResponseItem
 
 	parsed_url, err := url.Parse(_url)
 	if err != nil {
+
 		fmt.Printf("%v", err)
 		return
 	}
 
-	resp, err := http.Get("https://crt.sh/?q=" + parsed_url.Host + "&output=json")
+	var myrealString = strings.TrimPrefix(parsed_url.Host, "https://")
+
+	if parsed_url.Host == "" {
+		myrealString = _url
+	}
+
+	resp, err := http.Get("https://crt.sh/?q=" + myrealString + "&output=json")
 	if err != nil {
 		fmt.Printf("%v", err)
 		return
@@ -65,6 +73,12 @@ func GetSubdomains(_url string) {
 	if len(subdomains) == 0 {
 		color.Yellow("No subdomains found")
 		return
+	}
+
+	err = os.WriteFile(getSubDomainCrt, []byte(strings.Join(subdomains, "\n")+"\n"), 0644)
+
+	if err != nil {
+		fmt.Printf("%s", err)
 	}
 
 	color.Cyan("------------------")

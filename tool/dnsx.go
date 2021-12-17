@@ -12,6 +12,7 @@ import (
 )
 
 func Dnsx(subdomainsFile string, ipsFile string) {
+
 	out, err := exec.Command("dnsx", "-l", subdomainsFile, "-resp", "-a").Output()
 
 	if err != nil {
@@ -36,6 +37,7 @@ func Dnsx(subdomainsFile string, ipsFile string) {
 		}
 
 		ip_list = append(ip_list, ip)
+
 	}
 
 	output := strings.Join(ip_list, "\n")
