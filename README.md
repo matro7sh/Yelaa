@@ -4,13 +4,19 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-Go theses binary in your path : 
-```
-nuclei, dirsearch, testssl, subfinder, dnsx, httpx
-```
-> To install nuclei, subfinder, dnsx and httpx run `./install.sh`
+### You need to have `dirsearch` in your path and also a path to your golang binaries
 
-> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'` 
+> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'`
+
+# How to install
+```bash
+git clone https://github.com/CMEPW/Yelaa.git
+cd Yelaa
+make install
+go install github.com/CMEPW/Yelaa@v1.3.0
+```
+> The command `make install` will install nuclei, subfinder, dnsx and httpx
+
 
 ## How to use 
 >-s is optionnal
@@ -65,14 +71,6 @@ Use "create [command] --help" for more information about a command.
 ``` 
 
 >this script will create a default structure, as well as a cherytree database with payloads for external testing and useful commands for internal testing.
-
-# Preview command create
-
-![preview](img/preview.png)
-
-# Preview command scan 
-
-![pou](img/preview-scan.png)
 
 # Contributors
 
