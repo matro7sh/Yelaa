@@ -8,7 +8,7 @@ Go theses binary in your path :
 ```
 nuclei, dirsearch, testssl, subfinder, dnsx, httpx
 ```
-
+> To install nuclei, subfinder, dnsx and httpx run `./install.sh`
 
 > You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'` 
 
