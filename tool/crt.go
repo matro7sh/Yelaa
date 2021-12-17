@@ -34,11 +34,21 @@ func Crt(url string, getSubDomainCrt string) {
 		return
 	}
 
+	if resp.StatusCode == 502 {
+		color.Yellow("[!] Carrefull crt.sh doesn't respond correctly, you must wait before you retry")
+		return
+	}
+
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("%v", err)
+		return
+	}
+
+	if resp.Header.Get("Content-Type") != "application/json" {
+		fmt.Printf("Status code : %v\nBody: %v", resp.StatusCode, body)
 		return
 	}
 
