@@ -173,6 +173,7 @@ func scanDomain(domain string) {
 
 	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
+	UserHomeDir, err := os.UserHomeDir()
 
 	for _, file := range domainsFiles {
 		newDomain, err := ioutil.ReadFile(file)
@@ -181,17 +182,23 @@ func scanDomain(domain string) {
 		}
 
 		domainBuffer.Write(newDomain)
+		// check if directory already exist + name of projet
+		err = os.Mkdir(UserHomeDir+"/.yelaa", 0755)
+		if err != nil {
+			fmt.Println(err)
+		}
 
-		err = ioutil.WriteFile("/tmp/all-domains.txt", domainBuffer.Bytes(), 0644)
+		err = ioutil.WriteFile(UserHomeDir+"/.yelaa/domains.txt", domainBuffer.Bytes(), 0644)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 	}
 
 	color.Cyan("Running httpx to find http servers")
-	tool.Httpx("/tmp/all-domains.txt")
+	tool.Httpx(UserHomeDir + "/.yelaa/domains.txt")
 
-	tool.Gowitness("/tmp/all-domains.txt")
+	color.Cyan("Running Gowitness")
+	tool.Gowitness(UserHomeDir + "/.yelaa/domains.txt")
 
 	subdomainsFile.Close()
 	ipsFile.Close()
