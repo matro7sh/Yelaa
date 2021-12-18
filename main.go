@@ -65,8 +65,10 @@ func loadTargetFile() *FileScanner {
 }
 
 func readFile() {
-
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
+
+	var toolList []tool.ToolInterface
+	toolList = append(toolList, &tool.GoBuster{})
 
 	var websites []string
 
@@ -86,8 +88,10 @@ func readFile() {
 		color.Cyan("Looking for sitemap.xml on: %s ", website)
 		tool.GetSitemap(website)
 
-		color.Cyan("Running Dirsearch on %s", website)
-		tool.Dirsearch(website)
+		color.Cyan("Running tools on %s", website)
+		for _, t := range toolList {
+			t.Run(website)
+		}
 
 		color.Cyan("Running Nuclei on %s", website)
 		tool.Nuclei(website)
@@ -210,8 +214,22 @@ func scanDomain(domain string) {
 	getSubDomainCrt.Close()
 }
 
-func main() {
+/*
+func NewGobuster(opts *Options, plugin GobusterPlugin) (*Gobuster, error) {
+	var g Gobuster
+	g.Opts = opts
+	g.plugin = plugin
+	g.RequestsCountMutex = new(sync.RWMutex)
+	g.resultChan = make(chan Result)
+	g.errorChan = make(chan error)
+	g.LogInfo = log.New(os.Stdout, "", log.LstdFlags)
+	g.LogError = log.New(os.Stderr, "[ERROR] ", log.LstdFlags)
 
+	return &g, nil
+}
+*/
+
+func main() {
 	version := figure.NewColorFigure("Yelaa 1.3.2", "", "cyan", true)
 	version.Print()
 
