@@ -70,8 +70,6 @@ func readFile() {
 	var toolList []tool.ToolInterface
 	toolList = append(toolList, &tool.GoBuster{})
 
-	var websites []string
-
 	scanner := loadTargetFile()
 	for scanner.Scan() {
 		// check if its ip/domain
@@ -80,7 +78,6 @@ func readFile() {
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
 		}
-		websites = append(websites, website)
 
 		color.Cyan("Looking for robots.txt on: %s", website)
 		tool.GetRobot(website)

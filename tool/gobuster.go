@@ -17,7 +17,7 @@ func (*GoBuster) Configure(c interface{}) {}
 
 func (g *GoBuster) Run(website string) {
 	optDir := gobusterdir.NewOptionsDir()
-	optDir.URL = g.currentURL
+	optDir.URL = website
 	optDir.StatusCodesBlacklistParsed.Add(404)
 
 	options := &libgobuster.Options{Threads: 2, Wordlist: "yelaa.txt"}
