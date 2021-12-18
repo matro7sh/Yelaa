@@ -6,10 +6,8 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 You need to have theses binaries in your path:
 ```
-dirsearch, nuclei, subfinder, dnsx, httpx
+gobuster, nuclei, subfinder, dnsx, httpx, gowitness
 ```
-
-> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'`
 
 # How to install
 
@@ -49,7 +47,7 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 ## Help 
 
 ``` 
-./Yelaa -h 
+./yelaa -h 
  __   __         _
  \ \ / /   ___  | |
   \ V /   / _ \ | |  / _` |  / _` |
@@ -58,15 +56,15 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Usage:
-  create -c [client name] [flags]
-  create [command]
+  yelaa create -c [client name] [flags]
 
 Available Commands:
   help        Help about any command
-  osint       Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan        It will run Nuclei templates, sslscan, dirsearch and more.
+  create      Obtain a clean-cut architecture
+  osint       Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain +screenshots them
+  scan        It will run Nuclei templates, gobuster and more.
 
-Flags:
+Flags for command create:
   -c, --client string         Client name
   -e, --excludedType string   excluded type
   -h, --help                  help for create
@@ -78,7 +76,7 @@ Use "create [command] --help" for more information about a command.
 
 ``` 
 
->this script will create a default structure, as well as a cherytree database with payloads for external testing and useful commands for internal testing.
+>this script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
 
 # Contributors
 
