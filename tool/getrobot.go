@@ -8,8 +8,16 @@ import (
 	"github.com/fatih/color"
 )
 
-func GetRobot(url string) {
-	resp, err := http.Get(url + "robots.txt")
+type Robot struct{}
+
+func (s *Robot) Info(website string) {
+	color.Cyan("Looking for robots.txt on: %s", website)
+}
+
+func (g *Robot) Configure(c interface{}) {}
+
+func (g *Robot) Run(website string) {
+	resp, err := http.Get(website + "robots.txt")
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
@@ -26,3 +34,5 @@ func GetRobot(url string) {
 		color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
 	}
 }
+
+var _ ToolInterface = (*Robot)(nil)

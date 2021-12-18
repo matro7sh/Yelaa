@@ -68,7 +68,7 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
-	toolList = append(toolList, &tool.GoBuster{})
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{})
 
 	scanner := loadTargetFile()
 	for scanner.Scan() {
@@ -78,12 +78,6 @@ func readFile() {
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
 		}
-
-		color.Cyan("Looking for robots.txt on: %s", website)
-		tool.GetRobot(website)
-
-		color.Cyan("Looking for sitemap.xml on: %s ", website)
-		tool.GetSitemap(website)
 
 		color.Cyan("Running tools on %s", website)
 		for _, t := range toolList {

@@ -10,8 +10,16 @@ import (
 
 var GlobalHeaders = []string{"Server", "X-XSS-Protection", "Access-Control-Allow-Credentials", "Content-Security-Policy", "X-Powered-By", "Strict-Transport-Security"}
 
-func GetSitemap(url string) {
-	resp, err := http.Get(url + "sitemap.xml")
+type Sitemap struct{}
+
+func (s *Sitemap) Info(website string) {
+	color.Cyan("Looking for sitemap.xml on: %s ", website)
+}
+
+func (s *Sitemap) Configure(c interface{}) {}
+
+func (s *Sitemap) Run(website string) {
+	resp, err := http.Get(website + "sitemap.xml")
 
 	if err != nil {
 		fmt.Printf("%v", err)
@@ -48,3 +56,5 @@ func contains(slice []string, item string) bool {
 	_, ok := set[item]
 	return ok
 }
+
+var _ ToolInterface = (*Sitemap)(nil)
