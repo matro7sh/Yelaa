@@ -4,38 +4,52 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-Go theses binary in your path : 
+You need to have theses binaries in your path:
 ```
-nuclei, dirsearch, testssl, subfinder, dnsx, httpx
+dirsearch, nuclei, subfinder, dnsx, httpx
 ```
 
+> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'`
 
-> You can set alias like this `dirsearch='python /home/jenaye/softs/dirsearch/dirsearch.py'` 
+# How to install
 
-## How to use 
+Manually :
+```bash
+git clone https://github.com/CMEPW/Yelaa.git
+cd Yelaa
+make install
+make compile
+```
+
+Or if you have set your GO path and all the requirements installed :
+```bash
+go install github.com/CMEPW/Yelaa@latest
+```
+
+# How to use 
 >-s is optionnal
-You can run `yelaa create -c <client> -s <PathToSharedFolder>`
+You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run scan 
 
-`yelaa scan -target <PathToTargetFile>`
+`Yelaa scan -target <PathToTargetFile>`
 
 ## Use http proxy
 
-`yelaa scan -p http://localhost:8080 -target ./targets.txt`
+`Yelaa scan -p http://localhost:8080 -target ./targets.txt`
 
 >Flag `-k` is available to skip tls configuration
 
 ## How to run osint on a domain
 
-`yelaa osint -d example.com`
+`Yelaa osint -d example.com`
 
-To run osint command on several domains run `yelaa osint -t domains.txt`
+To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 ## Help 
 
 ``` 
-./yelaa -h 
+./Yelaa -h 
  __   __         _
  \ \ / /   ___  | |
   \ V /   / _ \ | |  / _` |  / _` |
@@ -65,14 +79,6 @@ Use "create [command] --help" for more information about a command.
 ``` 
 
 >this script will create a default structure, as well as a cherytree database with payloads for external testing and useful commands for internal testing.
-
-# Preview command create
-
-![preview](img/preview.png)
-
-# Preview command scan 
-
-![pou](img/preview-scan.png)
 
 # Contributors
 
