@@ -9,19 +9,18 @@ import (
 )
 
 func Gowitness(urls string) {
-	UserHomeDir, err := os.UserHomeDir()
+	UserHomeDir, _ := os.UserHomeDir()
 	args := "file"
 	args2 := "-f"
-	args3 := urls
+	DomainsFile := urls
 
 	args4 := "--screenshot-path"
-	args5 := UserHomeDir + "/.yelaa/screenshots"
-	out, err := exec.Command("gowitness", args, args2, args3, args4, args5).Output()
+	destinationPath := UserHomeDir + "/.yelaa/screenshots"
+	_, err := exec.Command("gowitness", args, args2, DomainsFile, args4, destinationPath).Output()
 
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
 	color.Yellow("Screenshot stored in ~/.yelaa/screenshots")
-	output := string(out[:])
-	fmt.Println("gowitness output ", output)
+
 }
