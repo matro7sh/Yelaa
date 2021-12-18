@@ -191,6 +191,8 @@ func scanDomain(domain string) {
 	color.Cyan("Running httpx to find http servers")
 	tool.Httpx("/tmp/all-domains.txt")
 
+	tool.Gowitness("/tmp/all-domains.txt")
+
 	subdomainsFile.Close()
 	ipsFile.Close()
 	getSubDomainCrt.Close()
