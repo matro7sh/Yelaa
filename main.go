@@ -175,6 +175,11 @@ func scanDomain(domain string) {
 	var domainBuffer bytes.Buffer
 	UserHomeDir, err := os.UserHomeDir()
 
+	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
+		fmt.Println("take care folder already exist")
+	}
+	err = os.Mkdir(UserHomeDir+"/.yelaa", 0755)
+
 	for _, file := range domainsFiles {
 		newDomain, err := ioutil.ReadFile(file)
 		if err != nil {
@@ -183,7 +188,7 @@ func scanDomain(domain string) {
 
 		domainBuffer.Write(newDomain)
 		// check if directory already exist + name of projet
-		err = os.Mkdir(UserHomeDir+"/.yelaa", 0755)
+
 		if err != nil {
 			fmt.Println(err)
 		}
