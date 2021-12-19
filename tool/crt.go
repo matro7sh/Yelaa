@@ -26,7 +26,7 @@ type ResponseItem struct {
 func Crt(url string, getSubDomainCrt string) {
 	var result []ResponseItem
 
-	domain := parseDomain(url)
+	domain := "parseDomain(url)"
 
 	resp, err := http.Get("https://crt.sh/?q=" + domain + "&output=json")
 	if err != nil {

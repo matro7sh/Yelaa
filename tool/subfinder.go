@@ -1,40 +1,71 @@
 package tool
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/url"
-	"os"
-	"os/exec"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
+	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
+	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
-func parseDomain(domain string) string {
-	if strings.HasPrefix(domain, "http") {
-		parsedUrl, err := url.Parse(domain)
+type SubfinderConfiguration struct {
+	Filename string `json:"filename"`
+}
+
+type Subfinder struct {
+	filename       string
+	runnerInstance *runner.Runner
+}
+
+func (s *Subfinder) Info(_ string) {
+	color.Cyan("Searching for subdomains with subfinder")
+	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
+}
+
+func (s *Subfinder) Configure(conf interface{}) {
+	b, _ := json.Marshal(conf.(map[string]interface{}))
+	var subfinderconfiguration SubfinderConfiguration
+	_ = json.Unmarshal(b, &subfinderconfiguration)
+
+	s.filename = subfinderconfiguration.Filename
+
+	s.runnerInstance, _ = runner.NewRunner(&runner.Options{
+		Threads:            3,
+		Timeout:            30,
+		MaxEnumerationTime: 10,
+		YAMLConfig: runner.ConfigFile{
+			Resolvers:  resolve.DefaultResolvers,
+			Sources:    passive.DefaultSources,
+			AllSources: passive.DefaultAllSources,
+			Recursive:  passive.DefaultRecursiveSources,
+		},
+	})
+}
+
+func (s *Subfinder) Run(website string) {
+	if strings.HasPrefix(website, "http") {
+		parsedUrl, err := url.Parse(website)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 
-		domain = parsedUrl.Host
+		website = parsedUrl.Host
 	}
 
-	return domain
+	buf := bytes.Buffer{}
+	err := s.runnerInstance.EnumerateSingleDomain(context.Background(), website, []io.Writer{&buf})
+	if err != nil {
+		fmt.Println(err)
+	}
+	_ = ioutil.WriteFile(s.filename, buf.Bytes(), 0755)
 }
 
-func Subfinder(domain string, filename string) {
-
-	domain = parseDomain(domain)
-
-	out, err := exec.Command("subfinder", "-d", domain).Output()
-
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-
-	err = os.WriteFile(filename, out, 0644)
-
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-
-}
+var _ ToolInterface = (*Subfinder)(nil)

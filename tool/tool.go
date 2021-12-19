@@ -2,6 +2,6 @@ package tool
 
 type ToolInterface interface {
 	Configure(interface{})
-	Info()
+	Info(string)
 	Run(string)
 }

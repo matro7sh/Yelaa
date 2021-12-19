@@ -68,7 +68,7 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
-	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{})
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
 
 	scanner := loadTargetFile()
 	for scanner.Scan() {
@@ -83,9 +83,6 @@ func readFile() {
 		for _, t := range toolList {
 			t.Run(website)
 		}
-
-		color.Cyan("Running Nuclei on %s", website)
-		tool.Nuclei(website)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -156,12 +153,15 @@ func scanDomain(domain string) {
 		fmt.Printf("%s", err)
 	}
 
-	color.Cyan("Searching for subdomains with subfinder")
-	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
-	tool.Subfinder(domain, subdomainsFile.Name())
+	sf := tool.Subfinder{}
+	configuration := make(map[string]interface{})
+	configuration["filename"] = subdomainsFile.Name()
+	sf.Info("")
+	sf.Configure(configuration)
+	sf.Run(domain)
 
 	color.Cyan("Make request to crt.sh on domain")
-	tool.Crt(domain, getSubDomainCrt.Name())
+	// tool.Crt(domain, getSubDomainCrt.Name())
 
 	color.Cyan("Running dnsx on subdomains to find IP address")
 	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
