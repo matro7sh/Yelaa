@@ -161,7 +161,7 @@ func scanDomain(domain string) {
 	sf.Run(domain)
 
 	color.Cyan("Make request to crt.sh on domain")
-	// tool.Crt(domain, getSubDomainCrt.Name())
+	tool.Crt(domain, getSubDomainCrt.Name())
 
 	color.Cyan("Running dnsx on subdomains to find IP address")
 	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())

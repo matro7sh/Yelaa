@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/url"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/projectdiscovery/subfinder/v2/pkg/passive"
@@ -51,14 +49,7 @@ func (s *Subfinder) Configure(conf interface{}) {
 }
 
 func (s *Subfinder) Run(website string) {
-	if strings.HasPrefix(website, "http") {
-		parsedUrl, err := url.Parse(website)
-		if err != nil {
-			fmt.Printf("%s", err)
-		}
-
-		website = parsedUrl.Host
-	}
+	website = parseDomain(website)
 
 	buf := bytes.Buffer{}
 	err := s.runnerInstance.EnumerateSingleDomain(context.Background(), website, []io.Writer{&buf})
