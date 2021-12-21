@@ -35,11 +35,6 @@ type folder struct {
 	children []folder
 }
 
-func commandExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
-	return err == nil
-}
-
 type FileScanner struct {
 	io.Closer
 	*bufio.Scanner
@@ -174,11 +169,16 @@ func scanDomain(domain string) {
 	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
 	UserHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
 		fmt.Println("take care folder already exist")
 	}
-	err = os.Mkdir(UserHomeDir+"/.yelaa", 0755)
+	if err = os.Mkdir(UserHomeDir+"/.yelaa", 0755); err != nil {
+		fmt.Println(err)
+	}
 
 	for _, file := range domainsFiles {
 		newDomain, err := ioutil.ReadFile(file)
@@ -199,8 +199,12 @@ func scanDomain(domain string) {
 		}
 	}
 
-	color.Cyan("Running httpx to find http servers")
-	tool.Httpx(UserHomeDir + "/.yelaa/domains.txt")
+	httpx := tool.Httpx{}
+	httpxConfig := make(map[string]interface{})
+	httpxConfig["subdomainsFilename"] = UserHomeDir + "/.yelaa/domains.txt"
+	httpx.Info("")
+	httpx.Configure(httpxConfig)
+	httpx.Run("")
 
 	color.Cyan("Running Gowitness")
 	tool.Gowitness(UserHomeDir + "/.yelaa/domains.txt")

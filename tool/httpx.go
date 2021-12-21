@@ -1,56 +1,46 @@
 package tool
 
 import (
-	"bufio"
-	"fmt"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"strings"
+	"encoding/json"
+
+	"github.com/fatih/color"
+	// "github.com/projectdiscovery/httpx/common/httpx"
+
+	"github.com/projectdiscovery/httpx/runner"
 )
 
-func Httpx(ipsFile string) {
-	tempFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
+type HttpxConfiguration struct {
+	SubdomainsFilename string `json:"subdomainsFilename"`
+}
 
-	out, err := exec.Command("httpx", "-l", ipsFile, "-title", "-content-length", "-content-type",
-		"-status-code", "-tech-detect", "-vhost", "-websocket", "-follow-redirects",
-		"-ports", "25,80,81,135,389,443,1080,3000,3306,8080,8443,8888,9090,8089",
-		"-retries", "2", "-timeout", "8", "-threads", "50", "-o", tempFile.Name()).Output()
+type Httpx struct {
+	runnerInstance *runner.Runner
+}
 
-	if err != nil {
-		fmt.Printf("%s", err)
-		return
-	}
+func (h *Httpx) Info(_ string) {
+	color.Cyan("Running httpx on subdomains")
+}
 
-	output := string(out[:])
-	fmt.Println(output)
+func (h *Httpx) Configure(config interface{}) {
+	b, _ := json.Marshal(config.(map[string]interface{}))
+	var httpxconfiguration HttpxConfiguration
+	_ = json.Unmarshal(b, &httpxconfiguration)
 
-	file, err := os.Open(tempFile.Name())
-	if err != nil {
-		fmt.Printf("%v, %+v", err, tempFile.Name())
-		return
-	}
+	h.runnerInstance, _ = runner.New(&runner.Options{
+		InputFile:         httpxconfiguration.SubdomainsFilename,
+		ExtractTitle:      true,
+		ContentLength:     true,
+		OutputContentType: true,
+		StatusCode:        true,
+		TechDetect:        true,
+		VHost:             true,
+		OutputWebSocket:   true,
+		FollowRedirects:   true,
+		Retries:           2,
+		Threads:           50,
+	})
+}
 
-	scanner := bufio.NewScanner(file)
-	defer file.Close()
-
-	domains := ""
-
-	for scanner.Scan() {
-		result := scanner.Text()
-		domain := strings.Split(result, " ")[0]
-
-		domains += domain + "\n"
-	}
-
-	UserHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	ioutil.WriteFile(UserHomeDir+"/.yelaa/checkAndScreen.txt", []byte(domains), 0644)
+func (h *Httpx) Run(_ string) {
+	h.runnerInstance.RunEnumeration()
 }
