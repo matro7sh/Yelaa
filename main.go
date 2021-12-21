@@ -163,8 +163,13 @@ func scanDomain(domain string) {
 	color.Cyan("Make request to crt.sh on domain")
 	tool.Crt(domain, getSubDomainCrt.Name())
 
-	color.Cyan("Running dnsx on subdomains to find IP address")
-	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
+	dnsx := tool.Dnsx{}
+	dnsxConfig := make(map[string]interface{})
+	dnsxConfig["subdomainsFilename"] = subdomainsFile.Name()
+	dnsxConfig["ipsFilename"] = ipsFile.Name()
+	dnsx.Info("")
+	dnsx.Configure(dnsxConfig)
+	dnsx.Run("")
 
 	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer

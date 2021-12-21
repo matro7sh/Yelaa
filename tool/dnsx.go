@@ -2,49 +2,74 @@ package tool
 
 import (
 	"bufio"
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/projectdiscovery/dnsx/libs/dnsx"
 )
 
-func Dnsx(subdomainsFile string, ipsFile string) {
+type DnsxConfiguration struct {
+	SubdomainsFilename string `json:"subdomainsFilename"`
+	IpsFilename        string `json:"ipsFilename"`
+}
 
-	out, err := exec.Command("dnsx", "-l", subdomainsFile, "-resp", "-a").Output()
+type Dnsx struct {
+	opts               *dnsx.Options
+	subdomainsFilename string
+	ipsFilename        string
+}
 
+func (d *Dnsx) Info(_ string) {
+	color.Cyan("Running dnsx on subdomains to find IP address")
+}
+
+func (d *Dnsx) Configure(config interface{}) {
+	d.opts = &dnsx.DefaultOptions
+
+	b, _ := json.Marshal(config.(map[string]interface{}))
+	var dnsxConfig DnsxConfiguration
+	_ = json.Unmarshal(b, &dnsxConfig)
+
+	d.subdomainsFilename = dnsxConfig.SubdomainsFilename
+	d.ipsFilename = dnsxConfig.IpsFilename
+}
+
+func (d *Dnsx) Run(_ string) {
+	runner, err := dnsx.New(*d.opts)
 	if err != nil {
-		fmt.Printf("%s", err)
+		fmt.Println(err)
 	}
 
-	bytesReader := bytes.NewReader(out)
-	scanner := bufio.NewScanner(bytesReader)
+	f, err := os.Open(d.subdomainsFilename)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer f.Close()
 
 	ip_list := make([]string, 0)
 
+	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		line := scanner.Text()
-		color.Green(line)
 
-		line = strings.Replace(line, "[", "", -1)
-		line = strings.Replace(line, "]", "", -1)
-		ip := strings.Split(line, " ")[1]
-
-		if contains(ip_list, ip) {
+		data, err := runner.QueryOne(scanner.Text())
+		if err != nil {
+			fmt.Println(err)
 			continue
 		}
 
-		ip_list = append(ip_list, ip)
+		if data == nil {
+			continue
+		}
 
+		color.Green(strings.Join(data.A, "\n"))
+		ip_list = append(ip_list, data.A...)
 	}
 
 	output := strings.Join(ip_list, "\n")
-
-	os.WriteFile(ipsFile, []byte(output), 0644)
-
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
+	os.WriteFile(d.ipsFilename, []byte(output), 0644)
 }
+
+var _ ToolInterface = (*Dnsx)(nil)
