@@ -251,6 +251,27 @@ func main() {
 		},
 	}
 
+	var checkAndScreens = &cobra.Command{
+		Use:   "checkAndScreens -l list_of_ip.txt",
+		Short: "Run httpx and gowitness",
+		Long:  "Run httpx on each IP and take screenshots of each server that are up",
+		Args:  cobra.MaximumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			checkProxy()
+
+			if targetPath == "" {
+				color.Red("Please provide a list of ips/domains")
+				return
+			}
+
+			color.Cyan("Running httpx to find http servers")
+			tool.Httpx(targetPath)
+
+			color.Cyan("Running gowitness on server found by httpx")
+			tool.Gowitness("server-up.txt")
+		},
+	}
+
 	var createDirectories = &cobra.Command{
 		Use:   "create -c [client name]",
 		Short: "It will create all directories to work",
@@ -281,7 +302,7 @@ func main() {
 
 	var rootCmd = createDirectories
 
-	rootCmd.AddCommand(cmdScan, cmdOsint)
+	rootCmd.AddCommand(cmdScan, cmdOsint, checkAndScreens)
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
@@ -292,6 +313,8 @@ func main() {
 
 	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
+
+	checkAndScreens.Flags().StringVarP(&targetPath, "list", "l", "", "list of ips/domains")
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
