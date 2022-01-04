@@ -52,5 +52,5 @@ func Httpx(ipsFile string) {
 		fmt.Println(err)
 	}
 
-	ioutil.WriteFile(UserHomeDir+"checkAndScreen.txt", []byte(domains), 0644)
+	ioutil.WriteFile(UserHomeDir+"/.yelaa/checkAndScreen.txt", []byte(domains), 0644)
 }

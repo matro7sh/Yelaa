@@ -18,7 +18,8 @@ func Gowitness(urls string) {
 	DomainsFile := urls
 
 	args4 := "--screenshot-path"
-	destinationPath := fmt.Sprintf("%s-%d-%d-%d_%d-%d", UserHomeDir+"/.yelaa/screenshots", currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute())
+	destinationPath := fmt.Sprintf("%s-%d-%d-%d_%d-%d-%d", UserHomeDir+"/.yelaa/screenshots", currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second())
+
 	_, err := exec.Command("gowitness", args, args2, DomainsFile, args4, destinationPath).Output()
 
 	if err != nil {

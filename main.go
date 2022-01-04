@@ -273,7 +273,7 @@ func main() {
 			}
 
 			color.Cyan("Running gowitness on server found by httpx")
-			tool.Gowitness(UserHomeDir + "checkAndScreen.txt")
+			tool.Gowitness(UserHomeDir + "/.yelaa/checkAndScreen.txt")
 		},
 	}
 
