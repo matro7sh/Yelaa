@@ -47,5 +47,10 @@ func Httpx(ipsFile string) {
 		domains += domain + "\n"
 	}
 
-	ioutil.WriteFile("server-up.txt", []byte(domains), 0644)
+	UserHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	ioutil.WriteFile(UserHomeDir+"checkAndScreen.txt", []byte(domains), 0644)
 }

@@ -46,7 +46,7 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 ## How to run httpx then gowitness
 
-`Yelaa checkAndScreens -l domains.txt`
+`Yelaa checkAndScreen -l domains.txt`
 
 ## Help 
 
@@ -64,7 +64,7 @@ Usage:
   create [command]
 
 Available Commands:
-  checkAndScreens Run httpx and gowitness
+  checkAndScreen Run httpx and gowitness
   help            Help about any command
   osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
   scan            It will run Nuclei templates, sslscan, dirsearch and more.
