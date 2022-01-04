@@ -212,7 +212,7 @@ func scanDomain(domain string) {
 
 func main() {
 
-	version := figure.NewColorFigure("Yelaa 1.3.1", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.3.2", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
