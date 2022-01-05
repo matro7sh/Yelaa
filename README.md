@@ -44,27 +44,32 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 To run osint command on several domains run `Yelaa osint -t domains.txt`
 
+## How to run httpx then gowitness
+
+`Yelaa checkAndScreen -l domains.txt`
+
 ## Help 
 
 ``` 
-./yelaa -h 
- __   __         _
- \ \ / /   ___  | |
-  \ V /   / _ \ | |  / _` |  / _` |
-   | |   |  __/ | | | (_| | | (_| |
-   |_|    \___| |_|  \__,_|  \__,_|
+Yelaa -h
+ __   __         _                     _       _____       ____
+ \ \ / /   ___  | |   __ _    __ _    / |     |___ /      |___ \
+  \ V /   / _ \ | |  / _` |  / _` |   | |       |_ \        __) |
+   | |   |  __/ | | | (_| | | (_| |   | |  _   ___) |  _   / __/
+   |_|    \___| |_|  \__,_|  \__,_|   |_| (_) |____/  (_) |_____|
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Usage:
-  yelaa create -c [client name] [flags]
+  create -c [client name] [flags]
+  create [command]
 
 Available Commands:
-  help        Help about any command
-  create      Obtain a clean-cut architecture
-  osint       Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain +screenshots them
-  scan        It will run Nuclei templates, gobuster and more.
+  checkAndScreen Run httpx and gowitness
+  help            Help about any command
+  osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
+  scan            It will run Nuclei templates, sslscan, dirsearch and more.
 
-Flags for command create:
+Flags:
   -c, --client string         Client name
   -e, --excludedType string   excluded type
   -h, --help                  help for create
