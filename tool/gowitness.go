@@ -1,30 +1,124 @@
 package tool
 
 import (
+	"bufio"
 	"fmt"
+	"net/url"
 	"os"
-	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
+	"github.com/remeh/sizedwaitgroup"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/sensepost/gowitness/chrome"
+	"github.com/sensepost/gowitness/lib"
+	"github.com/sensepost/gowitness/storage"
 )
 
-func Gowitness(urls string) {
-	currentTime := time.Now().Local()
+var (
+	chrm = chrome.NewChrome()
+	db   = storage.NewDb()
+)
 
+type Gowitness struct {
+	screenshotPath string
+	file           string
+	swg            sizedwaitgroup.SizedWaitGroup
+}
+
+func (g *Gowitness) Info(_ string) {
+	color.Cyan("Running gowitness on subdomains")
+}
+
+func (g *Gowitness) Configure(config interface{}) {
+	chrm.ResolutionX = 1440
+	chrm.ResolutionY = 900
+	chrm.Delay = 0
+	chrm.FullPage = false
+	chrm.Timeout = 10
+
+	g.file = config.(map[string]interface{})["file"].(string)
 	UserHomeDir, _ := os.UserHomeDir()
-	args := "file"
-	args2 := "-f"
-	DomainsFile := urls
+	g.screenshotPath = UserHomeDir + "/.yelaa/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
 
-	args4 := "--screenshot-path"
-	destinationPath := fmt.Sprintf("%s-%d-%d-%d_%d-%d-%d", UserHomeDir+"/.yelaa/screenshots", currentTime.Year(), currentTime.Month(), currentTime.Day(), currentTime.Hour(), currentTime.Minute(), currentTime.Second())
+	if _, err := os.Stat(g.screenshotPath); os.IsNotExist(err) {
+		if err = os.Mkdir(g.screenshotPath, 0750); err != nil {
+			fmt.Println(err)
+		}
+	}
+	g.swg = sizedwaitgroup.New(4)
+}
 
-	_, err := exec.Command("gowitness", args, args2, DomainsFile, args4, destinationPath).Output()
-
+func (g *Gowitness) Run(_ string) {
+	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	f, err := os.Open(g.file)
 	if err != nil {
-		fmt.Printf("%s", err)
+		return
 	}
 
-	color.Yellow("Screenshot stored in " + destinationPath)
+	scanner := bufio.NewScanner(f)
+	defer f.Close()
+
+	db, _ := db.Get()
+
+	for scanner.Scan() {
+		candidate := scanner.Text()
+		if candidate == "" {
+			return
+		}
+
+		for _, u := range getUrls(candidate) {
+			g.swg.Add()
+
+			go func(url *url.URL) {
+				defer func() {
+					g.swg.Done()
+				}()
+
+				p := &lib.Processor{
+					Logger:         &l,
+					Db:             db,
+					Chrome:         chrm,
+					URL:            url,
+					ScreenshotPath: g.screenshotPath,
+				}
+
+				if err := p.Gowitness(); err != nil {
+					log.Error().Err(err).Str("url", url.String()).Msg("failed to witness url")
+				}
+			}(u)
+		}
+	}
+
+	g.swg.Wait()
+	log.Info().Msg("processing complete")
+}
+
+func getUrls(target string) (c []*url.URL) {
+	if strings.HasPrefix(target, "http") {
+		u, err := url.Parse(target)
+		if err == nil {
+			c = append(c, u)
+		}
+
+		return
+	}
+
+	if !strings.HasPrefix(target, "http://") {
+		u, err := url.Parse("http://" + target)
+		if err == nil {
+			c = append(c, u)
+		}
+	}
+
+	if !strings.HasPrefix(target, "https://") {
+		u, err := url.Parse("https://" + target)
+		if err == nil {
+			c = append(c, u)
+		}
+	}
+
+	return
 }

@@ -64,6 +64,10 @@ func readFile() {
 
 	var toolList []tool.ToolInterface
 	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
+	var i interface{}
+	for _, t := range toolList {
+		t.Configure(i)
+	}
 
 	scanner := loadTargetFile()
 	for scanner.Scan() {
@@ -199,35 +203,26 @@ func scanDomain(domain string) {
 		}
 	}
 
+	filepath := UserHomeDir + "/.yelaa/osint.domains.txt"
 	httpx := tool.Httpx{}
 	httpxConfig := make(map[string]interface{})
-	httpxConfig["subdomainsFilename"] = UserHomeDir + "/.yelaa/domains.txt"
+	httpxConfig["input"] = UserHomeDir + "/.yelaa/domains.txt"
+	httpxConfig["output"] = filepath
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 	httpx.Run("")
 
-	color.Cyan("Running Gowitness")
-	tool.Gowitness(UserHomeDir + "/.yelaa/domains.txt")
+	gw := tool.Gowitness{}
+	gwConfig := make(map[string]interface{})
+	gwConfig["file"] = filepath
+	gw.Info("")
+	gw.Configure(gwConfig)
+	gw.Run("")
 
 	subdomainsFile.Close()
 	ipsFile.Close()
 	getSubDomainCrt.Close()
 }
-
-/*
-func NewGobuster(opts *Options, plugin GobusterPlugin) (*Gobuster, error) {
-	var g Gobuster
-	g.Opts = opts
-	g.plugin = plugin
-	g.RequestsCountMutex = new(sync.RWMutex)
-	g.resultChan = make(chan Result)
-	g.errorChan = make(chan error)
-	g.LogInfo = log.New(os.Stdout, "", log.LstdFlags)
-	g.LogError = log.New(os.Stderr, "[ERROR] ", log.LstdFlags)
-
-	return &g, nil
-}
-*/
 
 func main() {
 	version := figure.NewColorFigure("Yelaa 1.4.0", "", "cyan", true)
@@ -235,7 +230,7 @@ func main() {
 
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
-		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
+		Short: "It will run Nuclei templates, dirsearch and more.",
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -282,16 +277,22 @@ func main() {
 				return
 			}
 
-			color.Cyan("Running httpx to find http servers")
-			tool.Httpx(targetPath)
+			UserHomeDir, _ := os.UserHomeDir()
+			filepath := UserHomeDir + "/.yelaa/checkAndScreen.txt"
+			httpx := tool.Httpx{}
+			httpxConfig := make(map[string]interface{})
+			httpxConfig["input"] = targetPath
+			httpxConfig["output"] = filepath
+			httpx.Info("")
+			httpx.Configure(httpxConfig)
+			httpx.Run("")
 
-			UserHomeDir, err := os.UserHomeDir()
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			color.Cyan("Running gowitness on server found by httpx")
-			tool.Gowitness(UserHomeDir + "/.yelaa/checkAndScreen.txt")
+			gw := tool.Gowitness{}
+			gwConfig := make(map[string]interface{})
+			gwConfig["file"] = filepath
+			gw.Info("")
+			gw.Configure(gwConfig)
+			gw.Run("")
 		},
 	}
 
