@@ -134,6 +134,17 @@ func checkProxy() {
 	}
 }
 
+func createYelaaFolder() {
+	UserHomeDir, _ := os.UserHomeDir()
+
+	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
+		color.Cyan("Creating ~/.yelaa folder")
+		if err = os.Mkdir(UserHomeDir+"/.yelaa", 0755); err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
 
@@ -174,13 +185,6 @@ func scanDomain(domain string) {
 	var domainBuffer bytes.Buffer
 	UserHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println(err)
-	}
-
-	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
-		fmt.Println("take care folder already exist")
-	}
-	if err = os.Mkdir(UserHomeDir+"/.yelaa", 0755); err != nil {
 		fmt.Println(err)
 	}
 
@@ -327,6 +331,7 @@ func main() {
 	var rootCmd = createDirectories
 
 	rootCmd.AddCommand(cmdScan, cmdOsint, checkAndScreen)
+
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
@@ -339,6 +344,8 @@ func main() {
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
 	checkAndScreen.Flags().StringVarP(&targetPath, "list", "l", "", "list of ips/domains")
+
+	createYelaaFolder()
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
