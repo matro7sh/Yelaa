@@ -35,11 +35,6 @@ type folder struct {
 	children []folder
 }
 
-func commandExists(cmd string) bool {
-	_, err := exec.LookPath(cmd)
-	return err == nil
-}
-
 type FileScanner struct {
 	io.Closer
 	*bufio.Scanner
@@ -65,10 +60,14 @@ func loadTargetFile() *FileScanner {
 }
 
 func readFile() {
-
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
-	var websites []string
+	var toolList []tool.ToolInterface
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
+	var i interface{}
+	for _, t := range toolList {
+		t.Configure(i)
+	}
 
 	scanner := loadTargetFile()
 	for scanner.Scan() {
@@ -78,19 +77,11 @@ func readFile() {
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
 		}
-		websites = append(websites, website)
 
-		color.Cyan("Looking for robots.txt on: %s", website)
-		tool.GetRobot(website)
-
-		color.Cyan("Looking for sitemap.xml on: %s ", website)
-		tool.GetSitemap(website)
-
-		color.Cyan("Running Dirsearch on %s", website)
-		tool.Dirsearch(website)
-
-		color.Cyan("Running Nuclei on %s", website)
-		tool.Nuclei(website)
+		color.Cyan("Running tools on %s", website)
+		for _, t := range toolList {
+			t.Run(website)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -143,6 +134,17 @@ func checkProxy() {
 	}
 }
 
+func createYelaaFolder() {
+	UserHomeDir, _ := os.UserHomeDir()
+
+	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
+		color.Cyan("Creating ~/.yelaa folder")
+		if err = os.Mkdir(UserHomeDir+"/.yelaa", 0755); err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
 
@@ -161,24 +163,30 @@ func scanDomain(domain string) {
 		fmt.Printf("%s", err)
 	}
 
-	color.Cyan("Searching for subdomains with subfinder")
-	color.Yellow("[!] Subfinder only run passive recon on domain, it may not find all the subdomains !")
-	tool.Subfinder(domain, subdomainsFile.Name())
+	sf := tool.Subfinder{}
+	configuration := make(map[string]interface{})
+	configuration["filename"] = subdomainsFile.Name()
+	sf.Info("")
+	sf.Configure(configuration)
+	sf.Run(domain)
 
 	color.Cyan("Make request to crt.sh on domain")
 	tool.Crt(domain, getSubDomainCrt.Name())
 
-	color.Cyan("Running dnsx on subdomains to find IP address")
-	tool.Dnsx(subdomainsFile.Name(), ipsFile.Name())
+	dnsx := tool.Dnsx{}
+	dnsxConfig := make(map[string]interface{})
+	dnsxConfig["subdomainsFilename"] = subdomainsFile.Name()
+	dnsxConfig["ipsFilename"] = ipsFile.Name()
+	dnsx.Info("")
+	dnsx.Configure(dnsxConfig)
+	dnsx.Run("")
 
 	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
 	UserHomeDir, err := os.UserHomeDir()
-
-	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
-		fmt.Println("take care folder already exist")
+	if err != nil {
+		fmt.Println(err)
 	}
-	err = os.Mkdir(UserHomeDir+"/.yelaa", 0755)
 
 	for _, file := range domainsFiles {
 		newDomain, err := ioutil.ReadFile(file)
@@ -199,11 +207,21 @@ func scanDomain(domain string) {
 		}
 	}
 
-	color.Cyan("Running httpx to find http servers")
-	tool.Httpx(UserHomeDir + "/.yelaa/domains.txt")
+	filepath := UserHomeDir + "/.yelaa/osint.domains.txt"
+	httpx := tool.Httpx{}
+	httpxConfig := make(map[string]interface{})
+	httpxConfig["input"] = UserHomeDir + "/.yelaa/domains.txt"
+	httpxConfig["output"] = filepath
+	httpx.Info("")
+	httpx.Configure(httpxConfig)
+	httpx.Run("")
 
-	color.Cyan("Running Gowitness")
-	tool.Gowitness(UserHomeDir + "/.yelaa/domains.txt")
+	gw := tool.Gowitness{}
+	gwConfig := make(map[string]interface{})
+	gwConfig["file"] = filepath
+	gw.Info("")
+	gw.Configure(gwConfig)
+	gw.Run("")
 
 	subdomainsFile.Close()
 	ipsFile.Close()
@@ -211,13 +229,12 @@ func scanDomain(domain string) {
 }
 
 func main() {
-
-	version := figure.NewColorFigure("Yelaa 1.3.2", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.4.0", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
-		Short: "It will run Nuclei templates, sslscan, dirsearch and more.",
+		Short: "It will run Nuclei templates, dirsearch and more.",
 		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -264,16 +281,22 @@ func main() {
 				return
 			}
 
-			color.Cyan("Running httpx to find http servers")
-			tool.Httpx(targetPath)
+			UserHomeDir, _ := os.UserHomeDir()
+			filepath := UserHomeDir + "/.yelaa/checkAndScreen.txt"
+			httpx := tool.Httpx{}
+			httpxConfig := make(map[string]interface{})
+			httpxConfig["input"] = targetPath
+			httpxConfig["output"] = filepath
+			httpx.Info("")
+			httpx.Configure(httpxConfig)
+			httpx.Run("")
 
-			UserHomeDir, err := os.UserHomeDir()
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			color.Cyan("Running gowitness on server found by httpx")
-			tool.Gowitness(UserHomeDir + "/.yelaa/checkAndScreen.txt")
+			gw := tool.Gowitness{}
+			gwConfig := make(map[string]interface{})
+			gwConfig["file"] = filepath
+			gw.Info("")
+			gw.Configure(gwConfig)
+			gw.Run("")
 		},
 	}
 
@@ -308,6 +331,7 @@ func main() {
 	var rootCmd = createDirectories
 
 	rootCmd.AddCommand(cmdScan, cmdOsint, checkAndScreen)
+
 	rootCmd.Flags().StringVarP(&client, "client", "c", "", "Client name")
 	rootCmd.Flags().StringVarP(&shared, "shared", "s", "", "path to shared folder")
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
@@ -320,6 +344,8 @@ func main() {
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
 	checkAndScreen.Flags().StringVarP(&targetPath, "list", "l", "", "list of ips/domains")
+
+	createYelaaFolder()
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)

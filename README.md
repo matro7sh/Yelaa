@@ -6,7 +6,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 You need to have theses binaries in your path:
 ```
-gobuster, nuclei, subfinder, dnsx, httpx, gowitness
+nuclei, google-chrome
 ```
 
 # How to install
