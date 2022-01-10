@@ -16,23 +16,26 @@ func (s *Robot) Info(website string) {
 
 func (g *Robot) Configure(c interface{}) {}
 
-func (g *Robot) Run(website string) {
-	resp, err := http.Get(website + "robots.txt")
-	if err != nil {
-		fmt.Printf("%v", err)
-	}
-
-	if resp != nil && resp.StatusCode != http.StatusNotFound {
-		body, err := ioutil.ReadAll(resp.Body)
+func (g *Robot) Run(domain string) {
+	for _, u := range getUrls(domain) {
+		resp, err := http.Get(fmt.Sprint(u, "/robots.txt"))
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
-		sb := string(body)
-		color.Green(sb)
 
-	} else {
-		color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
+		if resp != nil && resp.StatusCode != http.StatusNotFound {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Printf("%v", err)
+			}
+			sb := string(body)
+			color.Green(sb)
+
+		} else {
+			color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
+		}
 	}
+
 }
 
 var _ ToolInterface = (*Robot)(nil)

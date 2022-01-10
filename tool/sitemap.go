@@ -18,32 +18,34 @@ func (s *Sitemap) Info(website string) {
 
 func (s *Sitemap) Configure(c interface{}) {}
 
-func (s *Sitemap) Run(website string) {
-	resp, err := http.Get(website + "sitemap.xml")
+func (s *Sitemap) Run(domain string) {
+	for _, u := range getUrls(domain) {
+		resp, err := http.Get(fmt.Sprint(u, "/sitemap.xml"))
 
-	if err != nil {
-		fmt.Printf("%v", err)
-	}
-
-	if resp != nil && resp.StatusCode != http.StatusNotFound {
-		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Printf("%v", err)
 		}
 
-		for headerName, headerValue := range resp.Header {
-			if contains(GlobalHeaders, headerName) {
-				//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
-				fmt.Printf("Found Header: %s | %s \n", headerName, headerValue)
-			} else {
-				// fmt.Println("sorry no headers in global headers variable")
+		if resp != nil && resp.StatusCode != http.StatusNotFound {
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Printf("%v", err)
 			}
-		}
-		sb := string(body)
-		color.Green(sb)
 
-	} else {
-		color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
+			for headerName, headerValue := range resp.Header {
+				if contains(GlobalHeaders, headerName) {
+					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
+					fmt.Printf("Found Header: %s | %s \n", headerName, headerValue)
+				} else {
+					// fmt.Println("sorry no headers in global headers variable")
+				}
+			}
+			sb := string(body)
+			color.Green(sb)
+
+		} else {
+			color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
+		}
 	}
 }
 

@@ -22,7 +22,7 @@ func (s *GoBuster) Info(website string) {
 func (g *GoBuster) Configure(c interface{}) {
 	g.optDir = gobusterdir.NewOptionsDir()
 	g.optDir.StatusCodesBlacklistParsed.Add(404)
-	g.opts = &libgobuster.Options{Threads: 2, Wordlist: "yelaa.txt"}
+	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt"}
 }
 
 func (g *GoBuster) Run(website string) {
