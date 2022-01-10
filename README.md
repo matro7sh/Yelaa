@@ -52,11 +52,11 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 ``` 
 Yelaa -h
- __   __         _                     _       _____       ____
- \ \ / /   ___  | |   __ _    __ _    / |     |___ /      |___ \
-  \ V /   / _ \ | |  / _` |  / _` |   | |       |_ \        __) |
-   | |   |  __/ | | | (_| | | (_| |   | |  _   ___) |  _   / __/
-   |_|    \___| |_|  \__,_|  \__,_|   |_| (_) |____/  (_) |_____|
+ __   __         _                  
+ \ \ / /   ___  | |   __ _    __ _ 
+  \ V /   / _ \ | |  / _` |  / _` |
+   | |   |  __/ | | | (_| | | (_| |
+   |_|    \___| |_|  \__,_|  \__,_|
 Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 Usage:
