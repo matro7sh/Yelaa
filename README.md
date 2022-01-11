@@ -46,7 +46,7 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 ## How to run httpx then gowitness
 
-`Yelaa checkAndScreen -l domains.txt`
+`Yelaa checkAndScreen -t domains.txt`
 
 ## Help 
 
