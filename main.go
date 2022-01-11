@@ -269,7 +269,7 @@ func main() {
 	}
 
 	var checkAndScreen = &cobra.Command{
-		Use:   "checkAndScreen -l list_of_ip.txt",
+		Use:   "checkAndScreen -t list_of_ip.txt",
 		Short: "Run httpx and gowitness",
 		Long:  "Run httpx on each IP and take screenshots of each server that are up",
 		Args:  cobra.MaximumNArgs(1),
@@ -343,7 +343,7 @@ func main() {
 	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
-	checkAndScreen.Flags().StringVarP(&targetPath, "list", "l", "", "list of ips/domains")
+	checkAndScreen.Flags().StringVarP(&targetPath, "target", "t", "", "list of ips/domains")
 
 	createYelaaFolder()
 
