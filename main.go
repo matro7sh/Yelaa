@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"runtime"
 	"strings"
 	"time"
 
@@ -134,6 +135,25 @@ func checkProxy() {
 	}
 }
 
+func openbrowser(url string) {
+	var err error
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", "https://www.google.com/search?q=site:"+domain+"+ext:doc+OR+ext:docx+OR+ext:csv+OR+ext:pdf+OR+ext:txt+OR+ext:log+OR+ext:bak").Start()
+	case "windows":
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+	if err != nil {
+		fmt.Println(err)
+	}
+
+}
+
 func createYelaaFolder() {
 	UserHomeDir, _ := os.UserHomeDir()
 
@@ -253,6 +273,9 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			checkProxy()
 
+			fmt.Println("GANG", domain)
+			openbrowser("https://" + domain)
+
 			if targetPath == "" {
 				scanDomain(domain)
 				return
@@ -265,6 +288,7 @@ func main() {
 				targetDomain := scanner.Text()
 				scanDomain(targetDomain)
 			}
+
 		},
 	}
 
