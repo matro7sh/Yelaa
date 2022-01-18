@@ -4,7 +4,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-You need to have theses binaries in your path:
+You need to have these binaries in your path:
 ```
 nuclei, google-chrome
 ```
@@ -25,7 +25,7 @@ go install github.com/CMEPW/Yelaa@latest
 ```
 
 # How to use 
->-s is optionnal
+>-s is optional
 You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run scan 
@@ -81,7 +81,7 @@ Use "create [command] --help" for more information about a command.
 
 ``` 
 
->this script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
+> This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
 
 # Contributors
 

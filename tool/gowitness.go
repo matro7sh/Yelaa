@@ -88,7 +88,7 @@ func (g *Gowitness) Run(_ string) {
 				}
 
 				if err := p.Gowitness(); err != nil {
-					log.Error().Err(err).Str("url", url.String()).Msg("failed to witness url")
+					log.Error().Err(err).Str("url", url.String()).Msg("failed to gowitness url")
 				}
 			}(u)
 		}
