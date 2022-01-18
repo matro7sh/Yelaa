@@ -9,4 +9,4 @@ install:
 	# go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
 compile:
-	go build main.go
+	go build -o Yelaa main.go

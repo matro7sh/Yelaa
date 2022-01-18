@@ -3,6 +3,8 @@ package tool
 import (
 	"context"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/OJ/gobuster/v3/cli"
 	"github.com/OJ/gobuster/v3/gobusterdir"
@@ -22,11 +24,15 @@ func (s *GoBuster) Info(website string) {
 func (g *GoBuster) Configure(c interface{}) {
 	g.optDir = gobusterdir.NewOptionsDir()
 	g.optDir.StatusCodesBlacklistParsed.Add(404)
+	g.optDir.NoTLSValidation = true
+	g.optDir.Method = "GET"
+	g.optDir.Timeout = time.Second * 10
+	g.optDir.WildcardForced = true
 	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt"}
 }
 
 func (g *GoBuster) Run(website string) {
-	g.optDir.URL = website
+	g.optDir.URL = strings.TrimSuffix(website, "/")
 	ctx := context.Background()
 
 	d, _ := gobusterdir.NewGobusterDir(ctx, g.opts, g.optDir)

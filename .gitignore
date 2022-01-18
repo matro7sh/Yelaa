@@ -1,2 +1,11 @@
+# Target files
 ./targets.txt
 targets.txt
+target.txt
+
+# IDE
+.vscode
+.idea
+
+# Binary
+yelaa
