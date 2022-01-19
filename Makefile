@@ -16,4 +16,4 @@ install: ## install necessary dependencies
 
 .PHONY: compile
 compile: ## compile the project
-	go build main.go
+	go build -o Yelaa main.go

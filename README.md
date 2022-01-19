@@ -4,7 +4,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-You need to have theses binaries in your path:
+You need to have these binaries in your path:
 ```
 nuclei, google-chrome
 ```
@@ -25,12 +25,12 @@ go install github.com/CMEPW/Yelaa@latest
 ```
 
 # How to use 
->-s is optionnal
+>-s is optional
 You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run scan 
 
-`Yelaa scan -target <PathToTargetFile>`
+`Yelaa scan -t <PathToTargetFile>`
 
 ## Use http proxy
 
@@ -81,10 +81,10 @@ Use "create [command] --help" for more information about a command.
 
 ``` 
 
->this script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
+> This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
 
 # Contributors
 
-[darkweak](https://github.com/darkweak)
-[jenaye](https://github.com/jenaye)
-[jarrault](https://github.com/jarrault)
+| [<img src="https://github.com/darkweak.png?size=85" width=85><br><sub>Darkweak</sub>](https://github.com/darkweak) | [<img src="https://github.com/jenaye.png?size=85" width=85><br><sub>Mike Houziaux</sub>](https://github.com/jenaye) | [<img src="https://github.com/jarrault.png?size=85" width=85><br><sub>Julien</sub>](https://github.com/jarrault) | [<img src="https://github.com/TomChv.png?size=85" width=85><br><sub>Tom Chauveau</sub>](https://github.com/TomChv)
+| :---: | :---: | :---: | :---: | 
+

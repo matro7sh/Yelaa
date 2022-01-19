@@ -1,9 +1,11 @@
 package tool
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -16,9 +18,13 @@ func (s *Sitemap) Info(website string) {
 	color.Cyan("Looking for sitemap.xml on: %s ", website)
 }
 
-func (s *Sitemap) Configure(c interface{}) {}
+func (s *Sitemap) Configure(c interface{}) {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+}
 
 func (s *Sitemap) Run(domain string) {
+	domain = strings.TrimSuffix(domain, "/")
+
 	for _, u := range getUrls(domain) {
 		resp, err := http.Get(fmt.Sprint(u, "/sitemap.xml"))
 

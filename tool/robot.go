@@ -1,9 +1,11 @@
 package tool
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -14,9 +16,14 @@ func (s *Robot) Info(website string) {
 	color.Cyan("Looking for robots.txt on: %s", website)
 }
 
-func (g *Robot) Configure(c interface{}) {}
+func (g *Robot) Configure(c interface{}) {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+}
 
 func (g *Robot) Run(domain string) {
+
+	domain = strings.TrimSuffix(domain, "/")
+
 	for _, u := range getUrls(domain) {
 		resp, err := http.Get(fmt.Sprint(u, "/robots.txt"))
 		if err != nil {
