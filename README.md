@@ -30,7 +30,7 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run scan 
 
-`Yelaa scan -target <PathToTargetFile>`
+`Yelaa scan -t <PathToTargetFile>`
 
 ## Use http proxy
 
