@@ -6,8 +6,6 @@ builds:
     ldflags:
       - -s -w
   ignore:
-    - goos: freebsd
-      goarch: arm64
     - goos: windows
       goarch: arm
     - goos: windows

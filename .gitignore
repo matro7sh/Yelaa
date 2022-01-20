@@ -7,5 +7,6 @@ target.txt
 .vscode
 .idea
 
-# Binary
+# Build files
+dist/
 yelaa
