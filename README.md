@@ -24,10 +24,10 @@ Or if you have set your GO path and all the requirements installed :
 go install github.com/CMEPW/Yelaa@latest
 ```
 
-Using Docker:
+In a Docker-container:
 ```bash
-make docker # or `docker build . -t yelaa-local`
-docker run -v $PWD:/mnt/ yelaa-local scan -t /mnt/target.txt
+make docker
+docker run -v $PWD:/mnt/ yelaa scan -t /mnt/target.txt
 ```
 
 # How to use

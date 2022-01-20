@@ -13,7 +13,6 @@ help:
 
 .PHONY: install
 install: ## install necessary dependencies
-
 	go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 	# go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 	# go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
@@ -25,7 +24,7 @@ compile: ## compile the project
 
 .PHONY: docker
 docker: ## Builds a docker image from source
-	docker build . -t yelaa-local
+	docker build -t yelaa .
 
 .PHONY: clean
 clean: ## Cleans up the project

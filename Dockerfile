@@ -1,7 +1,7 @@
 ##
 ## Step 1 - Get dependencies
 ##
-FROM golang:1.16-alpine as otp-builder
+FROM golang:1.16-alpine as builder
 
 WORKDIR /build
 
@@ -19,16 +19,20 @@ RUN go mod download && \
 ##
 ## Step 2 - Build lean container
 ##
-FROM alpine:latest
+FROM golang:1.17.6-alpine
 
 WORKDIR /app
 
-COPY --from=otp-builder /build/yelaa.txt .
-COPY --from=otp-builder /build/Yelaa .
+# Installing runtime dependencies
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add --no-cache bind-tools ca-certificates chromium && \
+    go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 
-# Enabling run permissions
-RUN adduser -D yelaa_user && \
-    chown -R yelaa_user: /app/Yelaa
+COPY --from=builder /build/yelaa.txt .
+COPY --from=builder /build/Yelaa .
+
+RUN adduser -D yelaa_user && chown -R yelaa_user: /app/Yelaa
 USER yelaa_user
 
 # Example command:
