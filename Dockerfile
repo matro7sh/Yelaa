@@ -9,8 +9,7 @@ RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache \
     make \
-    build-base \
-    inotify-tools
+    build-base
 
 COPY . .
 
@@ -32,4 +31,6 @@ RUN adduser -D yelaa_user && \
     chown -R yelaa_user: /app/Yelaa
 USER yelaa_user
 
+# Example command:
+# docker run -v $PWD:/mnt/ yelaa-local scan -t /mnt/target.txt
 ENTRYPOINT [ "/app/Yelaa" ]
