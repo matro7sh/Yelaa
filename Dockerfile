@@ -35,6 +35,4 @@ COPY --from=builder /build/Yelaa .
 RUN adduser -D yelaa_user && chown -R yelaa_user: /app/Yelaa
 USER yelaa_user
 
-# Example command:
-# docker run -v $PWD:/mnt/ yelaa-local scan -t /mnt/target.txt
 ENTRYPOINT [ "/app/Yelaa" ]

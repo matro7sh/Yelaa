@@ -27,7 +27,11 @@ go install github.com/CMEPW/Yelaa@latest
 In a Docker-container:
 ```bash
 make docker
-docker run -v $PWD:/mnt/ yelaa scan -t /mnt/target.txt
+docker run \
+    --security-opt seccomp=chrome.json \
+    -v $PWD:/home/yelaa_user \
+    yelaa-local \
+    checkAndScreen -t /home/yelaa_user/targets.txt
 ```
 
 # How to use
