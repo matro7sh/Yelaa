@@ -28,7 +28,7 @@ In a Docker-container:
 ```bash
 make docker
 docker run \
-    --security-opt seccomp=chrome.json \
+    --security-opt seccomp=unconfined \
     -v $PWD:/home/yelaa_user \
     yelaa-local \
     checkAndScreen -t /home/yelaa_user/targets.txt
