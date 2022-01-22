@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CMEPW/Yelaa/helper"
 	"github.com/fatih/color"
 	"github.com/remeh/sizedwaitgroup"
 	"github.com/rs/zerolog"
@@ -18,9 +19,8 @@ import (
 )
 
 var (
-	chrm           = chrome.NewChrome()
-	db             = storage.NewDb()
-	UserHomeDir, _ = os.UserHomeDir()
+	chrm = chrome.NewChrome()
+	db   = storage.NewDb()
 )
 
 type Gowitness struct {
@@ -42,7 +42,7 @@ func (g *Gowitness) Configure(config interface{}) {
 
 	g.file = config.(map[string]interface{})["file"].(string)
 
-	g.screenshotPath = UserHomeDir + "/.yelaa/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
+	g.screenshotPath = helper.YelaaPath + "/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
 
 	if _, err := os.Stat(g.screenshotPath); os.IsNotExist(err) {
 		if err = os.Mkdir(g.screenshotPath, 0750); err != nil {
@@ -62,7 +62,7 @@ func (g *Gowitness) Run(_ string) {
 	scanner := bufio.NewScanner(f)
 	defer f.Close()
 
-	db.Path = UserHomeDir + "/.yelaa/gowitness.sqlite3"
+	db.Path = helper.YelaaPath + "/gowitness.sqlite3"
 	db, _ := db.Get()
 
 	for scanner.Scan() {
