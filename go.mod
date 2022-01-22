@@ -26,7 +26,6 @@ require (
 	github.com/rs/zerolog v1.23.0
 	github.com/sensepost/gowitness v0.0.0-20210807140749-38b57db38ae5
 	github.com/spf13/cobra v1.3.0
-	github.com/stretchr/testify v1.7.0
 	github.com/tj/go-update v2.2.5-0.20200519121640-62b4b798fd68+incompatible
 	go.uber.org/ratelimit v0.2.0
 	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
