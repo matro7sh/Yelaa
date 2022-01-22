@@ -42,8 +42,6 @@ func (s *Sitemap) Run(domain string) {
 				if contains(GlobalHeaders, headerName) {
 					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
 					fmt.Printf("Found Header: %s | %s \n", headerName, headerValue)
-				} else {
-					// fmt.Println("sorry no headers in global headers variable")
 				}
 			}
 			sb := string(body)
