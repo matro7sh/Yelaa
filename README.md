@@ -15,7 +15,6 @@ Manually :
 ```bash
 git clone https://github.com/CMEPW/Yelaa.git
 cd Yelaa
-make install
 make compile
 ```
 
