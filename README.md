@@ -4,9 +4,9 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-You need to have these binaries in your path:
+You need to have the chrome binary in your path:
 ```
-nuclei, google-chrome
+google-chrome
 ```
 
 # How to install
