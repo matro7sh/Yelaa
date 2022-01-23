@@ -25,7 +25,13 @@ go install github.com/CMEPW/Yelaa@latest
 
 In a Docker-container:
 ```bash
+# Build docker container
 make docker
+
+# create a file with your target
+echo "Some web addresses..." > targets.txt
+
+# run the container like so
 docker run \
     --security-opt seccomp=unconfined \
     -v $PWD:/home/yelaa_user \
