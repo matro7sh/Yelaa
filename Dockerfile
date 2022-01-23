@@ -33,8 +33,9 @@ RUN apk update --no-cache && \
 COPY --from=builder /build/yelaa.txt .
 COPY --from=builder /build/Yelaa .
 
-RUN addgroup -S --gid $GROUP_ID yelaa_user && \
-    adduser --uid $USER_ID -S -G yelaa_user yelaa_user && \
+RUN echo "gid: ${GROUP_ID} -- uid: ${USER_ID}"
+RUN addgroup --gid $GROUP_ID -S yelaa_user && \
+    adduser -S --uid $USER_ID -G yelaa_user yelaa_user && \
     chown -R yelaa_user: /app/Yelaa
 USER yelaa_user
 
