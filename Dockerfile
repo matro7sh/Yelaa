@@ -20,6 +20,9 @@ RUN make
 ##
 FROM golang:1.17.6-alpine
 
+ARG USER_ID
+ARG GROUP_ID
+
 WORKDIR /app
 
 # Installing runtime dependencies
@@ -29,5 +32,10 @@ RUN apk update --no-cache && \
 
 COPY --from=builder /build/yelaa.txt .
 COPY --from=builder /build/Yelaa .
+
+RUN addgroup -S --gid $GROUP_ID yelaa_user && \
+    adduser --uid $USER_ID -S -G yelaa_user yelaa_user && \
+    chown -R yelaa_user: /app/Yelaa
+USER yelaa_user
 
 ENTRYPOINT [ "/app/Yelaa" ]

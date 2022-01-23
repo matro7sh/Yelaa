@@ -13,12 +13,14 @@ help:
 
 .PHONY: compile
 compile: ## compile the project
-	go build -o $(TARGET) $(SRC)
+	@go build -o $(TARGET) $(SRC)
 
 .PHONY: docker
 docker: ## Builds a docker image from source
-	mkdir -p .yelaa .cache .pki
-	docker build -t yelaa .
+	@docker build -t yelaa \
+		--build-arg USER_ID=$$(id -u) \
+		--build-arg GROUP_ID=$$(id -g) \
+		.
 
 .PHONY: clean
 clean: ## Cleans up the project
