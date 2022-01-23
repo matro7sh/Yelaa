@@ -21,8 +21,8 @@ compile: ## compile the project
 .PHONY: docker
 docker: ## Builds a docker image from source
 	@docker build -t yelaa \
-		--build-arg USER_ID=$$(id -u) \
-		--build-arg GROUP_ID=$$(id -g) \
+		--build-arg USER_ID=$(USER_ID) \
+		--build-arg GROUP_ID=$(GROUP_ID) \
 		.
 
 .PHONY: clean
