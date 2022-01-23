@@ -11,3 +11,8 @@ target.txt
 dist/
 Yelaa
 out.tar
+
+# Out files
+.yelaa
+.pki
+.cache

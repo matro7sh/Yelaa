@@ -4,9 +4,9 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-You need to have these binaries in your path:
+You need to have the chrome binary in your path:
 ```
-nuclei, google-chrome
+google-chrome
 ```
 
 # How to install
@@ -15,7 +15,6 @@ Manually :
 ```bash
 git clone https://github.com/CMEPW/Yelaa.git
 cd Yelaa
-make install
 make compile
 ```
 
@@ -30,7 +29,7 @@ make docker
 docker run \
     --security-opt seccomp=unconfined \
     -v $PWD:/home/yelaa_user \
-    yelaa-local \
+    yelaa \
     checkAndScreen -t /home/yelaa_user/targets.txt
 ```
 
