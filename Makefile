@@ -1,10 +1,14 @@
 
 TARGET 		= Yelaa
-
 SRC 		= main.go
 
-GROUP_ID 	= $$(id -g || echo "1000") # id should be on every machine,
-USER_ID 	= $$(id -u || echo "1000") # this is just here so that github actions can run
+GROUP_ID 	= $$(id -g)
+USER_ID 	= $$(id -u)
+
+ifndef GROUP_ID
+	override GROUP_ID = "1000"
+	override USER_ID = "1000"
+endif
 
 .PHONY: all
 all: compile
