@@ -30,7 +30,4 @@ RUN apk update --no-cache && \
 COPY --from=builder /build/yelaa.txt .
 COPY --from=builder /build/Yelaa .
 
-RUN adduser -D yelaa_user && chown -R yelaa_user: /app/Yelaa
-USER yelaa_user
-
 ENTRYPOINT [ "/app/Yelaa" ]

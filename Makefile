@@ -17,6 +17,7 @@ compile: ## compile the project
 
 .PHONY: docker
 docker: ## Builds a docker image from source
+	mkdir -p .yelaa .cache .pki
 	docker build -t yelaa .
 
 .PHONY: clean
