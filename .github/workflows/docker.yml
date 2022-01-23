@@ -15,6 +15,6 @@ jobs:
       uses: actions/checkout@v1
 
     - name: build container
-      run: docker build . -t yelaa
+      run: docker build -t yelaa --build-arg USER_ID=0 --build-arg GROUP_ID=0 .
 
     ## TODO push to docker registry from here, once dockerHub is set up

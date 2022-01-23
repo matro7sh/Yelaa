@@ -5,11 +5,6 @@ SRC 		= main.go
 GROUP_ID 	= $$(id -g)
 USER_ID 	= $$(id -u)
 
-ifndef GROUP_ID
-	override GROUP_ID = "1000"
-	override USER_ID = "1000"
-endif
-
 .PHONY: all
 all: compile
 
