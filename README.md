@@ -23,11 +23,27 @@ Or if you have set your GO path and all the requirements installed :
 go install github.com/CMEPW/Yelaa@latest
 ```
 
-# How to use 
+In a Docker-container:
+```bash
+# Build docker container
+make docker
+
+# create a file with your target
+echo "Some web addresses..." > targets.txt
+
+# run the container like so
+docker run \
+    --security-opt seccomp=unconfined \
+    -v $PWD:/home/yelaa_user \
+    yelaa \
+    checkAndScreen -t /home/yelaa_user/targets.txt
+```
+
+# How to use
 >-s is optional
 You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
-## How to run scan 
+## How to run scan
 
 `Yelaa scan -t <PathToTargetFile>`
 
@@ -47,12 +63,12 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 `Yelaa checkAndScreen -t domains.txt`
 
-## Help 
+## Help
 
-``` 
+```
 Yelaa -h
- __   __         _                  
- \ \ / /   ___  | |   __ _    __ _ 
+ __   __         _
+ \ \ / /   ___  | |   __ _    __ _
   \ V /   / _ \ | |  / _` |  / _` |
    | |   |  __/ | | | (_| | | (_| |
    |_|    \___| |_|  \__,_|  \__,_|
@@ -78,12 +94,11 @@ Flags:
 
 Use "create [command] --help" for more information about a command.
 
-``` 
+```
 
 > This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
 
 # Contributors
 
-| [<img src="https://github.com/darkweak.png?size=85" width=85><br><sub>Darkweak</sub>](https://github.com/darkweak) | [<img src="https://github.com/jenaye.png?size=85" width=85><br><sub>Mike Houziaux</sub>](https://github.com/jenaye) | [<img src="https://github.com/jarrault.png?size=85" width=85><br><sub>Julien</sub>](https://github.com/jarrault) | [<img src="https://github.com/TomChv.png?size=85" width=85><br><sub>Tom Chauveau</sub>](https://github.com/TomChv)
-| :---: | :---: | :---: | :---: | 
-
+| [<img src="https://github.com/darkweak.png?size=85" width=85><br><sub>Darkweak</sub>](https://github.com/darkweak) | [<img src="https://github.com/jenaye.png?size=85" width=85><br><sub>Mike Houziaux</sub>](https://github.com/jenaye) | [<img src="https://github.com/jarrault.png?size=85" width=85><br><sub>Julien</sub>](https://github.com/jarrault) | [<img src="https://github.com/TomChv.png?size=85" width=85><br><sub>Tom Chauveau</sub>](https://github.com/TomChv) | [<img src="https://github.com/bogdzn.png?size=85" width=85><br><sub>bogdan</sub>](https://github.com/bogdzn)
+| :---: | :---: | :---: | :---: | :---: |

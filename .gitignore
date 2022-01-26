@@ -7,5 +7,12 @@ target.txt
 .vscode
 .idea
 
-# Binary
-yelaa
+# Build files
+dist/
+Yelaa
+nuclei-templates/
+
+# Out files
+.yelaa
+.pki
+.cache
