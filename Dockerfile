@@ -1,23 +1,19 @@
-##
-## Step 1 - Get dependencies
-##
 FROM golang:1.17.6-alpine as builder
 
-WORKDIR /build
-
+WORKDIR /root
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache \
     make \
     build-base
 
-COPY . .
+COPY go.mod .
+RUN go mod download
 
+COPY . .
 RUN make
 
-##
-## Step 2 - Build lean container
-##
+
 FROM golang:1.17.6-alpine
 
 ARG USER_ID
@@ -30,12 +26,12 @@ RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache bind-tools ca-certificates chromium
 
-COPY --from=builder /build/yelaa.txt .
-COPY --from=builder /build/Yelaa .
+COPY --from=builder /root/yelaa.txt .
+COPY --from=builder /root/Yelaa .
 
 RUN addgroup --gid $GROUP_ID -S yelaa_user && \
     adduser --uid $USER_ID -S -G yelaa_user yelaa_user && \
-    chown -R yelaa_user: /app/Yelaa
+    chown -R yelaa_user: /app
 USER yelaa_user
 
 ENTRYPOINT [ "/app/Yelaa" ]

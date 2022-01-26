@@ -11,10 +11,6 @@ import (
     "github.com/projectdiscovery/nuclei/v2/pkg/types"
 )
 
-var (
-    nuclei_template_path string
-)
-
 type Nuclei struct{}
 
 func runWrapper(opts types.Options) {
@@ -31,14 +27,15 @@ func runWrapper(opts types.Options) {
     r.Close()
 }
 
-func installTemplatesIfNeeded() {
-    if _, err := os.Stat(nuclei_template_path); os.IsNotExist(err) {
+func installTemplatesIfNeeded(path string) {
+    if _, err := os.Stat(path); os.IsNotExist(err) {
         color.Cyan("Installing nuclei templates...")
         opts := types.Options {
             Targets:        []string{"-update-templates"},
             NoInteractsh:   true,
         }
         runWrapper(opts)
+        color.Cyan("Restarting nuclei")
     }
 }
 
@@ -49,13 +46,13 @@ func (*Nuclei) Info(website string) {
 }
 
 func (*Nuclei) Run(website string) {
-    nuclei_template_path := filepath.Join(helper.GetHome(), "nuclei-templates")
-
+    templates_path := filepath.Join(helper.GetHome(), "nuclei-templates/")
     opts := types.Options{
-        TemplatesDirectory: nuclei_template_path,
+        TemplatesDirectory: templates_path,
         Targets:            []string{website},
         NoInteractsh:       true,
     }
-    installTemplatesIfNeeded()
+
+    installTemplatesIfNeeded(templates_path)
     runWrapper(opts)
 }

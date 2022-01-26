@@ -10,7 +10,7 @@ target.txt
 # Build files
 dist/
 Yelaa
-out.tar
+nuclei-templates/
 
 # Out files
 .yelaa
