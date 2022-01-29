@@ -6,7 +6,7 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 You need to have the chrome binary in your path:
 ```
-google-chrome
+google-chrome, assetfinder
 ```
 
 # How to install

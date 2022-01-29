@@ -21,6 +21,8 @@ ARG GROUP_ID
 
 WORKDIR /app
 
+RUN go get -u github.com/tomnomnom/assetfinder
+
 # Installing runtime dependencies
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
