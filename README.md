@@ -63,6 +63,14 @@ To run osint command on several domains run `Yelaa osint -t domains.txt`
 
 `Yelaa checkAndScreen -t domains.txt`
 
+## Low fruits : Infrastructure Penetration Testing
+
+`nmap -T4 -Pn -p 80,443,8080,8443 --open -oA EvilCorp-24 192.168.1.0/24`
+
+then `cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt` 
+
+Finaly `./Yelaa checkAndScreen -t ./web-targets.txt`
+
 ## Help
 
 ```
