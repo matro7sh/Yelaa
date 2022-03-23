@@ -39,6 +39,19 @@ docker run \
     checkAndScreen -t /home/yelaa_user/targets.txt
 ```
 
+In Kali:
+```bash
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+sudo  apt install ./google-chrome-stable_current_amd64.deb
+
+wget https://github.com/CMEPW/Yelaa/releases/download/v1.5.2/Yelaa_1.5.2_Linux_x86_64.tar.gz
+
+tar -xvf Yelaa_1.5.2_Linux_x86_64.tar.gz
+./Yelaa -h
+```
+
 # How to use
 >-s is optional
 You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
