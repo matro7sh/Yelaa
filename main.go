@@ -237,6 +237,7 @@ func main() {
 			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
 			checkProxy()
 			readFile()
+			tool.TmpRemover()
 		},
 	}
 
@@ -260,6 +261,7 @@ func main() {
 				targetDomain := scanner.Text()
 				scanDomain(targetDomain)
 			}
+			tool.TmpRemover()
 		},
 	}
 
@@ -291,6 +293,7 @@ func main() {
 			gw.Info("")
 			gw.Configure(gwConfig)
 			gw.Run("")
+			tool.TmpRemover()
 		},
 	}
 
@@ -319,6 +322,7 @@ func main() {
 			copyCherryTreeAndTargets()
 			out, _ := exec.Command("tree", baseDirectory).Output()
 			fmt.Println(string(out))
+			tool.TmpRemover()
 		},
 	}
 
