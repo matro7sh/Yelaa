@@ -164,9 +164,12 @@ func scanDomain(domain string) {
 	sf.Configure(configuration)
 	sf.Run(domain)
 
-	color.Cyan("Get sub domains using AssetFinder")
-	subdomainsAssetFinder := helper.YelaaPath + "/assetfinder.txt"
-	tool.Assetfinder(domain)
+    asf := tool.Assetfinder{}
+    asfCfg := make(map[string]interface{})
+    asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+    asf.Configure(asfCfg)
+    asf.Info("")
+    asf.Run(domain)
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -176,7 +179,7 @@ func scanDomain(domain string) {
 	dnsx.Configure(dnsxConfig)
 	dnsx.Run("")
 
-	domainsFiles := []string{subdomainsAssetFinder, subdomainsFile.Name(), ipsFile.Name()}
+	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
 
 	for _, file := range domainsFiles {
