@@ -1,4 +1,4 @@
-FROM golang:1.17.6-alpine as builder
+FROM golang:1.18-alpine as builder
 
 WORKDIR /root
 RUN apk update --no-cache && \
@@ -14,7 +14,7 @@ COPY . .
 RUN make
 
 
-FROM golang:1.17.6-alpine
+FROM golang:1.18-alpine
 
 ARG USER_ID
 ARG GROUP_ID
