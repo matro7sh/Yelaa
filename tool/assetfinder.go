@@ -1,21 +1,21 @@
 package tool
 
 import (
-    "fmt"
-    "sync"
-    "time"
+	"fmt"
+	"sync"
+	"time"
+    "os"
 
-    "github.com/fatih/color"
-    assetfinder "github.com/spiral-sec/assetfinder/scanner"
+	"github.com/fatih/color"
+	assetfinder "github.com/spiral-sec/assetfinder/scanner"
 
-    "github.com/CMEPW/Yelaa/helper"
+	"github.com/CMEPW/Yelaa/helper"
 )
 
 
 type fetchFn func(string) ([]string, error)
 
 type AssetfinderConfig struct {
-    subsOnly bool
     outfile string
     functions []fetchFn
 }
@@ -29,10 +29,13 @@ func (a *Assetfinder) Info(url string) {
     color.Cyan("Running Assetfinder on %s", url)
 }
 
-func (a *Assetfinder) Configure(c interface{}) {
-    a.opts.subsOnly = false
-    a.outfile = helper.YelaaPath + "/assetfinder.txt"
-    a.opts.functions = []fetchFn{
+func (a *Assetfinder) Configure(c interface{}) {}
+
+
+func (a *Assetfinder) Run(url string) {
+    var wg sync.WaitGroup
+    outfile := helper.YelaaPath + "/assetfinder.txt"
+    functions := []fetchFn{
         assetfinder.CertSpotter,
         assetfinder.HackerTarget,
         assetfinder.ThreatCrowd,
@@ -43,16 +46,11 @@ func (a *Assetfinder) Configure(c interface{}) {
         assetfinder.Urlscan,
         assetfinder.BufferOverrun,
     }
-}
-
-
-func (a *Assetfinder) Run(url string) {
-    var wg sync.WaitGroup
 
     rl := assetfinder.NewRateLimiter(time.Second)
     out := make(chan string)
 
-    for _, f := range a.opts.functions {
+    for _, f := range functions {
         wg.Add(1)
         fn := f
 
@@ -79,14 +77,19 @@ func (a *Assetfinder) Run(url string) {
     }()
 
     printed := make(map[string]bool)
+    file, err := os.OpenFile(outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+    if err != nil {
+        return
+    }
+    defer file.Close()
 
     for n := range out {
         if _, ok := printed[n]; ok {
             continue
         }
         printed[n] = true
-
         fmt.Println(n)
+        file.WriteString(n + string('\n'))
     }
 }
 
