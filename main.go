@@ -168,7 +168,7 @@ func scanDomain(domain string) {
     asfCfg := make(map[string]interface{})
     asfOutfile := helper.YelaaPath + "/assetfinder.txt"
     asf.Configure(asfCfg)
-    asf.Info("")
+    asf.Info(domain)
     asf.Run(domain)
 
 	dnsx := tool.Dnsx{}
