@@ -28,6 +28,12 @@ In a Docker-container:
 # Build docker container
 make docker
 
+# Or
+docker build -t yelaa \
+		--build-arg USER_ID=$(id -g) \
+		--build-arg GROUP_ID=$(id -u) \
+		.
+
 # create a file with your target
 echo "Some web addresses..." > targets.txt
 
