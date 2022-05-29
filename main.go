@@ -157,11 +157,6 @@ func scanDomain(domain string) {
 		fmt.Printf("%s", err)
 	}
 
-	getSubDomainCrt, err := ioutil.TempFile(os.TempDir(), "yelaa-")
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-
 	sf := tool.Subfinder{}
 	configuration := make(map[string]interface{})
 	configuration["filename"] = subdomainsFile.Name()
@@ -169,8 +164,12 @@ func scanDomain(domain string) {
 	sf.Configure(configuration)
 	sf.Run(domain)
 
-	color.Cyan("Make request to crt.sh on domain")
-	tool.Crt(domain, getSubDomainCrt.Name())
+    asf := tool.Assetfinder{}
+    asfCfg := make(map[string]interface{})
+    asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+    asf.Configure(asfCfg)
+    asf.Info(domain)
+    asf.Run(domain)
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -180,7 +179,7 @@ func scanDomain(domain string) {
 	dnsx.Configure(dnsxConfig)
 	dnsx.Run("")
 
-	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
+	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
 
 	for _, file := range domainsFiles {
@@ -220,11 +219,10 @@ func scanDomain(domain string) {
 
 	subdomainsFile.Close()
 	ipsFile.Close()
-	getSubDomainCrt.Close()
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.5.2", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.5.3", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{

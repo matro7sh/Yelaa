@@ -1,6 +1,6 @@
 module github.com/CMEPW/Yelaa
 
-go 1.17
+go 1.18
 
 require (
 	github.com/OJ/gobuster/v3 v3.1.0
@@ -26,6 +26,7 @@ require (
 	github.com/rs/zerolog v1.23.0
 	github.com/sensepost/gowitness v0.0.0-20210807140749-38b57db38ae5
 	github.com/spf13/cobra v1.3.0
+	github.com/spiral-sec/assetfinder v0.2.0
 	github.com/tj/go-update v2.2.5-0.20200519121640-62b4b798fd68+incompatible
 	go.uber.org/ratelimit v0.2.0
 )
