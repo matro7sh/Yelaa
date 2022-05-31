@@ -71,6 +71,11 @@ func readFile() {
 	}
 
 	scanner := loadTargetFile()
+	backup, err := os.Create("scan_log.txt")
+	if err != nil {
+		fmt.Print(err)
+	}
+	defer backup.Close()
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
@@ -81,7 +86,27 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 		for _, t := range toolList {
+			old := os.Stdout
+			oldErr := os.Stderr
+			r, w, _ := os.Pipe()
+			os.Stdout = w
+			os.Stderr = w
 			t.Run(website)
+			outC := make(chan string)
+			go func() {
+				var buf bytes.Buffer
+				io.Copy(&buf, r)
+				outC <- buf.String()
+			}()
+			w.Close()
+			os.Stdout = old
+			os.Stderr = oldErr
+			out := <-outC
+			fmt.Print(out)
+			_, err := backup.WriteString(out)
+			if err != nil {
+				fmt.Print(err)
+			}
 		}
 	}
 

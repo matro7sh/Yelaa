@@ -16,3 +16,4 @@ nuclei-templates/
 .yelaa
 .pki
 .cache
+scan_log.txt
