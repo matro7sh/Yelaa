@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/tls"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -72,10 +73,18 @@ func readFile() {
 
 	scanner := loadTargetFile()
 	backup, err := os.Create("scan_log.txt")
+	var record []string
 	if err != nil {
 		fmt.Print(err)
 	}
 	defer backup.Close()
+	data, err := os.Create("scan_data.csv")
+	if err != nil {
+		fmt.Print(err)
+	}
+	defer data.Close()
+	csvWriter := csv.NewWriter(data)
+	defer csvWriter.Flush()
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
@@ -103,13 +112,18 @@ func readFile() {
 			os.Stderr = oldErr
 			out := <-outC
 			fmt.Print(out)
+			record = append(record, out)
 			_, err := backup.WriteString(out)
 			if err != nil {
 				fmt.Print(err)
 			}
 		}
 	}
-
+	error := csvWriter.Write(record)
+	if error != nil {
+		fmt.Print(err)
+	}
+	csvWriter.Write(record)
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
 	}

@@ -17,3 +17,4 @@ nuclei-templates/
 .pki
 .cache
 scan_log.txt
+scan_data.csv
