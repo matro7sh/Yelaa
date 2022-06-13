@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/tls"
-	"encoding/csv"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -78,13 +77,6 @@ func readFile() {
 		fmt.Print(err)
 	}
 	defer backup.Close()
-	data, err := os.Create("scan_data.csv")
-	if err != nil {
-		fmt.Print(err)
-	}
-	defer data.Close()
-	csvWriter := csv.NewWriter(data)
-	defer csvWriter.Flush()
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
@@ -119,11 +111,7 @@ func readFile() {
 			}
 		}
 	}
-	error := csvWriter.Write(record)
-	if error != nil {
-		fmt.Print(err)
-	}
-	csvWriter.Write(record)
+	tool.CsvWriterGobuster(record)
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
 	}
