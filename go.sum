@@ -241,7 +241,6 @@ github.com/go-playground/locales v0.14.0 h1:u50s323jtVGugKlcYeyzC0etD1HifMjqmJqb
 github.com/go-playground/locales v0.14.0/go.mod h1:sawfccIbzZTqEDETgFXqTho0QybSa7l++s0DH+LDiLs=
 github.com/go-playground/universal-translator v0.18.0 h1:82dyy6p4OuJq4/CByFNOn/jYrnRPArHwAcmLoJZxyho=
 github.com/go-playground/universal-translator v0.18.0/go.mod h1:UvRDBj+xPUEGrFYl+lu/H90nyDXpg0fqeB/AQUGNTVA=
-github.com/go-playground/validator/v10 v10.9.0/go.mod h1:74x4gJWsvQexRdW8Pn3dXSGrTK4nAUsbPlLADvpJkos=
 github.com/go-playground/validator/v10 v10.10.0 h1:I7mrTYv78z8k8VXa/qJlOlEXn/nBh+BF8dHX5nt/dr0=
 github.com/go-playground/validator/v10 v10.10.0/go.mod h1:74x4gJWsvQexRdW8Pn3dXSGrTK4nAUsbPlLADvpJkos=
 github.com/go-redis/redis v6.15.5+incompatible/go.mod h1:NAIEuMOZ/fxfXJIrKDQDz8wamY7mA7PouImQ2Jvg6kA=
@@ -474,7 +473,6 @@ github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+o
 github.com/klauspost/compress v1.4.1/go.mod h1:RyIbtBH6LamlWaDj8nUwkbUhJ87Yi3uG0guNDohfE1A=
 github.com/klauspost/compress v1.13.6 h1:P76CopJELS0TiO2mebmnzgWaajssP/EszplttgQxcgc=
 github.com/klauspost/compress v1.13.6/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
-github.com/klauspost/cpuid v1.2.0 h1:NMpwD2G9JSFOE1/TJjGSo5zG7Yb2bTe7eq1jH+irmeE=
 github.com/klauspost/cpuid v1.2.0/go.mod h1:Pj4uuM528wm8OyEC2QMXAi2YiTZ96dNQPGgoMS4s3ek=
 github.com/klauspost/cpuid/v2 v2.0.9 h1:lgaqFMSdTdQYdZ04uHyN2d/eKdOMyi2YLSvlQIBFYa4=
 github.com/klauspost/cpuid/v2 v2.0.9/go.mod h1:FInQzS24/EEf25PyTYn52gqo7WaD8xa0213Md/qVLRg=
@@ -623,7 +621,6 @@ github.com/projectdiscovery/cryptoutil v0.0.0-20210805184155-b5d2512f9345/go.mod
 github.com/projectdiscovery/dnsx v1.0.3 h1:IbMlMEeki6mlllHxATVh50+eOBwyOn8OKD1ClE//WuI=
 github.com/projectdiscovery/dnsx v1.0.3/go.mod h1:M79ADVHwnNQM6kN2J4/XvjydJ3cDhaHHoI5lxJR2Z/A=
 github.com/projectdiscovery/fastdialer v0.0.12/go.mod h1:RkRbxqDCcCFhfNUbkzBIz/ieD4uda2JuUA4WJ+RLee0=
-github.com/projectdiscovery/fastdialer v0.0.13/go.mod h1:Mex24omi3RxrmhA8Ote7rw+6LWMiaBvbJq8CNp0ksII=
 github.com/projectdiscovery/fastdialer v0.0.14-0.20211117222717-6599e7bc586e h1:ORAzxUm2Dodjp2le/OqCD7S5KDqewV0F1REhabb2fD4=
 github.com/projectdiscovery/fastdialer v0.0.14-0.20211117222717-6599e7bc586e/go.mod h1:Mex24omi3RxrmhA8Ote7rw+6LWMiaBvbJq8CNp0ksII=
 github.com/projectdiscovery/fdmax v0.0.3 h1:FM6lv9expZ/rEEBI9tkRh6tx3DV0gtpwzdc0h7bGPqg=
@@ -632,11 +629,9 @@ github.com/projectdiscovery/filekv v0.0.0-20210915124239-3467ef45dd08 h1:NwD1R/d
 github.com/projectdiscovery/filekv v0.0.0-20210915124239-3467ef45dd08/go.mod h1:paLCnwV8sL7ppqIwVQodQrk3F6mnWafwTDwRd7ywZwQ=
 github.com/projectdiscovery/fileutil v0.0.0-20210804142714-ebba15fa53ca/go.mod h1:U+QCpQnX8o2N2w0VUGyAzjM3yBAe4BKedVElxiImsx0=
 github.com/projectdiscovery/fileutil v0.0.0-20210914153648-31f843feaad4/go.mod h1:U+QCpQnX8o2N2w0VUGyAzjM3yBAe4BKedVElxiImsx0=
-github.com/projectdiscovery/fileutil v0.0.0-20210926044607-04f32490aa21/go.mod h1:U+QCpQnX8o2N2w0VUGyAzjM3yBAe4BKedVElxiImsx0=
 github.com/projectdiscovery/fileutil v0.0.0-20210926202739-6050d0acf73c/go.mod h1:U+QCpQnX8o2N2w0VUGyAzjM3yBAe4BKedVElxiImsx0=
 github.com/projectdiscovery/fileutil v0.0.0-20210928100737-cab279c5d4b5 h1:2dbm7UhrAKnccZttr78CAmG768sSCd+MBn4ayLVDeqA=
 github.com/projectdiscovery/fileutil v0.0.0-20210928100737-cab279c5d4b5/go.mod h1:U+QCpQnX8o2N2w0VUGyAzjM3yBAe4BKedVElxiImsx0=
-github.com/projectdiscovery/folderutil v0.0.0-20211206150108-b4e7ea80f36e/go.mod h1:BMqXH4jNGByVdE2iLtKvc/6XStaiZRuCIaKv1vw9PnI=
 github.com/projectdiscovery/folderutil v0.0.0-20211210155654-27636c840d7c h1:XmKRZWfJaiucQwaLErSc7EftxvqI0g+poHWHFLpCcJw=
 github.com/projectdiscovery/folderutil v0.0.0-20211210155654-27636c840d7c/go.mod h1:BMqXH4jNGByVdE2iLtKvc/6XStaiZRuCIaKv1vw9PnI=
 github.com/projectdiscovery/goconfig v0.0.0-20210804090219-f893ccd0c69c h1:1XRSp+44bhWudAWz+2+wHYJBHvDfE8mk9uWpzX+DU9k=
@@ -792,6 +787,8 @@ github.com/spf13/viper v1.3.2/go.mod h1:ZiWeW+zYFKm7srdB9IoDzzZXaJaI5eL9QjNiN/DM
 github.com/spf13/viper v1.4.0/go.mod h1:PTJ7Z/lr49W6bUbkmS1V3by4uWynFiR9p7+dSq/yZzE=
 github.com/spf13/viper v1.8.1/go.mod h1:o0Pch8wJ9BVSWGQMbra6iw0oQ5oktSIBaujf1rJH9Ns=
 github.com/spf13/viper v1.10.0/go.mod h1:SoyBPwAtKDzypXNDFKN5kzH7ppppbGZtls1UpIy5AsM=
+github.com/spiral-sec/assetfinder v0.2.0 h1:Z49ze7/sVZ6ZjuCRDqFpQt3T78VGW3P+SPzC57/HnAI=
+github.com/spiral-sec/assetfinder v0.2.0/go.mod h1:Btbw+b0afgtwSL+YcFXdyrq9cHm46v3bimm4sJyHi/M=
 github.com/spyse-com/go-spyse v1.2.3 h1:0qo0OP5kLv0equyvI7H5pAGuDFTiFON3zXLv4BSw1yY=
 github.com/spyse-com/go-spyse v1.2.3/go.mod h1:MTle/KKITU7B2oSlfpzHZPc2k+WH+n5YATh1eUje7po=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
