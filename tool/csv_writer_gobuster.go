@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+func remove(slice []string, s int) []string {
+	return append(slice[:s], slice[s+1:]...)
+}
+
 func CsvWriterGobuster(record []string) {
 	data, err := os.Create("scan_data.csv")
 	if err != nil {
@@ -16,6 +20,10 @@ func CsvWriterGobuster(record []string) {
 	line := 4
 	for line < len(gobusterOut)-5 {
 		lineArray := strings.Fields(gobusterOut[line])
+		lineArray = remove(lineArray, 0)
+		for !strings.Contains(lineArray[0], ":") {
+			lineArray = remove(lineArray, 0)
+		}
 		gobusterOut[line] = strings.Join(lineArray, ";")
 		data.WriteString(gobusterOut[line])
 		data.WriteString("\n")
@@ -23,10 +31,7 @@ func CsvWriterGobuster(record []string) {
 	}
 	data.WriteString("log:;")
 	gobusterOut = strings.Split(record[3], "\n")
-	for nb, line := range gobusterOut {
-		if nb != 0 {
-			data.WriteString(";")
-		}
+	for _, line := range gobusterOut {
 		data.WriteString(line)
 		data.WriteString("\n")
 	}
