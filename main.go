@@ -164,12 +164,12 @@ func scanDomain(domain string) {
 	sf.Configure(configuration)
 	sf.Run(domain)
 
-    asf := tool.Assetfinder{}
-    asfCfg := make(map[string]interface{})
-    asfOutfile := helper.YelaaPath + "/assetfinder.txt"
-    asf.Configure(asfCfg)
-    asf.Info(domain)
-    asf.Run(domain)
+	asf := tool.Assetfinder{}
+	asfCfg := make(map[string]interface{})
+	asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+	asf.Configure(asfCfg)
+	asf.Info(domain)
+	asf.Run(domain)
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -350,4 +350,5 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
+	tool.TmpRemover()
 }
