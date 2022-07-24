@@ -16,5 +16,6 @@ nuclei-templates/
 .yelaa
 .pki
 .cache
-scan_log.txt
+scan_log_gobuster.txt
+scan_log_nuclei.txt
 scan_data.csv
