@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -23,11 +24,16 @@ func lineSkipper(data *os.File) *os.File {
 }
 
 func reformatLine(lineArray []string) []string {
+	regex, _ := regexp.Compile(`\[(.*?)\]|\((.*?)\)`)
 	for index := range lineArray {
-		lineArray[index] = strings.Replace(lineArray[index], "(", "", -1)
-		lineArray[index] = strings.Replace(lineArray[index], ")", "", -1)
-		lineArray[index] = strings.Replace(lineArray[index], "[", "", -1)
-		lineArray[index] = strings.Replace(lineArray[index], "]", "", -1)
+		if regex.MatchString(lineArray[index]) {
+			all_sub_string := regex.FindStringSubmatch(lineArray[index])
+			if all_sub_string[1] == "" {
+				lineArray[index] = all_sub_string[2]
+			} else {
+				lineArray[index] = all_sub_string[1]
+			}
+		}
 	}
 	return lineArray
 }
@@ -62,9 +68,8 @@ func CsvWriterGobuster() {
 			continue
 		}
 		lineArray := strings.Fields(out[line])
-		lineArray = reformatLine(lineArray)
 		lineArray = moveSizeAndStatusToSameArrayCase(lineArray)
-		data.WriteString(strings.Join(lineArray, ";"))
-		data.WriteString(";\n")
+		lineArray = reformatLine(lineArray)
+		data.WriteString(strings.Join(lineArray, ";") + ";\n")
 	}
 }

@@ -29,8 +29,7 @@ func (g *GoBuster) Configure(c interface{}) {
 	g.optDir.Method = "GET"
 	g.optDir.Timeout = time.Second * 10
 	g.optDir.WildcardForced = true
-	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt",
-		OutputFilename: "scan_log_gobuster.txt"}
+	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt", OutputFilename: "scan_log_gobuster.txt"}
 }
 
 func (g *GoBuster) Run(website string) {
@@ -42,12 +41,10 @@ func (g *GoBuster) Run(website string) {
 		return
 	}
 	defer data.Close()
-	data.WriteString("Url:;" + g.optDir.URL + "\n")
-	data.WriteString("Method:;" + g.optDir.Method + "\n")
-	data.WriteString("Threads:;" + fmt.Sprintf("%d\n", g.opts.Threads))
-	data.WriteString("Wordlist:;" + g.opts.Wordlist + "\n")
-	data.WriteString("Output File name:;" + g.opts.OutputFilename + "\n")
-	data.WriteString("Timeout:;" + g.optDir.Timeout.String() + "\n")
+	data.WriteString("Url:;" + g.optDir.URL + "\nMethod:;" + g.optDir.Method +
+		"\nThreads:;" + fmt.Sprintf("%d\n", g.opts.Threads) + "Wordlist:;" +
+		g.opts.Wordlist + "\nOutput File name:;" + g.opts.OutputFilename +
+		"\nTimeout:;" + g.optDir.Timeout.String() + "\n")
 	d, _ := gobusterdir.NewGobusterDir(ctx, g.opts, g.optDir)
 	e := cli.Gobuster(ctx, g.opts, d)
 	if e != nil {
