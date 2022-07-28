@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const pattern = `\[(.*?)\]|\((.*?)\)`
+
 func remove(slice []string, s int) []string {
 	return append(slice[:s], slice[s+1:]...)
 }
@@ -24,7 +26,7 @@ func lineSkipper(data *os.File) *os.File {
 }
 
 func reformatLine(lineArray []string) []string {
-	regex, _ := regexp.Compile(`\[(.*?)\]|\((.*?)\)`)
+	regex := regexp.MustCompile(pattern)
 	for index := range lineArray {
 		if regex.MatchString(lineArray[index]) {
 			all_sub_string := regex.FindStringSubmatch(lineArray[index])
