@@ -81,9 +81,6 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 		for _, t := range toolList {
-			if t == toolList[len(toolList)-1] {
-				break
-			}
 			t.Run(website)
 		}
 	}
