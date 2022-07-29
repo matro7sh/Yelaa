@@ -65,7 +65,7 @@ func CsvWriterGobuster() {
 	}
 	out := strings.Split(string(log[:]), "\n")
 	for line, str := range out {
-		if !strings.Contains(str, "200") {
+		if !strings.Contains(str, "Status: 200") {
 			continue
 		}
 		lineArray := strings.Fields(out[line])
