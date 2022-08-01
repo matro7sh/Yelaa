@@ -1,3 +1,4 @@
+/
 !.gitignore
 !.htaccess
 !.htpasswd
@@ -8088,7 +8089,7 @@ subversion/
 sugarcrm
 sugarcrm.log
 sugarcrm/index.php?module=Accounts&action=ShowDuplicates
-sugarcrm/index.php?module=Contacts&action=ShowDuplicates 
+sugarcrm/index.php?module=Contacts&action=ShowDuplicates
 sunvalleyadmin
 supe.php
 super
