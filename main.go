@@ -84,7 +84,6 @@ func readFile() {
 			t.Run(website)
 		}
 	}
-	tool.CsvWriterGobuster()
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
 	}
