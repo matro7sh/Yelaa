@@ -109,7 +109,7 @@ Available Commands:
   checkAndScreen Run httpx and gowitness
   help            Help about any command
   osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan            It will run Nuclei templates, sslscan, dirsearch and more.
+  scan            It will run gobuster and store logs in .yelaa
 
 Flags:
   -c, --client string         Client name
