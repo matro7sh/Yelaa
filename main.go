@@ -18,8 +18,6 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-
-	assetfinder "github.com/spiral-sec/assetfinder/scanner"
 )
 
 var (
@@ -148,7 +146,7 @@ func checkProxy() {
 	}
 }
 
-func createYelaaFolder() {
+func createOutDirectory() {
 	if _, err := os.Stat(scanPath); os.IsNotExist(err) {
 		color.Cyan("Creating " + scanPath + " folder")
 		if err = os.MkdirAll(scanPath, 0755); err != nil {
@@ -184,17 +182,6 @@ func scanDomain(domain string) {
 
 	asfCfg["scanPath"] = scanPath
 	asfCfg["outfile"] = asfOutfile
-	asfCfg["functions"] = []func(string) ([]string, error){
-		assetfinder.CertSpotter,
-		assetfinder.HackerTarget,
-		assetfinder.ThreatCrowd,
-		assetfinder.CrtSh,
-		assetfinder.Facebook,
-		assetfinder.VirusTotal,
-		assetfinder.FindSubDomains,
-		assetfinder.Urlscan,
-		assetfinder.BufferOverrun,
-	}
 
 	asf.Configure(asfCfg)
 	asf.Info(domain)
@@ -369,7 +356,7 @@ func main() {
 
 	checkAndScreen.Flags().StringVarP(&targetPath, "target", "t", "", "list of ips/domains")
 
-	createYelaaFolder()
+	createOutDirectory()
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)

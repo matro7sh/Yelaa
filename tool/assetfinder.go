@@ -13,23 +13,36 @@ import (
 type fetchFn func(string) ([]string, error)
 
 type AssetfinderConfig struct {
-    scanPath  string
-	outfile   string
-	functions []fetchFn
+	scanPath string
+	outfile  string
 }
 
 type Assetfinder struct {
-	opts      *AssetfinderConfig
 	outfile   string
-    functions []fetchFn
-    scanPath  string
+	functions []fetchFn
+	scanPath  string
 }
 
 func (a *Assetfinder) Info(url string) {
 	color.Cyan("Running Assetfinder on %s", url)
 }
 
-func (a *Assetfinder) Configure(c interface{}) {}
+func (a *Assetfinder) Configure(c interface{}) {
+	a.scanPath = c.(map[string]interface{})["scanPath"].(string)
+	a.outfile = c.(map[string]interface{})["outfile"].(string)
+
+	a.functions = []fetchFn{
+		assetfinder.CertSpotter,
+		assetfinder.HackerTarget,
+		assetfinder.ThreatCrowd,
+		assetfinder.CrtSh,
+		assetfinder.Facebook,
+		assetfinder.VirusTotal,
+		assetfinder.FindSubDomains,
+		assetfinder.Urlscan,
+		assetfinder.BufferOverrun,
+	}
+}
 
 func (a *Assetfinder) Run(url string) {
 	var wg sync.WaitGroup
@@ -37,7 +50,7 @@ func (a *Assetfinder) Run(url string) {
 	rl := assetfinder.NewRateLimiter(time.Second)
 	out := make(chan string)
 
-	for _, f := range a.opts.functions {
+	for _, f := range a.functions {
 		wg.Add(1)
 		fn := f
 
@@ -64,7 +77,7 @@ func (a *Assetfinder) Run(url string) {
 	}()
 
 	printed := make(map[string]bool)
-	file, err := os.OpenFile(a.opts.outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile(a.outfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return
 	}
