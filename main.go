@@ -25,6 +25,7 @@ var (
 	client        string
 	excludedType  string
 	shared        string
+	scanPath      string
 	targetPath    string
 	proxy         string
 	domain        string
@@ -138,9 +139,9 @@ func checkProxy() {
 }
 
 func createYelaaFolder() {
-	if _, err := os.Stat(helper.YelaaPath); os.IsNotExist(err) {
-		color.Cyan("Creating " + helper.YelaaPath + " folder")
-		if err = os.Mkdir(helper.YelaaPath, 0755); err != nil {
+	if _, err := os.Stat(scanPath); os.IsNotExist(err) {
+		color.Cyan("Creating " + scanPath + " folder")
+		if err = os.MkdirAll(scanPath, 0755); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -331,6 +332,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
+	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
 
