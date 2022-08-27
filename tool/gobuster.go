@@ -29,7 +29,7 @@ func (g *GoBuster) Configure(c interface{}) {
 	outputDir := g.scanPath + "/gobuster"
 
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		if err = os.Mkdir(outputDir, 0750); err != nil {
+		if err = os.MkdirAll(outputDir, 0750); err != nil {
 			fmt.Println(err)
 		}
 	}

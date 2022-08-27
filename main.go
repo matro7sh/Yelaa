@@ -30,6 +30,7 @@ var (
 	proxy         string
 	domain        string
 	insecure      bool
+	dryRun        bool
 )
 
 type folder struct {
@@ -92,9 +93,15 @@ func readFile() {
 			if t == toolList[len(toolList)-1] {
 				break
 			}
-			t.Run(website)
+
+			if !dryRun {
+				t.Run(website)
+			}
 		}
-		gb.Run(website)
+
+		if !dryRun {
+			gb.Run(website)
+		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
@@ -173,7 +180,10 @@ func scanDomain(domain string) {
 	configuration["filename"] = subdomainsFile.Name()
 	sf.Info("")
 	sf.Configure(configuration)
-	sf.Run(domain)
+
+	if !dryRun {
+		sf.Run(domain)
+	}
 
 	asf := tool.Assetfinder{}
 	asfCfg := make(map[string]interface{})
@@ -185,7 +195,10 @@ func scanDomain(domain string) {
 
 	asf.Configure(asfCfg)
 	asf.Info(domain)
-	asf.Run(domain)
+
+	if !dryRun {
+		asf.Run(domain)
+	}
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -193,7 +206,10 @@ func scanDomain(domain string) {
 	dnsxConfig["ipsFilename"] = ipsFile.Name()
 	dnsx.Info("")
 	dnsx.Configure(dnsxConfig)
-	dnsx.Run("")
+
+	if !dryRun {
+		dnsx.Run("")
+	}
 
 	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
@@ -224,7 +240,10 @@ func scanDomain(domain string) {
 	httpxConfig["output"] = filepath
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
-	httpx.Run("")
+
+	if !dryRun {
+		httpx.Run("")
+	}
 
 	gw := tool.Gowitness{}
 	gwConfig := make(map[string]interface{})
@@ -233,7 +252,10 @@ func scanDomain(domain string) {
 
 	gw.Info("")
 	gw.Configure(gwConfig)
-	gw.Run("")
+
+	if !dryRun {
+		gw.Run("")
+	}
 
 	subdomainsFile.Close()
 	ipsFile.Close()
@@ -299,14 +321,20 @@ func main() {
 			httpxConfig["output"] = filepath
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
-			httpx.Run("")
+
+			if !dryRun {
+				httpx.Run("")
+			}
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
 			gwConfig["file"] = filepath
 			gw.Info("")
 			gw.Configure(gwConfig)
-			gw.Run("")
+
+			if !dryRun {
+				gw.Run("")
+			}
 		},
 	}
 
@@ -347,6 +375,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
+	rootCmd.PersistentFlags().BoolVar(&dryRun, "dryRun", false, "Run in dry-run mode")
 	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
