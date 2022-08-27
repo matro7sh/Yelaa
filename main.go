@@ -67,7 +67,7 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
-	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.Nuclei{})
 
 	gb := tool.GoBuster{}
 	gbCfg := make(map[string]interface{})
@@ -95,8 +95,8 @@ func readFile() {
 				break
 			}
 			t.Run(website)
-			gb.Run(website)
 		}
+		gb.Run(website)
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
