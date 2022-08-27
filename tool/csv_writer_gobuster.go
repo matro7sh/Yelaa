@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/CMEPW/Yelaa/helper"
 )
 
 var regex = regexp.MustCompile(`\[(.*?)\]|\((.*?)\)`)
@@ -86,7 +84,7 @@ func falsePositiveCheck(homeSize int, lineArray []string) bool {
 }
 
 func CsvWriterGobuster(g *GoBuster) {
-	data, err := os.Create(helper.YelaaPath + "/gobuster/scan_data-" +
+	data, err := os.Create(g.scanPath + "/gobuster/scan_data-" +
 		time.Now().Format("2006-01-02_15-04-05") + ".csv")
 	if err != nil {
 		fmt.Print(err)

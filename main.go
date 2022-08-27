@@ -18,6 +18,8 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+
+	assetfinder "github.com/spiral-sec/assetfinder/scanner"
 )
 
 var (
@@ -66,6 +68,13 @@ func readFile() {
 
 	var toolList []tool.ToolInterface
 	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
+
+	gb := tool.GoBuster{}
+	gbCfg := make(map[string]interface{})
+	gbCfg["scanPath"] = scanPath
+
+	gb.Configure(gbCfg)
+
 	var i interface{}
 	for _, t := range toolList {
 		t.Configure(i)
@@ -86,6 +95,7 @@ func readFile() {
 				break
 			}
 			t.Run(website)
+			gb.Run(website)
 		}
 	}
 	if err := scanner.Err(); err != nil {
@@ -169,7 +179,23 @@ func scanDomain(domain string) {
 
 	asf := tool.Assetfinder{}
 	asfCfg := make(map[string]interface{})
-	asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+
+	asfOutfile := scanPath + "/assetfinder.txt"
+
+	asfCfg["scanPath"] = scanPath
+	asfCfg["outfile"] = asfOutfile
+	asfCfg["functions"] = []func(string) ([]string, error){
+		assetfinder.CertSpotter,
+		assetfinder.HackerTarget,
+		assetfinder.ThreatCrowd,
+		assetfinder.CrtSh,
+		assetfinder.Facebook,
+		assetfinder.VirusTotal,
+		assetfinder.FindSubDomains,
+		assetfinder.Urlscan,
+		assetfinder.BufferOverrun,
+	}
+
 	asf.Configure(asfCfg)
 	asf.Info(domain)
 	asf.Run(domain)
@@ -198,16 +224,16 @@ func scanDomain(domain string) {
 			fmt.Println(err)
 		}
 
-		err = ioutil.WriteFile(helper.YelaaPath+"/domains.txt", domainBuffer.Bytes(), 0644)
+		err = ioutil.WriteFile(scanPath+"/domains.txt", domainBuffer.Bytes(), 0644)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 	}
 
-	filepath := helper.YelaaPath + "/osint.domains.txt"
+	filepath := scanPath + "/osint.domains.txt"
 	httpx := tool.Httpx{}
 	httpxConfig := make(map[string]interface{})
-	httpxConfig["input"] = helper.YelaaPath + "/domains.txt"
+	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
@@ -216,6 +242,8 @@ func scanDomain(domain string) {
 	gw := tool.Gowitness{}
 	gwConfig := make(map[string]interface{})
 	gwConfig["file"] = filepath
+	gwConfig["scanPath"] = scanPath
+
 	gw.Info("")
 	gw.Configure(gwConfig)
 	gw.Run("")
@@ -277,7 +305,7 @@ func main() {
 				return
 			}
 
-			filepath := helper.YelaaPath + "/checkAndScreen.txt"
+			filepath := scanPath + "/checkAndScreen.txt"
 			httpx := tool.Httpx{}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
