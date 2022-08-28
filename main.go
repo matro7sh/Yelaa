@@ -284,6 +284,7 @@ func main() {
 		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			checkProxy()
 
 			if targetPath == "" {
@@ -307,6 +308,7 @@ func main() {
 		Long:  "Run httpx on each IP and take screenshots of each server that are up",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			checkProxy()
 
 			if targetPath == "" {
@@ -344,6 +346,7 @@ func main() {
 		Long:  "Obtain a clean-cut architecture at the launch of a mission and make some tests",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			fmt.Println("Setup mission for: ", client)
 
 			if shared == "" {
@@ -375,7 +378,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
-	rootCmd.PersistentFlags().BoolVar(&dryRun, "dryRun", false, "Run in dry-run mode")
+	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Run in dry-run mode")
 	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
@@ -384,8 +387,6 @@ func main() {
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
 	checkAndScreen.Flags().StringVarP(&targetPath, "target", "t", "", "list of ips/domains")
-
-	createOutDirectory()
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)
