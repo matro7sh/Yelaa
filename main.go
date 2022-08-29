@@ -25,10 +25,12 @@ var (
 	client        string
 	excludedType  string
 	shared        string
+	scanPath      string
 	targetPath    string
 	proxy         string
 	domain        string
 	insecure      bool
+	dryRun        bool
 )
 
 type folder struct {
@@ -64,7 +66,14 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
-	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.GoBuster{}, &tool.Nuclei{})
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.Nuclei{})
+
+	gb := tool.GoBuster{}
+	gbCfg := make(map[string]interface{})
+	gbCfg["scanPath"] = scanPath
+
+	gb.Configure(gbCfg)
+
 	var i interface{}
 	for _, t := range toolList {
 		t.Configure(i)
@@ -84,7 +93,14 @@ func readFile() {
 			if t == toolList[len(toolList)-1] {
 				break
 			}
-			t.Run(website)
+
+			if !dryRun {
+				t.Run(website)
+			}
+		}
+
+		if !dryRun {
+			gb.Run(website)
 		}
 	}
 	if err := scanner.Err(); err != nil {
@@ -137,10 +153,10 @@ func checkProxy() {
 	}
 }
 
-func createYelaaFolder() {
-	if _, err := os.Stat(helper.YelaaPath); os.IsNotExist(err) {
-		color.Cyan("Creating " + helper.YelaaPath + " folder")
-		if err = os.Mkdir(helper.YelaaPath, 0755); err != nil {
+func createOutDirectory() {
+	if _, err := os.Stat(scanPath); os.IsNotExist(err) {
+		color.Cyan("Creating " + scanPath + " folder")
+		if err = os.MkdirAll(scanPath, 0755); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -164,14 +180,25 @@ func scanDomain(domain string) {
 	configuration["filename"] = subdomainsFile.Name()
 	sf.Info("")
 	sf.Configure(configuration)
-	sf.Run(domain)
+
+	if !dryRun {
+		sf.Run(domain)
+	}
 
 	asf := tool.Assetfinder{}
 	asfCfg := make(map[string]interface{})
-	asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+
+	asfOutfile := scanPath + "/assetfinder.txt"
+
+	asfCfg["scanPath"] = scanPath
+	asfCfg["outfile"] = asfOutfile
+
 	asf.Configure(asfCfg)
 	asf.Info(domain)
-	asf.Run(domain)
+
+	if !dryRun {
+		asf.Run(domain)
+	}
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -179,7 +206,10 @@ func scanDomain(domain string) {
 	dnsxConfig["ipsFilename"] = ipsFile.Name()
 	dnsx.Info("")
 	dnsx.Configure(dnsxConfig)
-	dnsx.Run("")
+
+	if !dryRun {
+		dnsx.Run("")
+	}
 
 	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
@@ -197,27 +227,35 @@ func scanDomain(domain string) {
 			fmt.Println(err)
 		}
 
-		err = ioutil.WriteFile(helper.YelaaPath+"/domains.txt", domainBuffer.Bytes(), 0644)
+		err = ioutil.WriteFile(scanPath+"/domains.txt", domainBuffer.Bytes(), 0644)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 	}
 
-	filepath := helper.YelaaPath + "/osint.domains.txt"
+	filepath := scanPath + "/osint.domains.txt"
 	httpx := tool.Httpx{}
 	httpxConfig := make(map[string]interface{})
-	httpxConfig["input"] = helper.YelaaPath + "/domains.txt"
+	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
-	httpx.Run("")
+
+	if !dryRun {
+		httpx.Run("")
+	}
 
 	gw := tool.Gowitness{}
 	gwConfig := make(map[string]interface{})
 	gwConfig["file"] = filepath
+	gwConfig["scanPath"] = scanPath
+
 	gw.Info("")
 	gw.Configure(gwConfig)
-	gw.Run("")
+
+	if !dryRun {
+		gw.Run("")
+	}
 
 	subdomainsFile.Close()
 	ipsFile.Close()
@@ -246,6 +284,7 @@ func main() {
 		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			checkProxy()
 
 			if targetPath == "" {
@@ -269,6 +308,7 @@ func main() {
 		Long:  "Run httpx on each IP and take screenshots of each server that are up",
 		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			checkProxy()
 
 			if targetPath == "" {
@@ -276,21 +316,27 @@ func main() {
 				return
 			}
 
-			filepath := helper.YelaaPath + "/checkAndScreen.txt"
+			filepath := scanPath + "/checkAndScreen.txt"
 			httpx := tool.Httpx{}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
-			httpx.Run("")
+
+			if !dryRun {
+				httpx.Run("")
+			}
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
 			gwConfig["file"] = filepath
 			gw.Info("")
 			gw.Configure(gwConfig)
-			gw.Run("")
+
+			if !dryRun {
+				gw.Run("")
+			}
 		},
 	}
 
@@ -300,6 +346,7 @@ func main() {
 		Long:  "Obtain a clean-cut architecture at the launch of a mission and make some tests",
 		Args:  cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			createOutDirectory()
 			fmt.Println("Setup mission for: ", client)
 
 			if shared == "" {
@@ -331,6 +378,8 @@ func main() {
 	rootCmd.Flags().StringVarP(&excludedType, "excludedType", "e", "", "excluded type")
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
+	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Run in dry-run mode")
+	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
 
@@ -338,8 +387,6 @@ func main() {
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")
 
 	checkAndScreen.Flags().StringVarP(&targetPath, "target", "t", "", "list of ips/domains")
-
-	createYelaaFolder()
 
 	if err := rootCmd.MarkFlagRequired("client"); err != nil {
 		panic(err)

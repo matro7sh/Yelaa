@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/CMEPW/Yelaa/helper"
 	"github.com/fatih/color"
 	"github.com/remeh/sizedwaitgroup"
 	"github.com/rs/zerolog"
@@ -24,6 +23,7 @@ var (
 )
 
 type Gowitness struct {
+	scanPath       string
 	screenshotPath string
 	file           string
 	swg            sizedwaitgroup.SizedWaitGroup
@@ -41,8 +41,9 @@ func (g *Gowitness) Configure(config interface{}) {
 	chrm.Timeout = 10
 
 	g.file = config.(map[string]interface{})["file"].(string)
+    g.scanPath = config.(map[string]interface{})["scanPath"].(string)
 
-	g.screenshotPath = helper.YelaaPath + "/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
+	g.screenshotPath = g.scanPath + "/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
 
 	if _, err := os.Stat(g.screenshotPath); os.IsNotExist(err) {
 		if err = os.Mkdir(g.screenshotPath, 0750); err != nil {
@@ -62,7 +63,7 @@ func (g *Gowitness) Run(_ string) {
 	scanner := bufio.NewScanner(f)
 	defer f.Close()
 
-	db.Path = helper.YelaaPath + "/gowitness.sqlite3"
+	db.Path = g.scanPath + "/gowitness.sqlite3"
 	db, _ := db.Get()
 
 	for scanner.Scan() {

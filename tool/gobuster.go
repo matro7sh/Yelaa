@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/CMEPW/Yelaa/helper"
 	"github.com/OJ/gobuster/v3/cli"
 	"github.com/OJ/gobuster/v3/gobusterdir"
 	"github.com/OJ/gobuster/v3/libgobuster"
@@ -15,8 +14,9 @@ import (
 )
 
 type GoBuster struct {
-	optDir *gobusterdir.OptionsDir
-	opts   *libgobuster.Options
+	optDir   *gobusterdir.OptionsDir
+	opts     *libgobuster.Options
+	scanPath string
 }
 
 func (s *GoBuster) Info(website string) {
@@ -24,9 +24,12 @@ func (s *GoBuster) Info(website string) {
 }
 
 func (g *GoBuster) Configure(c interface{}) {
-	outputDir := helper.YelaaPath + "/gobuster"
+
+	g.scanPath = c.(map[string]interface{})["scanPath"].(string)
+	outputDir := g.scanPath + "/gobuster"
+
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		if err = os.Mkdir(outputDir, 0750); err != nil {
+		if err = os.MkdirAll(outputDir, 0750); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -40,7 +43,7 @@ func (g *GoBuster) Configure(c interface{}) {
 }
 
 func (g *GoBuster) Run(website string) {
-	g.opts.OutputFilename = helper.YelaaPath + "/gobuster/scan_log_gobuster-" +
+	g.opts.OutputFilename = g.scanPath + "/gobuster/scan_log_gobuster-" +
 		time.Now().Format("2006-01-02_15-04-05") + ".txt"
 	g.optDir.URL = strings.TrimSuffix(website, "/")
 	ctx := context.Background()
