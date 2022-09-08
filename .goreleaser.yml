@@ -5,6 +5,11 @@ builds:
 - <<: &build_defaults
     ldflags:
       - -s -w
+  ignore:
+    - goos: windows
+      goarch: arm
+    - goos: windows
+      goarch: arm64
   env:
     - CGO_ENABLED=0
   goos:

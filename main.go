@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CMEPW/Yelaa/helper"
 	"github.com/CMEPW/Yelaa/tool"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/fatih/color"
@@ -81,10 +82,12 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 		for _, t := range toolList {
+			if t == toolList[len(toolList)-1] {
+				break
+			}
 			t.Run(website)
 		}
 	}
-
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
 	}
@@ -155,11 +158,9 @@ func openbrowser(url string) {
 }
 
 func createYelaaFolder() {
-	UserHomeDir, _ := os.UserHomeDir()
-
-	if _, err := os.Stat(UserHomeDir + "/.yelaa"); os.IsNotExist(err) {
-		color.Cyan("Creating ~/.yelaa folder")
-		if err = os.Mkdir(UserHomeDir+"/.yelaa", 0755); err != nil {
+	if _, err := os.Stat(helper.YelaaPath); os.IsNotExist(err) {
+		color.Cyan("Creating " + helper.YelaaPath + " folder")
+		if err = os.Mkdir(helper.YelaaPath, 0755); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -178,11 +179,6 @@ func scanDomain(domain string) {
 		fmt.Printf("%s", err)
 	}
 
-	getSubDomainCrt, err := ioutil.TempFile(os.TempDir(), "yelaa-")
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-
 	sf := tool.Subfinder{}
 	configuration := make(map[string]interface{})
 	configuration["filename"] = subdomainsFile.Name()
@@ -190,8 +186,12 @@ func scanDomain(domain string) {
 	sf.Configure(configuration)
 	sf.Run(domain)
 
-	color.Cyan("Make request to crt.sh on domain")
-	tool.Crt(domain, getSubDomainCrt.Name())
+	asf := tool.Assetfinder{}
+	asfCfg := make(map[string]interface{})
+	asfOutfile := helper.YelaaPath + "/assetfinder.txt"
+	asf.Configure(asfCfg)
+	asf.Info(domain)
+	asf.Run(domain)
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -201,12 +201,8 @@ func scanDomain(domain string) {
 	dnsx.Configure(dnsxConfig)
 	dnsx.Run("")
 
-	domainsFiles := []string{subdomainsFile.Name(), getSubDomainCrt.Name(), ipsFile.Name()}
+	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
-	UserHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	for _, file := range domainsFiles {
 		newDomain, err := ioutil.ReadFile(file)
@@ -221,16 +217,16 @@ func scanDomain(domain string) {
 			fmt.Println(err)
 		}
 
-		err = ioutil.WriteFile(UserHomeDir+"/.yelaa/domains.txt", domainBuffer.Bytes(), 0644)
+		err = ioutil.WriteFile(helper.YelaaPath+"/domains.txt", domainBuffer.Bytes(), 0644)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 	}
 
-	filepath := UserHomeDir + "/.yelaa/osint.domains.txt"
+	filepath := helper.YelaaPath + "/osint.domains.txt"
 	httpx := tool.Httpx{}
 	httpxConfig := make(map[string]interface{})
-	httpxConfig["input"] = UserHomeDir + "/.yelaa/domains.txt"
+	httpxConfig["input"] = helper.YelaaPath + "/domains.txt"
 	httpxConfig["output"] = filepath
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
@@ -245,11 +241,10 @@ func scanDomain(domain string) {
 
 	subdomainsFile.Close()
 	ipsFile.Close()
-	getSubDomainCrt.Close()
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.4.0", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.5.5", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -305,8 +300,7 @@ func main() {
 				return
 			}
 
-			UserHomeDir, _ := os.UserHomeDir()
-			filepath := UserHomeDir + "/.yelaa/checkAndScreen.txt"
+			filepath := helper.YelaaPath + "/checkAndScreen.txt"
 			httpx := tool.Httpx{}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
@@ -382,4 +376,5 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		panic(err)
 	}
+	tool.TmpRemover()
 }

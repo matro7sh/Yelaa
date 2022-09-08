@@ -1,2 +1,19 @@
+# Target files
 ./targets.txt
 targets.txt
+target.txt
+
+# IDE
+.vscode
+.idea
+
+# Build files
+dist/
+Yelaa
+nuclei-templates/
+
+# Out files
+.yelaa
+.pki
+.cache
+scan_log_nuclei.txt

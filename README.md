@@ -4,9 +4,9 @@ Obtain a clean-cut architecture at the launch of a mission and make some tests
 
 # Requirements
 
-You need to have theses binaries in your path:
+You need to have the chrome binary in your path:
 ```
-nuclei, google-chrome
+google-chrome
 ```
 
 # How to install
@@ -15,7 +15,6 @@ Manually :
 ```bash
 git clone https://github.com/CMEPW/Yelaa.git
 cd Yelaa
-make install
 make compile
 ```
 
@@ -24,13 +23,48 @@ Or if you have set your GO path and all the requirements installed :
 go install github.com/CMEPW/Yelaa@latest
 ```
 
-# How to use 
->-s is optionnal
+In a Docker-container:
+```bash
+# Build docker container
+make docker
+
+# Or
+docker build -t yelaa \
+		--build-arg USER_ID=$(id -g) \
+		--build-arg GROUP_ID=$(id -u) \
+		.
+
+# create a file with your target
+echo "Some web addresses..." > targets.txt
+
+# run the container like so
+docker run \
+    --security-opt seccomp=unconfined \
+    -v $PWD:/home/yelaa_user \
+    yelaa \
+    checkAndScreen -t /home/yelaa_user/targets.txt
+```
+
+In Kali:
+```bash
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+sudo  apt install ./google-chrome-stable_current_amd64.deb
+
+wget https://github.com/CMEPW/Yelaa/releases/download/v1.5.2/Yelaa_1.5.2_Linux_x86_64.tar.gz
+
+tar -xvf Yelaa_1.5.2_Linux_x86_64.tar.gz
+./Yelaa -h
+```
+
+# How to use
+>-s is optional
 You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
-## How to run scan 
+## How to run scan
 
-`Yelaa scan -target <PathToTargetFile>`
+`Yelaa scan -t <PathToTargetFile>`
 
 ## Use http proxy
 
@@ -40,20 +74,28 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run osint on a domain
 
-`Yelaa osint -d example.com`
+`Yelaa osint -d <DOMAIN>`
 
-To run osint command on several domains run `Yelaa osint -t domains.txt`
+To run osint command on several domains run `Yelaa osint -t targets.txt`
 
 ## How to run httpx then gowitness
 
 `Yelaa checkAndScreen -t domains.txt`
 
-## Help 
+## Low fruits : Infrastructure Penetration Testing
 
-``` 
+`nmap -T4 -Pn -p 80,443,8080,8443 --open -oA EvilCorp-24 192.168.1.0/24`
+
+then `cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt` 
+
+Finaly `./Yelaa checkAndScreen -t ./web-targets.txt`
+
+## Help
+
+```
 Yelaa -h
- __   __         _                  
- \ \ / /   ___  | |   __ _    __ _ 
+ __   __         _
+ \ \ / /   ___  | |   __ _    __ _
   \ V /   / _ \ | |  / _` |  / _` |
    | |   |  __/ | | | (_| | | (_| |
    |_|    \___| |_|  \__,_|  \__,_|
@@ -67,7 +109,7 @@ Available Commands:
   checkAndScreen Run httpx and gowitness
   help            Help about any command
   osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan            It will run Nuclei templates, sslscan, dirsearch and more.
+  scan            It will run gobuster and store logs in .yelaa
 
 Flags:
   -c, --client string         Client name
@@ -79,12 +121,11 @@ Flags:
 
 Use "create [command] --help" for more information about a command.
 
-``` 
+```
 
->this script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
+> This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
 
 # Contributors
 
-[darkweak](https://github.com/darkweak)
-[jenaye](https://github.com/jenaye)
-[jarrault](https://github.com/jarrault)
+| [<img src="https://github.com/darkweak.png?size=85" width=85><br><sub>Darkweak</sub>](https://github.com/darkweak) | [<img src="https://github.com/jenaye.png?size=85" width=85><br><sub>Mike Houziaux</sub>](https://github.com/jenaye) | [<img src="https://github.com/jarrault.png?size=85" width=85><br><sub>Julien</sub>](https://github.com/jarrault) | [<img src="https://github.com/TomChv.png?size=85" width=85><br><sub>Tom Chauveau</sub>](https://github.com/TomChv) | [<img src="https://github.com/bogdzn.png?size=85" width=85><br><sub>bogdan</sub>](https://github.com/bogdzn)| [<img src="h[ttps://github.com/bogdzn](https://github.com/VidsSkids.png?size=85" width=85><br><sub>VidsSkids</sub>]([https://github.com/bogdzn](https://github.com/VidsSkids))
+| :---: | :---: | :---: | :---: | :---: | :---: |
