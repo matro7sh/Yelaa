@@ -143,7 +143,7 @@ func openbrowser(url string) {
 
 	switch runtime.GOOS {
 	case "linux":
-		err = exec.Command("xdg-open", "https://www.google.com/search?q=site:"+domain+"+ext:doc+OR+ext:docx+OR+ext:csv+OR+ext:pdf+OR+ext:txt+OR+ext:log+OR+ext:bak").Start()
+		err = exec.Command("xdg-open", "https://www.google.com/search?q=site:"+url+"+ext:doc+OR+ext:docx+OR+ext:csv+OR+ext:pdf+OR+ext:txt+OR+ext:log+OR+ext:bak").Start()
 	case "windows":
 		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
 	case "darwin":
@@ -268,9 +268,6 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			checkProxy()
 
-			fmt.Println("GANG", domain)
-			openbrowser("https://" + domain)
-
 			if targetPath == "" {
 				scanDomain(domain)
 				return
@@ -281,6 +278,12 @@ func main() {
 
 			for scanner.Scan() {
 				targetDomain := scanner.Text()
+				fmt.Println("GANG", targetDomain)
+				dorks := tool.Dorks{}
+				dorksCfg := make(map[string]interface{})
+				dorks.Configure(dorksCfg)
+				dorks.Info(domain)
+				dorks.Run(targetDomain)
 				scanDomain(targetDomain)
 			}
 
