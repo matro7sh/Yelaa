@@ -168,7 +168,7 @@ func scanDomain(domain string) {
 	dorksCfg := make(map[string]interface{})
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
-	dorks.Run("https://" + domain)
+	dorks.Run(domain)
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -302,11 +302,7 @@ func main() {
 
 			for scanner.Scan() {
 				targetDomain := scanner.Text()
-				dorks := tool.Dorks{}
-				dorksCfg := make(map[string]interface{})
-				dorks.Configure(dorksCfg)
-				dorks.Info(targetDomain)
-				dorks.Run(targetDomain)
+				scanDomain(targetDomain)
 			}
 
 		},
