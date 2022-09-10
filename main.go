@@ -297,7 +297,6 @@ func main() {
 
 			for scanner.Scan() {
 				targetDomain := scanner.Text()
-				fmt.Println("GANG", targetDomain)
 				dorks := tool.Dorks{}
 				dorksCfg := make(map[string]interface{})
 				dorks.Configure(dorksCfg)
