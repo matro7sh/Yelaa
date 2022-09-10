@@ -76,6 +76,7 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 `Yelaa osint -d <DOMAIN>`
 
+This command use the default browser to open the dork page
 To run osint command on several domains run `Yelaa osint -t targets.txt`
 
 ## How to run httpx then gowitness
@@ -86,7 +87,7 @@ To run osint command on several domains run `Yelaa osint -t targets.txt`
 
 `nmap -T4 -Pn -p 80,443,8080,8443 --open -oA EvilCorp-24 192.168.1.0/24`
 
-then `cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt` 
+then `cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt`
 
 Finaly `./Yelaa checkAndScreen -t ./web-targets.txt`
 

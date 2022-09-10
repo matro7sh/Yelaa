@@ -164,6 +164,11 @@ func createOutDirectory() {
 
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
+	dorks := tool.Dorks{}
+	dorksCfg := make(map[string]interface{})
+	dorks.Configure(dorksCfg)
+	dorks.Info(domain)
+	dorks.Run(domain)
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -262,7 +267,7 @@ func scanDomain(domain string) {
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.5.5", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.5.7", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -299,6 +304,7 @@ func main() {
 				targetDomain := scanner.Text()
 				scanDomain(targetDomain)
 			}
+
 		},
 	}
 
