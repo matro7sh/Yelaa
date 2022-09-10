@@ -164,6 +164,11 @@ func createOutDirectory() {
 
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
+	dorks := tool.Dorks{}
+	dorksCfg := make(map[string]interface{})
+	dorks.Configure(dorksCfg)
+	dorks.Info(domain)
+	dorks.Run("https://" + domain)
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -300,9 +305,8 @@ func main() {
 				dorks := tool.Dorks{}
 				dorksCfg := make(map[string]interface{})
 				dorks.Configure(dorksCfg)
-				dorks.Info(domain)
+				dorks.Info(targetDomain)
 				dorks.Run(targetDomain)
-				scanDomain(targetDomain)
 			}
 
 		},
