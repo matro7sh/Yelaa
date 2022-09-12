@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/CMEPW/Yelaa/helper"
@@ -89,15 +90,18 @@ func readFile() {
 		}
 
 		color.Cyan("Running tools on %s", website)
-		for _, t := range toolList {
-			if t == toolList[len(toolList)-1] {
-				break
-			}
 
-			if !dryRun {
-				t.Run(website)
-			}
+		var wg sync.WaitGroup
+		wg.Add(len(toolList))
+		for _, t := range toolList {
+			go func(t tool.ToolInterface) {
+				defer wg.Done()
+				if !dryRun {
+					t.Run(website)
+				}
+			}(t)
 		}
+		wg.Wait()
 
 		if !dryRun {
 			gb.Run(website)
@@ -164,11 +168,18 @@ func createOutDirectory() {
 
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
+	var wg sync.WaitGroup
+
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
-	dorks.Run(domain)
+	wg.Add(1)
+	go func(dorks tool.Dorks, domain string) {
+		if !dryRun {
+			dorks.Run(domain)
+		}
+	}(dorks, domain)
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -186,9 +197,12 @@ func scanDomain(domain string) {
 	sf.Info("")
 	sf.Configure(configuration)
 
-	if !dryRun {
-		sf.Run(domain)
-	}
+	wg.Add(1)
+	go func(sf tool.Subfinder, domain string) {
+		if !dryRun {
+			sf.Run(domain)
+		}
+	}(sf, domain)
 
 	asf := tool.Assetfinder{}
 	asfCfg := make(map[string]interface{})
@@ -201,9 +215,12 @@ func scanDomain(domain string) {
 	asf.Configure(asfCfg)
 	asf.Info(domain)
 
-	if !dryRun {
-		asf.Run(domain)
-	}
+	wg.Add(1)
+	go func(asf tool.Assetfinder, domain string) {
+		if !dryRun {
+			asf.Run(domain)
+		}
+	}(asf, domain)
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -212,9 +229,12 @@ func scanDomain(domain string) {
 	dnsx.Info("")
 	dnsx.Configure(dnsxConfig)
 
-	if !dryRun {
-		dnsx.Run("")
-	}
+	wg.Add(1)
+	go func(dnsx tool.Dnsx, domain string) {
+		if !dryRun {
+			dnsx.Run("")
+		}
+	}(dnsx, domain)
 
 	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
@@ -246,9 +266,12 @@ func scanDomain(domain string) {
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 
-	if !dryRun {
-		httpx.Run("")
-	}
+	wg.Add(1)
+	go func(httpx tool.Httpx, domain string) {
+		if !dryRun {
+			httpx.Run("")
+		}
+	}(httpx, domain)
 
 	gw := tool.Gowitness{}
 	gwConfig := make(map[string]interface{})
@@ -258,10 +281,14 @@ func scanDomain(domain string) {
 	gw.Info("")
 	gw.Configure(gwConfig)
 
-	if !dryRun {
-		gw.Run("")
-	}
+	wg.Add(1)
+	go func(gw tool.Gowitness, domain string) {
+		if !dryRun {
+			gw.Run("")
+		}
+	}(gw, domain)
 
+	wg.Wait()
 	subdomainsFile.Close()
 	ipsFile.Close()
 }
@@ -316,6 +343,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
 			checkProxy()
+			var wg sync.WaitGroup
 
 			if targetPath == "" {
 				color.Red("Please provide a list of ips/domains")
@@ -330,9 +358,12 @@ func main() {
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
 
-			if !dryRun {
-				httpx.Run("")
-			}
+			wg.Add(1)
+			go func(httpx tool.Httpx) {
+				if !dryRun {
+					httpx.Run("")
+				}
+			}(httpx)
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
@@ -340,9 +371,13 @@ func main() {
 			gw.Info("")
 			gw.Configure(gwConfig)
 
-			if !dryRun {
-				gw.Run("")
-			}
+			wg.Add(1)
+			go func(gw tool.Gowitness) {
+				if !dryRun {
+					gw.Run("")
+				}
+			}(gw)
+			wg.Wait()
 		},
 	}
 
