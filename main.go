@@ -176,6 +176,7 @@ func scanDomain(domain string) {
 	dorks.Info(domain)
 	wg.Add(1)
 	go func(dorks tool.Dorks, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			dorks.Run(domain)
 		}
@@ -199,6 +200,7 @@ func scanDomain(domain string) {
 
 	wg.Add(1)
 	go func(sf tool.Subfinder, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			sf.Run(domain)
 		}
@@ -217,6 +219,7 @@ func scanDomain(domain string) {
 
 	wg.Add(1)
 	go func(asf tool.Assetfinder, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			asf.Run(domain)
 		}
@@ -231,6 +234,7 @@ func scanDomain(domain string) {
 
 	wg.Add(1)
 	go func(dnsx tool.Dnsx, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			dnsx.Run("")
 		}
@@ -268,6 +272,7 @@ func scanDomain(domain string) {
 
 	wg.Add(1)
 	go func(httpx tool.Httpx, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			httpx.Run("")
 		}
@@ -283,6 +288,7 @@ func scanDomain(domain string) {
 
 	wg.Add(1)
 	go func(gw tool.Gowitness, domain string) {
+		defer wg.Done()
 		if !dryRun {
 			gw.Run("")
 		}
@@ -360,6 +366,7 @@ func main() {
 
 			wg.Add(1)
 			go func(httpx tool.Httpx) {
+				defer wg.Done()
 				if !dryRun {
 					httpx.Run("")
 				}
@@ -373,6 +380,7 @@ func main() {
 
 			wg.Add(1)
 			go func(gw tool.Gowitness) {
+				defer wg.Done()
 				if !dryRun {
 					gw.Run("")
 				}
