@@ -94,18 +94,21 @@ func readFile() {
 		var wg sync.WaitGroup
 		wg.Add(len(toolList))
 		for _, t := range toolList {
-			go func(t tool.ToolInterface) {
+			go func(t tool.ToolInterface, website string) {
 				defer wg.Done()
 				if !dryRun {
 					t.Run(website)
 				}
-			}(t)
+			}(t, website)
 		}
+		wg.Add(1)
+		go func(gb tool.GoBuster, website string) {
+			defer wg.Done()
+			if !dryRun {
+				gb.Run(website)
+			}
+		}(gb, website)
 		wg.Wait()
-
-		if !dryRun {
-			gb.Run(website)
-		}
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
