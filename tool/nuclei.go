@@ -1,8 +1,10 @@
 package tool
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/CMEPW/Yelaa/helper"
 	internal_runner "github.com/CMEPW/Yelaa/tool/override/nuclei/runner"
@@ -39,19 +41,28 @@ func installTemplatesIfNeeded(path string) {
 	}
 }
 
-func (*Nuclei) Configure(c interface{}) {}
+func (*Nuclei) Configure(c interface{}) {
+	outputDir := helper.YelaaPath + "/nuclei"
+
+	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+		if err = os.MkdirAll(outputDir, 0750); err != nil {
+			fmt.Println(err)
+		}
+	}
+}
 
 func (*Nuclei) Info(website string) {
 	color.Cyan("Running Nuclei on %s", website)
 }
 
 func (*Nuclei) Run(website string) {
+	outputFile := helper.YelaaPath + "/nuclei/scan_log_nuclei-" + time.Now().Format("2006-01-02_15-04-05") + ".txt"
 	templates_path := filepath.Join(helper.GetHome(), "nuclei-templates/")
 	opts := types.Options{
 		TemplatesDirectory: templates_path,
 		Targets:            []string{website},
 		NoInteractsh:       true,
-		Output:             "scan_log_nuclei.txt",
+		Output:             outputFile,
 	}
 
 	installTemplatesIfNeeded(templates_path)
