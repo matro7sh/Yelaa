@@ -171,19 +171,14 @@ func createOutDirectory() {
 
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
-	var wg sync.WaitGroup
 
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
-	wg.Add(1)
-	go func(dorks tool.Dorks, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			dorks.Run(domain)
-		}
-	}(dorks, domain)
+	if !dryRun {
+		dorks.Run(domain)
+	}
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -201,13 +196,9 @@ func scanDomain(domain string) {
 	sf.Info("")
 	sf.Configure(configuration)
 
-	wg.Add(1)
-	go func(sf tool.Subfinder, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			sf.Run(domain)
-		}
-	}(sf, domain)
+	if !dryRun {
+		sf.Run(domain)
+	}
 
 	asf := tool.Assetfinder{}
 	asfCfg := make(map[string]interface{})
@@ -220,13 +211,9 @@ func scanDomain(domain string) {
 	asf.Configure(asfCfg)
 	asf.Info(domain)
 
-	wg.Add(1)
-	go func(asf tool.Assetfinder, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			asf.Run(domain)
-		}
-	}(asf, domain)
+	if !dryRun {
+		asf.Run(domain)
+	}
 
 	dnsx := tool.Dnsx{}
 	dnsxConfig := make(map[string]interface{})
@@ -235,13 +222,9 @@ func scanDomain(domain string) {
 	dnsx.Info("")
 	dnsx.Configure(dnsxConfig)
 
-	wg.Add(1)
-	go func(dnsx tool.Dnsx, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			dnsx.Run("")
-		}
-	}(dnsx, domain)
+	if !dryRun {
+		dnsx.Run("")
+	}
 
 	domainsFiles := []string{asfOutfile, subdomainsFile.Name(), ipsFile.Name()}
 	var domainBuffer bytes.Buffer
@@ -273,13 +256,9 @@ func scanDomain(domain string) {
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 
-	wg.Add(1)
-	go func(httpx tool.Httpx, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			httpx.Run("")
-		}
-	}(httpx, domain)
+	if !dryRun {
+		httpx.Run("")
+	}
 
 	gw := tool.Gowitness{}
 	gwConfig := make(map[string]interface{})
@@ -289,15 +268,10 @@ func scanDomain(domain string) {
 	gw.Info("")
 	gw.Configure(gwConfig)
 
-	wg.Add(1)
-	go func(gw tool.Gowitness, domain string) {
-		defer wg.Done()
-		if !dryRun {
-			gw.Run("")
-		}
-	}(gw, domain)
+	if !dryRun {
+		gw.Run("")
+	}
 
-	wg.Wait()
 	subdomainsFile.Close()
 	ipsFile.Close()
 }
