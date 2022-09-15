@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/CMEPW/Yelaa/helper"
@@ -89,19 +90,25 @@ func readFile() {
 		}
 
 		color.Cyan("Running tools on %s", website)
+
+		var wg sync.WaitGroup
+		wg.Add(len(toolList))
 		for _, t := range toolList {
-			if t == toolList[len(toolList)-1] {
-				break
-			}
-
+			go func(t tool.ToolInterface, website string) {
+				defer wg.Done()
+				if !dryRun {
+					t.Run(website)
+				}
+			}(t, website)
+		}
+		wg.Add(1)
+		go func(gb tool.GoBuster, website string) {
+			defer wg.Done()
 			if !dryRun {
-				t.Run(website)
+				gb.Run(website)
 			}
-		}
-
-		if !dryRun {
-			gb.Run(website)
-		}
+		}(gb, website)
+		wg.Wait()
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
@@ -164,11 +171,14 @@ func createOutDirectory() {
 
 func scanDomain(domain string) {
 	fmt.Printf("\nTarget domain for this loop: %s\n\n", domain)
+
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
-	dorks.Run(domain)
+	if !dryRun {
+		dorks.Run(domain)
+	}
 
 	subdomainsFile, err := ioutil.TempFile(os.TempDir(), "yelaa-")
 	if err != nil {
@@ -316,6 +326,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
 			checkProxy()
+			var wg sync.WaitGroup
 
 			if targetPath == "" {
 				color.Red("Please provide a list of ips/domains")
@@ -330,9 +341,13 @@ func main() {
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
 
-			if !dryRun {
-				httpx.Run("")
-			}
+			wg.Add(1)
+			go func(httpx tool.Httpx) {
+				defer wg.Done()
+				if !dryRun {
+					httpx.Run("")
+				}
+			}(httpx)
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
@@ -340,9 +355,14 @@ func main() {
 			gw.Info("")
 			gw.Configure(gwConfig)
 
-			if !dryRun {
-				gw.Run("")
-			}
+			wg.Add(1)
+			go func(gw tool.Gowitness) {
+				defer wg.Done()
+				if !dryRun {
+					gw.Run("")
+				}
+			}(gw)
+			wg.Wait()
 		},
 	}
 
