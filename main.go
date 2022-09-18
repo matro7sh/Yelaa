@@ -85,6 +85,7 @@ func readFile() {
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
+		var wg sync.WaitGroup
 		defer scanner.Close()
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
@@ -92,14 +93,23 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 
+		wg.Add(len(toolList))
 		for _, t := range toolList {
+			go func(t tool.ToolInterface) {
+				defer wg.Done()
+				if !dryRun {
+					t.Run(website)
+				}
+			}(t)
+		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
 			if !dryRun {
-				t.Run(website)
+				gb.Run(website)
 			}
-		}
-		if !dryRun {
-			gb.Run(website)
-		}
+		}()
+		wg.Wait()
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
