@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/CMEPW/Yelaa/helper"
@@ -32,6 +31,7 @@ var (
 	domain        string
 	insecure      bool
 	dryRun        bool
+	nuclei        bool
 	rateLimit     int32
 )
 
@@ -68,7 +68,7 @@ func readFile() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
-	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.Nuclei{})
+	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{})
 
 	gb := tool.GoBuster{}
 	cfg := make(map[string]interface{})
@@ -85,7 +85,6 @@ func readFile() {
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
-		var wg sync.WaitGroup
 		defer scanner.Close()
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
@@ -93,23 +92,21 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 
-		wg.Add(len(toolList))
 		for _, t := range toolList {
-			go func(t tool.ToolInterface) {
-				defer wg.Done()
-				if !dryRun {
-					t.Run(website)
-				}
-			}(t)
-		}
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
 			if !dryRun {
-				gb.Run(website)
+				t.Run(website)
 			}
-		}()
-		wg.Wait()
+		}
+		if !dryRun {
+			gb.Run(website)
+		}
+		if nuclei && !dryRun {
+			nc := tool.Nuclei{}
+			nc.Configure(cfg)
+			nc.Info(website)
+			nc.Run(website)
+		}
+
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Printf("%v \n", err)
@@ -397,6 +394,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Run in dry-run mode")
+	rootCmd.PersistentFlags().BoolVar(&nuclei, "nuclei", false, "Enable nuclei with the command")
 	rootCmd.PersistentFlags().Int32Var(&rateLimit, "rate-limit", 100, "Rate limitation for nuclei and gobuster")
 	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
