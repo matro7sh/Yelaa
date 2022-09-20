@@ -74,7 +74,11 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## How to run osint on a domain
 
-`Yelaa osint -d <DOMAIN>`
+`Yelaa osint -t ./targets.txt -p http://localhost:8080 --path /tmp`
+
+or 
+
+`./Yelaa osint -d <domain>`
 
 This command use the default browser to open the dork page
 To run osint command on several domains run `Yelaa osint -t targets.txt`
@@ -110,7 +114,7 @@ Available Commands:
   checkAndScreen Run httpx and gowitness
   help            Help about any command
   osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan            It will run gobuster and store logs in .yelaa
+  scan            It will run gobuster and store logs in .yelaa (by default)
 
 Flags:
   -c, --client string         Client name
@@ -119,6 +123,7 @@ Flags:
   -k, --insecure              Allow insecure certificate
   -p, --proxy string          Add HTTP proxy
   -s, --shared string         path to shared folder
+      --path string           Output path (default "/home/$USER/.yelaa")
 
 Use "create [command] --help" for more information about a command.
 
