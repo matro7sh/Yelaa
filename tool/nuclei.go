@@ -13,7 +13,9 @@ import (
 	"github.com/projectdiscovery/nuclei/v2/pkg/types"
 )
 
-type Nuclei struct{}
+type Nuclei struct {
+	rateLimiter int32
+}
 
 func runWrapper(opts types.Options) {
 	protocolinit.Init(&opts)
@@ -41,8 +43,9 @@ func installTemplatesIfNeeded(path string) {
 	}
 }
 
-func (*Nuclei) Configure(c interface{}) {
+func (n *Nuclei) Configure(c interface{}) {
 	outputDir := helper.YelaaPath + "/nuclei"
+	n.rateLimiter = c.(map[string]interface{})["rateLimiter"].(int32)
 
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		if err = os.MkdirAll(outputDir, 0750); err != nil {

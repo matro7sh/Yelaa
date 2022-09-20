@@ -28,6 +28,11 @@ func (g *GoBuster) Configure(c interface{}) {
 	g.scanPath = c.(map[string]interface{})["scanPath"].(string)
 	outputDir := g.scanPath + "/gobuster"
 
+	blacklist := libgobuster.NewIntSet()
+	blacklist.Add(302)
+	blacklist.Add(404)
+	blacklist.Add(500)
+
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		if err = os.MkdirAll(outputDir, 0750); err != nil {
 			fmt.Println(err)
@@ -39,6 +44,7 @@ func (g *GoBuster) Configure(c interface{}) {
 	g.optDir.Method = "GET"
 	g.optDir.Timeout = time.Second * 10
 	g.optDir.WildcardForced = true
+	g.optDir.StatusCodesBlacklistParsed = blacklist
 	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt"}
 }
 

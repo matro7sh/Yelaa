@@ -32,6 +32,7 @@ var (
 	domain        string
 	insecure      bool
 	dryRun        bool
+	rateLimit     int32
 )
 
 type folder struct {
@@ -70,20 +71,21 @@ func readFile() {
 	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{}, &tool.Nuclei{})
 
 	gb := tool.GoBuster{}
-	gbCfg := make(map[string]interface{})
-	gbCfg["scanPath"] = scanPath
+	cfg := make(map[string]interface{})
+	cfg["scanPath"] = scanPath
+	cfg["rateLimiter"] = rateLimit
 
-	gb.Configure(gbCfg)
+	gb.Configure(cfg)
 
-	var i interface{}
 	for _, t := range toolList {
-		t.Configure(i)
+		t.Configure(cfg)
 	}
 
 	scanner := loadTargetFile()
 	for scanner.Scan() {
 		// check if its ip/domain
 		website := scanner.Text()
+		var wg sync.WaitGroup
 		defer scanner.Close()
 		if !strings.HasSuffix(website, "/") {
 			website += "/"
@@ -91,23 +93,22 @@ func readFile() {
 
 		color.Cyan("Running tools on %s", website)
 
-		var wg sync.WaitGroup
 		wg.Add(len(toolList))
 		for _, t := range toolList {
-			go func(t tool.ToolInterface, website string) {
+			go func(t tool.ToolInterface) {
 				defer wg.Done()
 				if !dryRun {
 					t.Run(website)
 				}
-			}(t, website)
+			}(t)
 		}
 		wg.Add(1)
-		go func(gb tool.GoBuster, website string) {
+		go func() {
 			defer wg.Done()
 			if !dryRun {
 				gb.Run(website)
 			}
-		}(gb, website)
+		}()
 		wg.Wait()
 	}
 	if err := scanner.Err(); err != nil {
@@ -405,6 +406,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVarP(&proxy, "proxy", "p", "", "Add HTTP proxy")
 	rootCmd.PersistentFlags().BoolVarP(&insecure, "insecure", "k", false, "Allow insecure certificate")
 	rootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", false, "Run in dry-run mode")
+	rootCmd.PersistentFlags().Int32Var(&rateLimit, "rate-limit", 100, "Rate limitation for nuclei and gobuster")
 	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
