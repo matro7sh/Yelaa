@@ -103,6 +103,7 @@ func readFile() {
 		if nuclei && !dryRun {
 			nc := tool.Nuclei{}
 			nc.Configure(cfg)
+			nc.Info(website)
 			nc.Run(website)
 		}
 
