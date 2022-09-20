@@ -327,7 +327,6 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
 			checkProxy()
-			var wg sync.WaitGroup
 
 			if targetPath == "" {
 				color.Red("Please provide a list of ips/domains")
@@ -341,29 +340,21 @@ func main() {
 			httpxConfig["output"] = filepath
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
-
-			wg.Add(1)
-			go func(httpx tool.Httpx) {
-				defer wg.Done()
-				if !dryRun {
-					httpx.Run("")
-				}
-			}(httpx)
+			if !dryRun {
+				httpx.Run("")
+			}
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
+			gwConfig["scanPath"] = scanPath
 			gwConfig["file"] = filepath
 			gw.Info("")
 			gw.Configure(gwConfig)
 
-			wg.Add(1)
-			go func(gw tool.Gowitness) {
-				defer wg.Done()
-				if !dryRun {
-					gw.Run("")
-				}
-			}(gw)
-			wg.Wait()
+			if !dryRun {
+				gw.Run("")
+			}
+
 		},
 	}
 
