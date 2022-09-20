@@ -41,7 +41,7 @@ func (g *Gowitness) Configure(config interface{}) {
 	chrm.Timeout = 10
 
 	g.file = config.(map[string]interface{})["file"].(string)
-    g.scanPath = config.(map[string]interface{})["scanPath"].(string)
+	g.scanPath = config.(map[string]interface{})["scanPath"].(string)
 
 	g.screenshotPath = g.scanPath + "/screenshots-" + time.Now().Format("2006-01-02_15-04-05")
 

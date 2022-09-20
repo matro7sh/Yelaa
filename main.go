@@ -351,6 +351,7 @@ func main() {
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
+			gwConfig["scanPath"] = scanPath
 			gwConfig["file"] = filepath
 			gw.Info("")
 			gw.Configure(gwConfig)
