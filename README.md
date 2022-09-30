@@ -76,7 +76,7 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 `Yelaa osint -t ./targets.txt -p http://localhost:8080 --path /tmp`
 
-or 
+or
 
 `./Yelaa osint -d <domain>`
 
@@ -124,6 +124,8 @@ Flags:
   -p, --proxy string          Add HTTP proxy
   -s, --shared string         path to shared folder
       --path string           Output path (default "/home/$USER/.yelaa")
+      --nuclei                Run nuclei
+  -w  --wordlist string       Path to wordlist that's gobuster will use for scan command (default "yelaa.txt")
 
 Use "create [command] --help" for more information about a command.
 

@@ -33,6 +33,7 @@ var (
 	dryRun        bool
 	nuclei        bool
 	rateLimit     int32
+	wordlist      string
 )
 
 type folder struct {
@@ -74,6 +75,7 @@ func readFile() {
 	cfg := make(map[string]interface{})
 	cfg["scanPath"] = scanPath
 	cfg["rateLimiter"] = rateLimit
+	cfg["wordlist"] = wordlist
 
 	gb.Configure(cfg)
 
@@ -275,7 +277,7 @@ func scanDomain(domain string) {
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.6.0", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.6.1", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -285,6 +287,10 @@ func main() {
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			currentTime := time.Now()
+			if _, err := os.Stat(wordlist); os.IsNotExist(err) {
+				color.Red("Wordlist not found")
+				os.Exit(1)
+			}
 			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
 			checkProxy()
 			readFile()
@@ -399,6 +405,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVar(&scanPath, "path", helper.YelaaPath, "Output path")
 
 	cmdScan.Flags().StringVarP(&targetPath, "target", "t", "", "Target file")
+	cmdScan.Flags().StringVarP(&wordlist, "wordlist", "w", "yelaa.txt", "Path to custom wordlist to use with gobuster")
 
 	cmdOsint.Flags().StringVarP(&domain, "domain", "d", "", "Target domain")
 	cmdOsint.Flags().StringVarP(&targetPath, "target", "t", "", "Target domains file")

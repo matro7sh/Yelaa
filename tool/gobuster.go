@@ -25,6 +25,7 @@ func (s *GoBuster) Info(website string) {
 
 func (g *GoBuster) Configure(c interface{}) {
 
+	wordlist := c.(map[string]interface{})["wordlist"].(string)
 	g.scanPath = c.(map[string]interface{})["scanPath"].(string)
 	outputDir := g.scanPath + "/gobuster"
 
@@ -45,7 +46,7 @@ func (g *GoBuster) Configure(c interface{}) {
 	g.optDir.Timeout = time.Second * 10
 	g.optDir.WildcardForced = true
 	g.optDir.StatusCodesBlacklistParsed = blacklist
-	g.opts = &libgobuster.Options{Threads: 10, Wordlist: "yelaa.txt"}
+	g.opts = &libgobuster.Options{Threads: 10, Wordlist: wordlist}
 }
 
 func (g *GoBuster) Run(website string) {
