@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -66,7 +65,8 @@ func loadTargetFile() *FileScanner {
 }
 
 func readFile() {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
 	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{})
@@ -150,14 +150,16 @@ func folderNameFactory(names ...string) []folder {
 }
 
 func checkProxy() {
-	os.Setenv("HTTP_PROXY", proxy)
-	os.Setenv("HTTPS_PROXY", proxy)
+    os.Setenv("HTTP_PROXY", proxy)
+    os.Setenv("HTTPS_PROXY", proxy)
 
 	if proxy != "" {
 		color.Cyan("Proxy configuration: %s", proxy)
 	} else {
 		color.Cyan("No proxy has been set")
 	}
+
+
 }
 
 func createOutDirectory() {

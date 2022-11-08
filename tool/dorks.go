@@ -19,6 +19,14 @@ func (d *Dorks) Configure(c interface{}) {}
 func (d *Dorks) Run(url string) {
 	var err error
 
+    /*
+        TODO(winds0r):
+
+        perform proxy check and change the command at runtime,
+        use a module with a cleaner interface because interpolationg through
+        exec.Command will be very annoying.
+    */
+
 	switch runtime.GOOS {
 	case "linux":
 		err = exec.Command("xdg-open", "https://www.google.com/search?q=site:"+url+"+ext:doc+OR+ext:docx+OR+ext:csv+OR+ext:pdf+OR+ext:txt+OR+ext:log+OR+ext:bak").Start()
