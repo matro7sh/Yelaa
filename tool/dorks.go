@@ -20,7 +20,7 @@ func (d *Dorks) Configure(c interface{}) {
 
     /*
         gork will parse the DOM instead of making an API request, because it's easier for the end user
-        (no API key to worry about etc), so we probably should be changing the page's layout
+        (no API key to worry about etc), so we probably should **not** be changing the page's layout
 
         but, it's here in case something breaks
     */
