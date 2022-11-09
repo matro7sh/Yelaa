@@ -35,20 +35,24 @@ require (
 	git.mills.io/prologic/smtpd v0.0.0-20210710122116-a525b76c287a // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/Mzack9999/ldapserver v1.0.2-0.20211229000134-b44a0d6ad0dd // indirect
+	github.com/PuerkitoBio/goquery v1.6.0 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/akrylysov/pogreb v0.10.1 // indirect
 	github.com/alecthomas/jsonschema v0.0.0-20211022214203-8b29eab41725 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
+	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/andygrunwald/go-jira v1.14.0 // indirect
 	github.com/antchfx/htmlquery v1.2.4 // indirect
+	github.com/antchfx/xmlquery v1.0.0 // indirect
 	github.com/antchfx/xpath v1.2.0 // indirect
 	github.com/aws/aws-sdk-go v1.42.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.0.1 // indirect
 	github.com/bluele/gcache v0.0.2 // indirect
+	github.com/bogdzn/gork v0.0.3 // indirect
 	github.com/c4milo/unpackit v0.1.0 // indirect
 	github.com/caddyserver/certmagic v0.15.2 // indirect
 	github.com/chromedp/cdproto v0.0.0-20210728214956-1fab41c4e0b7 // indirect
@@ -65,9 +69,11 @@ require (
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-rod/rod v0.101.8 // indirect
 	github.com/goburrow/cache v0.1.4 // indirect
+	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
+	github.com/gocolly/colly/v2 v2.0.1 // indirect
 	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -91,6 +97,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karlseguin/ccache v2.0.3+incompatible // indirect
+	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
@@ -139,7 +146,9 @@ require (
 	github.com/projectdiscovery/wappalyzergo v0.0.18 // indirect
 	github.com/projectdiscovery/yamldoc-go v1.0.3-0.20211126104922-00d2c6bb43b6 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/rocketlaunchr/google-search v1.1.4 // indirect
 	github.com/rs/xid v1.3.0 // indirect
+	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/segmentio/ksuid v1.0.4 // indirect
 	github.com/shirou/gopsutil/v3 v3.21.9 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
@@ -147,6 +156,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spyse-com/go-spyse v1.2.3 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
+	github.com/temoto/robotstxt v1.1.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
