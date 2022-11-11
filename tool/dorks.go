@@ -35,7 +35,7 @@ func (d *Dorks) Configure(c interface{}) {
 func (d *Dorks) Run(url string) {
     opts := &dorks.Options{
         Outfile: d.outfile,
-        AppendResults: false,
+        AppendResults: true, /* we could be running this in a loop, should not erase former results */
         Proxy: d.proxy,
         Extensions: d.extensions,
         UserAgent: d.userAgent,

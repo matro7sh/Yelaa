@@ -6,6 +6,7 @@ require (
 	github.com/OJ/gobuster/v3 v3.1.0
 	github.com/apex/log v1.9.0
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/bogdzn/gork v0.0.3
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/fatih/color v1.13.0
 	github.com/go-playground/validator/v10 v10.10.0
@@ -52,7 +53,6 @@ require (
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.0.1 // indirect
 	github.com/bluele/gcache v0.0.2 // indirect
-	github.com/bogdzn/gork v0.0.3 // indirect
 	github.com/c4milo/unpackit v0.1.0 // indirect
 	github.com/caddyserver/certmagic v0.15.2 // indirect
 	github.com/chromedp/cdproto v0.0.0-20210728214956-1fab41c4e0b7 // indirect
