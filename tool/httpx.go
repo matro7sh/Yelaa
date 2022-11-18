@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/CMEPW/Yelaa/helper"
 	"github.com/fatih/color"
 
 	customport "github.com/projectdiscovery/httpx/common/customports"

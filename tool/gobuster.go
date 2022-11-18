@@ -43,8 +43,8 @@ func (g *GoBuster) Configure(c interface{}) {
 	}
 
     g.proxy = c.(map[string]interface{})["proxy"].(string)
-    g.optDir.UserAgent = helper.GetUserAgent()
 	g.optDir = gobusterdir.NewOptionsDir()
+    g.optDir.UserAgent = helper.GetUserAgent()
 	g.optDir.StatusCodesBlacklistParsed.Add(404)
 	g.optDir.NoTLSValidation = true
 	g.optDir.Method = "GET"
