@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/CMEPW/Yelaa/helper"
 	"github.com/fatih/color"
 )
 
@@ -17,7 +18,9 @@ func (s *Robot) Info(website string) {
 }
 
 func (g *Robot) Configure(c interface{}) {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 }
 
 func (g *Robot) Run(domain string) {
@@ -39,7 +42,7 @@ func (g *Robot) Run(domain string) {
 			color.Green(sb)
 
 		} else {
-			color.Yellow("----- Sorry get 404 status code for this robots.txt ----- ")
+			color.Yellow("----- Sorry, got 404 status code for robots.txt ----- ")
 		}
 	}
 

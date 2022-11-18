@@ -22,5 +22,5 @@ func TmpRemover() {
 			fmt.Printf("%s", err)
 		}
 	}
-	fmt.Print("All temporary file has been succesfully removed\n")
+	fmt.Print("All temporary file have been succesfully removed\n")
 }

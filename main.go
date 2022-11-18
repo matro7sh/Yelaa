@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"strings"
@@ -66,13 +65,15 @@ func loadTargetFile() *FileScanner {
 }
 
 func readFile() {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
 	toolList = append(toolList, &tool.Robot{}, &tool.Sitemap{})
 
 	gb := tool.GoBuster{}
 	cfg := make(map[string]interface{})
+    cfg["proxy"] = proxy
 	cfg["scanPath"] = scanPath
 	cfg["rateLimiter"] = rateLimit
 	cfg["wordlist"] = wordlist
@@ -150,14 +151,16 @@ func folderNameFactory(names ...string) []folder {
 }
 
 func checkProxy() {
-	os.Setenv("HTTP_PROXY", proxy)
-	os.Setenv("HTTPS_PROXY", proxy)
+    os.Setenv("HTTP_PROXY", proxy)
+    os.Setenv("HTTPS_PROXY", proxy)
 
 	if proxy != "" {
 		color.Cyan("Proxy configuration: %s", proxy)
 	} else {
 		color.Cyan("No proxy has been set")
 	}
+
+
 }
 
 func createOutDirectory() {
@@ -176,7 +179,6 @@ func scanDomain(domain string) {
 	dorksCfg := make(map[string]interface{})
 
     dorksCfg["outfile"] = scanPath + "/dorks.txt"
-    dorksCfg["proxy"] = proxy
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
@@ -197,6 +199,7 @@ func scanDomain(domain string) {
 	sf := tool.Subfinder{}
 	configuration := make(map[string]interface{})
 	configuration["filename"] = subdomainsFile.Name()
+    configuration["proxy"] = proxy
 	sf.Info("")
 	sf.Configure(configuration)
 
@@ -257,6 +260,7 @@ func scanDomain(domain string) {
 	httpxConfig := make(map[string]interface{})
 	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
+    httpxConfig["proxy"] = proxy
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 
@@ -268,6 +272,7 @@ func scanDomain(domain string) {
 	gwConfig := make(map[string]interface{})
 	gwConfig["file"] = filepath
 	gwConfig["scanPath"] = scanPath
+    gwConfig["proxy"] = proxy
 
 	gw.Info("")
 	gw.Configure(gwConfig)
@@ -281,7 +286,7 @@ func scanDomain(domain string) {
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.6.2", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.7.0", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -353,6 +358,7 @@ func main() {
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
+            gwConfig["proxy"] = proxy
 			gwConfig["scanPath"] = scanPath
 			gwConfig["file"] = filepath
 			gw.Info("")

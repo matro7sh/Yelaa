@@ -1,5 +1,6 @@
 
 TARGET 		= Yelaa
+DYN_TARGET 	= DynYelaa
 SRC 		= main.go
 
 GROUP_ID 	= $$(id -g)
@@ -24,6 +25,10 @@ docker: ## Builds a docker image from source
 		--build-arg GROUP_ID=$(GROUP_ID) \
 		.
 
+.PHONY: dynamic
+dynamic: ## Builds a dynamically linked binary (if you really need to use Proxychains)
+	@./scripts/compile_dyn.sh
+
 .PHONY: clean
 clean: ## Cleans up the project
-	rm -f $(TARGET)
+	rm -f $(TARGET) $(DynYelaa)

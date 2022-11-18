@@ -10,6 +10,7 @@ target.txt
 # Build files
 dist/
 Yelaa
+DynYelaa
 nuclei-templates/
 
 # Out files

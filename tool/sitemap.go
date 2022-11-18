@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/CMEPW/Yelaa/helper"
 	"github.com/fatih/color"
 )
 
@@ -19,7 +20,8 @@ func (s *Sitemap) Info(website string) {
 }
 
 func (s *Sitemap) Configure(c interface{}) {
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 }
 
 func (s *Sitemap) Run(domain string) {
@@ -48,7 +50,7 @@ func (s *Sitemap) Run(domain string) {
 			color.Green(sb)
 
 		} else {
-			color.Yellow("-----  Sorry get 404 status code for this sitemap.xml -----")
+			color.Yellow("-----  Sorry, got 404 status code for sitemap.xml -----")
 		}
 	}
 }
