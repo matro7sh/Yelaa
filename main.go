@@ -151,7 +151,6 @@ func folderNameFactory(names ...string) []folder {
 }
 
 func checkProxy() {
-    os.Setenv("YELAA_PROXY", proxy)
     os.Setenv("HTTP_PROXY", proxy)
     os.Setenv("HTTPS_PROXY", proxy)
 
