@@ -178,7 +178,6 @@ func scanDomain(domain string) {
 	dorksCfg := make(map[string]interface{})
 
     dorksCfg["outfile"] = scanPath + "/dorks.txt"
-    dorksCfg["proxy"] = proxy
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
@@ -270,6 +269,7 @@ func scanDomain(domain string) {
 	gwConfig := make(map[string]interface{})
 	gwConfig["file"] = filepath
 	gwConfig["scanPath"] = scanPath
+    gwConfig["proxy"] = proxy
 
 	gw.Info("")
 	gw.Configure(gwConfig)
@@ -355,6 +355,7 @@ func main() {
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
+            gwConfig["proxy"] = proxy
 			gwConfig["scanPath"] = scanPath
 			gwConfig["file"] = filepath
 			gw.Info("")

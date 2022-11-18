@@ -27,6 +27,7 @@ type Gowitness struct {
 	screenshotPath string
 	file           string
 	swg            sizedwaitgroup.SizedWaitGroup
+    proxy          string
 }
 
 func (g *Gowitness) Info(_ string) {
@@ -39,6 +40,7 @@ func (g *Gowitness) Configure(config interface{}) {
 	chrm.Delay = 0
 	chrm.FullPage = false
 	chrm.Timeout = 10
+    chrm.Proxy = config.(map[string]interface{})["proxy"].(string)
 
 	g.file = config.(map[string]interface{})["file"].(string)
 	g.scanPath = config.(map[string]interface{})["scanPath"].(string)
