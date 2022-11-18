@@ -66,7 +66,7 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 `Yelaa scan -t <PathToTargetFile>`
 
-## Use http proxy
+## Use http / socks proxy
 
 `Yelaa scan -p http://localhost:8080 -target ./targets.txt`
 
@@ -132,6 +132,22 @@ Use "create [command] --help" for more information about a command.
 ```
 
 > This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
+
+## run with Proxychains
+
+> this is not the recommanded way to use a proxy! You can just specify a proxy with the `-p` option!
+
+If you *must* run Yelaa through Proxychains, it is possible but will require a bit of tweaking.
+The reason for that is that Yelaa is statically compiled, and `Proxychains` uses `LD_PRELOAD` tricks to set a proxy.
+You will have to compile Yelaa dynamically, using `gcc-go` (you will have to [install it yourself](https://go.dev/doc/install/gccgo) before compiling):
+
+```bash
+git clone https://github.com/CMEPW/Yelaa.git
+
+cd Yelaa
+
+make dynamic
+```
 
 # Contributors
 

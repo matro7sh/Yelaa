@@ -26,7 +26,7 @@ docker: ## Builds a docker image from source
 		.
 
 .PHONY: dynamic
-dynamic: ## Builds a dynamically linked binary (if you need to use Proxychains with it)
+dynamic: ## Builds a dynamically linked binary (if you really need to use Proxychains)
 	@./scripts/compile_dyn.sh
 
 .PHONY: clean
