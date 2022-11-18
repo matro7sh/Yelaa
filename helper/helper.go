@@ -2,6 +2,7 @@ package helper
 
 import (
 	"net/http"
+    "net/url"
 	"os"
 )
 
@@ -14,11 +15,12 @@ func GetHome() (home string) {
 
 func GetHttpTransport() (*http.Transport) {
     var proxy = os.Getenv("HTTP_PROXY")
+    url, err := url.Parse(proxy)
 
-    if proxy != "" {
+    if proxy != "" && err == nil {
         return &http.Transport{
 			DisableKeepAlives: true,
-            Proxy: http.ProxyFromEnvironment,
+            Proxy: http.ProxyURL(url),
         }
     }
     return &http.Transport{}

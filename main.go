@@ -73,6 +73,7 @@ func readFile() {
 
 	gb := tool.GoBuster{}
 	cfg := make(map[string]interface{})
+    cfg["proxy"] = proxy
 	cfg["scanPath"] = scanPath
 	cfg["rateLimiter"] = rateLimit
 	cfg["wordlist"] = wordlist
@@ -150,6 +151,7 @@ func folderNameFactory(names ...string) []folder {
 }
 
 func checkProxy() {
+    os.Setenv("YELAA_PROXY", proxy)
     os.Setenv("HTTP_PROXY", proxy)
     os.Setenv("HTTPS_PROXY", proxy)
 
@@ -198,6 +200,7 @@ func scanDomain(domain string) {
 	sf := tool.Subfinder{}
 	configuration := make(map[string]interface{})
 	configuration["filename"] = subdomainsFile.Name()
+    configuration["proxy"] = proxy
 	sf.Info("")
 	sf.Configure(configuration)
 
@@ -258,6 +261,7 @@ func scanDomain(domain string) {
 	httpxConfig := make(map[string]interface{})
 	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
+    httpxConfig["proxy"] = proxy
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 

@@ -14,6 +14,7 @@ import (
 )
 
 type Nuclei struct {
+    proxy       string
 	rateLimiter int32
 }
 
@@ -46,6 +47,9 @@ func installTemplatesIfNeeded(path string) {
 func (n *Nuclei) Configure(c interface{}) {
 	outputDir := helper.YelaaPath + "/nuclei"
 	n.rateLimiter = c.(map[string]interface{})["rateLimiter"].(int32)
+
+    proxy := c.(map[string]interface{})["proxy"].(string)
+    n.proxy = proxy
 
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		if err = os.MkdirAll(outputDir, 0750); err != nil {
