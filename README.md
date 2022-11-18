@@ -52,9 +52,9 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 sudo  apt install ./google-chrome-stable_current_amd64.deb
 
-wget https://github.com/CMEPW/Yelaa/releases/download/v1.6.2/Yelaa_1.6.2_Linux_x86_64.tar.gz
+wget https://github.com/CMEPW/Yelaa/releases/download/v1.7.0/Yelaa_1.7.0_Linux_x86_64.tar.gz
 
-tar -xvf Yelaa_1.6.2_Linux_x86_64.tar.gz
+tar -xvf Yelaa_1.7.0_Linux_x86_64.tar.gz
 ./Yelaa -h
 ```
 
@@ -68,9 +68,17 @@ You can run `Yelaa create -c <client> -s <PathToSharedFolder>`
 
 ## Use http / socks proxy
 
-`Yelaa scan -p http://localhost:8080 -target ./targets.txt`
+```bash
+# using a http proxy
+Yelaa scan -p http://localhost:8080 -target ./targets.txt`
+
+# or, socks5 proxy
+Yelaa scan -p socks5://localhost:9050 -target ./targets.txt`
+```
 
 >Flag `-k` is available to skip tls configuration
+
+>Please prefer using socks5 as much as possible, as socks4 can fail depending on your go version
 
 ## How to run osint on a domain
 
@@ -89,11 +97,16 @@ To run osint command on several domains run `Yelaa osint -t targets.txt`
 
 ## Low fruits : Infrastructure Penetration Testing
 
-`nmap -T4 -Pn -p 80,443,8080,8443 --open -oA EvilCorp-24 192.168.1.0/24`
+```bash
+# run scan on ports 80, 443, 8080 & 8443
+nmap -T4 -Pn -p 80,443,8080,8443 --open -oA EvilCorp-24 192.168.1.0/24
 
-then `cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt`
+# fetch tcp open ports & put them in web-targets.txt
+cat *.gnmap | grep -i "open/tcp" | cut -d " " -f2 | sort -u > web-targets.txt
 
-Finaly `./Yelaa checkAndScreen -t ./web-targets.txt`
+# run check-and-screen to quickly map infra
+./Yelaa checkAndScreen -t ./web-targets.txt
+```
 
 ## Help
 
@@ -112,23 +125,25 @@ Usage:
 
 Available Commands:
   checkAndScreen Run httpx and gowitness
-  help            Help about any command
-  osint           Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan            It will run gobuster and store logs in .yelaa (by default)
+  completion     Generate the autocompletion script for the specified shell
+  help           Help about any command
+  osint          Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
+  scan           It will run Nuclei templates, dirsearch and more.
 
 Flags:
   -c, --client string         Client name
+      --dry-run               Run in dry-run mode
   -e, --excludedType string   excluded type
   -h, --help                  help for create
   -k, --insecure              Allow insecure certificate
-  -p, --proxy string          Add HTTP proxy
-  -s, --shared string         path to shared folder
+      --nuclei                Enable nuclei with the command
       --path string           Output path (default "/home/$USER/.yelaa")
-      --nuclei                Run nuclei
-  -w  --wordlist string       Path to wordlist that's gobuster will use for scan command (default "yelaa.txt")
+  -p, --proxy string          Add HTTP proxy
+      --rate-limit int32      Rate limitation for nuclei and gobuster (default 100)
+  -s, --shared string         path to shared folder
 
 Use "create [command] --help" for more information about a command.
-
+All temporary file have been succesfully removed
 ```
 
 > This script will create a default structure using `create` command, as well as a cherytree database with payloads for external testing and useful commands for internal testing
