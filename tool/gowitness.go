@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CMEPW/Yelaa/helper"
+
 	"github.com/fatih/color"
 	"github.com/remeh/sizedwaitgroup"
 	"github.com/rs/zerolog"
@@ -41,6 +43,7 @@ func (g *Gowitness) Configure(config interface{}) {
 	chrm.FullPage = false
 	chrm.Timeout = 10
     chrm.Proxy = config.(map[string]interface{})["proxy"].(string)
+    chrm.UserAgent = helper.GetUserAgent()
 
 	g.file = config.(map[string]interface{})["file"].(string)
 	g.scanPath = config.(map[string]interface{})["scanPath"].(string)
