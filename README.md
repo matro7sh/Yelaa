@@ -128,7 +128,7 @@ Available Commands:
   completion     Generate the autocompletion script for the specified shell
   help           Help about any command
   osint          Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain
-  scan           It will run Nuclei templates, dirsearch and more.
+  scan           Runs Nuclei templates, gobuster and more.
 
 Flags:
   -c, --client string         Client name

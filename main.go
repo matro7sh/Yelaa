@@ -291,8 +291,8 @@ func main() {
 
 	var cmdScan = &cobra.Command{
 		Use:   "scan",
-		Short: "It will run Nuclei templates, dirsearch and more.",
-		Long:  `We also make screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
+		Short: "Runs Nuclei templates, gobuster and more.",
+		Long:  `We also take screenshot using gowitness and grap robots.txt, sitemaps.xml and gowitness.`,
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			currentTime := time.Now()
@@ -309,7 +309,7 @@ func main() {
 	var cmdOsint = &cobra.Command{
 		Use:   "osint",
 		Short: "Run subfinder, dnsx and httpx to find ips and subdomains of a specific domain",
-		Long:  "First run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httx against all the domains found",
+		Long:  "Run subfinder on the domain to find all the subdomains, then pass the subdomains to dnsx to find all the ips and finally use httpx against all the domains found",
 		Args:  cobra.MinimumNArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
