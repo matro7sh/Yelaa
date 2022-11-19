@@ -19,16 +19,23 @@ func (s *Sitemap) Info(website string) {
 	color.Cyan("Looking for sitemap.xml on: %s ", website)
 }
 
-func (s *Sitemap) Configure(c interface{}) {
-    transport := helper.GetHttpTransport()
-	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-}
+func (s *Sitemap) Configure(c interface{}) {}
 
 func (s *Sitemap) Run(domain string) {
 	domain = strings.TrimSuffix(domain, "/")
 
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
+    client := &http.Client{
+        Transport: transport,
+    }
+
 	for _, u := range getUrls(domain) {
-		resp, err := http.Get(fmt.Sprint(u, "/sitemap.xml"))
+        req, err := http.NewRequest("GET", fmt.Sprint(u, "/sitemap.xml"), nil)
+        req.Header.Add("User-Agent", helper.GetUserAgent())
+
+        resp, err := client.Do(req)
 
 		if err != nil {
 			fmt.Printf("%v", err)
@@ -42,7 +49,6 @@ func (s *Sitemap) Run(domain string) {
 
 			for headerName, headerValue := range resp.Header {
 				if contains(GlobalHeaders, headerName) {
-					//		fmt.Println("Header + " + headerName + "Found : " + headerValue)
 					fmt.Printf("Found Header: %s | %s \n", headerName, headerValue)
 				}
 			}
