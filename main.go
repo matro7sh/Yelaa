@@ -178,7 +178,8 @@ func scanDomain(domain string) {
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 
-    dorksCfg["outfile"] = scanPath + "/dorks.txt"
+    dorks_outfile := fmt.Sprintf("%s/dorks_%s.txt", scanPath, domain)
+    dorksCfg["outfile"] = dorks_outfile
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
