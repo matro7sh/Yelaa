@@ -7,6 +7,7 @@ import (
 
 type Dorks struct{
     outfile         string
+    proxy           string
 }
 
 func (d *Dorks) Info(url string) {
@@ -15,12 +16,14 @@ func (d *Dorks) Info(url string) {
 
 func (d *Dorks) Configure(c interface{}) {
     d.outfile = c.(map[string]interface{})["outfile"].(string)
+    d.proxy =  c.(map[string]interface{})["proxy"].(string)
 }
 
 func (d *Dorks) Run(domain string) {
     opts := &dorks.Options{
+        Proxy: d.proxy,
         Outfile: d.outfile,
-        AppendResults: false, /* we could be running this in a loop, should not erase former results */
+        AppendResults: false,
         Extensions: dorks.DefaultFileExtensions(),
         UserAgent: dorks.DefaultUserAgent(),
         Target: domain,

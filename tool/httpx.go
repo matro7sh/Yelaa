@@ -3,9 +3,9 @@ package tool
 import (
 	"encoding/json"
 	"fmt"
-    "strings"
 	"io/ioutil"
 	"regexp"
+	"strings"
 
 	"github.com/fatih/color"
 
@@ -52,6 +52,7 @@ func (h *Httpx) Configure(config interface{}) {
 		Retries:           2,
 		Threads:           50,
 		Timeout:           8,
+        RandomAgent:       true,
 	}
 
     if strings.HasPrefix(proxy, "http") {

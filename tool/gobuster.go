@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/CMEPW/Yelaa/helper"
 	"github.com/OJ/gobuster/v3/cli"
 	"github.com/OJ/gobuster/v3/gobusterdir"
 	"github.com/OJ/gobuster/v3/libgobuster"
@@ -43,13 +44,17 @@ func (g *GoBuster) Configure(c interface{}) {
 
     g.proxy = c.(map[string]interface{})["proxy"].(string)
 	g.optDir = gobusterdir.NewOptionsDir()
+    g.optDir.UserAgent = helper.GetUserAgent()
 	g.optDir.StatusCodesBlacklistParsed.Add(404)
 	g.optDir.NoTLSValidation = true
 	g.optDir.Method = "GET"
 	g.optDir.Timeout = time.Second * 10
 	g.optDir.WildcardForced = true
 	g.optDir.StatusCodesBlacklistParsed = blacklist
-	g.opts = &libgobuster.Options{Threads: 10, Wordlist: wordlist}
+	g.opts = &libgobuster.Options{
+        Threads: 10,
+        Wordlist: wordlist,
+    }
 }
 
 func (g *GoBuster) Run(website string) {

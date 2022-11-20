@@ -18,17 +18,26 @@ func (s *Robot) Info(website string) {
 }
 
 func (g *Robot) Configure(c interface{}) {
-
-    transport := helper.GetHttpTransport()
-	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 }
 
 func (g *Robot) Run(domain string) {
 
 	domain = strings.TrimSuffix(domain, "/")
 
+    transport := helper.GetHttpTransport()
+	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
+    client := &http.Client{
+        Transport: transport,
+    }
+
 	for _, u := range getUrls(domain) {
-		resp, err := http.Get(fmt.Sprint(u, "/robots.txt"))
+
+        req, err := http.NewRequest("GET", fmt.Sprint(u, "/robots.txt"), nil)
+        req.Header.Add("User-Agent", helper.GetUserAgent())
+
+        resp, err := client.Do(req)
+
 		if err != nil {
 			fmt.Printf("%v", err)
 		}

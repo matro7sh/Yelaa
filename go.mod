@@ -9,7 +9,7 @@ require (
 	github.com/bogdzn/gork v0.0.4
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/fatih/color v1.13.0
-	github.com/go-playground/validator/v10 v10.10.0
+	github.com/go-playground/validator/v10 v10.11.1
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/karrick/godirwalk v1.16.1
 	github.com/logrusorgru/aurora v2.0.3+incompatible
@@ -18,14 +18,15 @@ require (
 	github.com/projectdiscovery/dnsx v1.0.3
 	github.com/projectdiscovery/fileutil v0.0.0-20210928100737-cab279c5d4b5
 	github.com/projectdiscovery/folderutil v0.0.0-20211210155654-27636c840d7c
+	github.com/projectdiscovery/goflags v0.0.8-0.20211028121123-edf02bc05b1a
 	github.com/projectdiscovery/gologger v1.1.4
 	github.com/projectdiscovery/httpx v1.1.4
 	github.com/projectdiscovery/nuclei-updatecheck-api v0.0.0-20211006155443-c0a8d610a4df
 	github.com/projectdiscovery/nuclei/v2 v2.5.8
 	github.com/projectdiscovery/subfinder/v2 v2.4.9
 	github.com/remeh/sizedwaitgroup v1.0.0
-	github.com/rs/zerolog v1.23.0
-	github.com/sensepost/gowitness v0.0.0-20210807140749-38b57db38ae5
+	github.com/rs/zerolog v1.28.0
+	github.com/sensepost/gowitness v0.0.0-20221114090116-2b9d5110c962
 	github.com/spf13/cobra v1.6.1
 	github.com/spiral-sec/assetfinder v0.2.0
 	github.com/tj/go-update v2.2.5-0.20200519121640-62b4b798fd68+incompatible
@@ -55,11 +56,11 @@ require (
 	github.com/bluele/gcache v0.0.2 // indirect
 	github.com/c4milo/unpackit v0.1.0 // indirect
 	github.com/caddyserver/certmagic v0.15.2 // indirect
-	github.com/chromedp/cdproto v0.0.0-20210728214956-1fab41c4e0b7 // indirect
-	github.com/chromedp/chromedp v0.7.4 // indirect
+	github.com/chromedp/cdproto v0.0.0-20221114202156-f470c7c7306e // indirect
+	github.com/chromedp/chromedp v0.8.6 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/cnf/structhash v0.0.0-20201127153200-e1b16c1ebc08 // indirect
-	github.com/corona10/goimagehash v1.0.3 // indirect
+	github.com/corona10/goimagehash v1.1.0 // indirect
 	github.com/corpix/uarand v0.1.1 // indirect
 	github.com/dimchansky/utfbom v1.1.1 // indirect
 	github.com/dsnet/compress v0.0.1 // indirect
@@ -92,7 +93,7 @@ require (
 	github.com/itchyny/gojq v0.12.5 // indirect
 	github.com/itchyny/timefmt-go v0.1.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -106,10 +107,10 @@ require (
 	github.com/libdns/libdns v0.2.1 // indirect
 	github.com/lor00x/goldap v0.0.0-20180618054307-a546dffdd1a3 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
-	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/mattn/go-sqlite3 v1.14.8 // indirect
+	github.com/mattn/go-runewidth v0.0.14 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/mholt/acmez v1.0.1 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.16 // indirect
 	github.com/miekg/dns v1.1.45 // indirect
@@ -129,7 +130,6 @@ require (
 	github.com/projectdiscovery/fdmax v0.0.3 // indirect
 	github.com/projectdiscovery/filekv v0.0.0-20210915124239-3467ef45dd08 // indirect
 	github.com/projectdiscovery/goconfig v0.0.0-20210804090219-f893ccd0c69c // indirect
-	github.com/projectdiscovery/goflags v0.0.8-0.20211028121123-edf02bc05b1a // indirect
 	github.com/projectdiscovery/hmap v0.0.2-0.20210917080408-0fd7bd286bfa // indirect
 	github.com/projectdiscovery/httputil v0.0.0-20210816170244-86fd46bc09f5 // indirect
 	github.com/projectdiscovery/interactsh v0.0.8-0.20220112083504-b0b3b2f359a5 // indirect
@@ -143,11 +143,10 @@ require (
 	github.com/projectdiscovery/sliceutil v0.0.0-20210804143453-61f3e7fd43ea // indirect
 	github.com/projectdiscovery/stringsutil v0.0.0-20210830151154-f567170afdd9 // indirect
 	github.com/projectdiscovery/urlutil v0.0.0-20210805190935-3d83726391c1 // indirect
-	github.com/projectdiscovery/wappalyzergo v0.0.18 // indirect
+	github.com/projectdiscovery/wappalyzergo v0.0.69 // indirect
 	github.com/projectdiscovery/yamldoc-go v1.0.3-0.20211126104922-00d2c6bb43b6 // indirect
-	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/rocketlaunchr/google-search v1.1.4 // indirect
-	github.com/rs/xid v1.3.0 // indirect
+	github.com/rivo/uniseg v0.4.3 // indirect
+	github.com/rs/xid v1.4.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/segmentio/ksuid v1.0.4 // indirect
 	github.com/shirou/gopsutil/v3 v3.21.9 // indirect
@@ -176,7 +175,7 @@ require (
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.20.0 // indirect
 	goftp.io/server/v2 v2.0.0 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
@@ -184,7 +183,6 @@ require (
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/time v0.2.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
@@ -192,7 +190,7 @@ require (
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/driver/sqlite v1.1.4 // indirect
-	gorm.io/gorm v1.21.12 // indirect
+	gorm.io/driver/sqlite v1.4.3 // indirect
+	gorm.io/gorm v1.24.0 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )

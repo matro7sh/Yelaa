@@ -180,6 +180,7 @@ func scanDomain(domain string) {
 
     dorks_outfile := fmt.Sprintf("%s/dorks_%s.txt", scanPath, domain)
     dorksCfg["outfile"] = dorks_outfile
+    dorksCfg["proxy"] = proxy
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
