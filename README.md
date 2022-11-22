@@ -52,9 +52,9 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 sudo  apt install ./google-chrome-stable_current_amd64.deb
 
-wget https://github.com/CMEPW/Yelaa/releases/download/v1.7.0/Yelaa_1.7.0_Linux_x86_64.tar.gz
+wget https://github.com/CMEPW/Yelaa/releases/download/v1.7.1/Yelaa_1.7.1_Linux_x86_64.tar.gz
 
-tar -xvf Yelaa_1.7.0_Linux_x86_64.tar.gz
+tar -xvf Yelaa_1.7.1_Linux_x86_64.tar.gz
 ./Yelaa -h
 ```
 
