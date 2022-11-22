@@ -1,6 +1,8 @@
 package helper
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -28,4 +30,32 @@ func GetHttpTransport() (*http.Transport) {
 
 func GetUserAgent() string {
     return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
+}
+
+func GetCurrentIP() string {
+    ht := GetHttpTransport()
+    ua := GetUserAgent()
+
+    cli := &http.Client{
+        Transport: ht,
+    }
+
+    req, err := http.NewRequest("GET", "http://icanhazip.com", nil)
+    if err != nil {
+        fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+    }
+
+    req.Header.Add("User-Agent", ua)
+    resp, err := cli.Do(req)
+
+    if err != nil {
+        fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+    }
+
+    result, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        fmt.Printf("[!] Could not IP address: %s\n", err.Error())
+    }
+
+    return string(result)
 }

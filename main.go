@@ -150,6 +150,14 @@ func folderNameFactory(names ...string) []folder {
 	return f
 }
 
+func displayNetInfo() {
+    ip := helper.GetCurrentIP()
+    ua := helper.GetUserAgent()
+
+    color.Cyan("Current Public IP: " + ip)
+    color.Cyan("Prefered User-Agent: " + ua)
+}
+
 func checkProxy() {
     os.Setenv("HTTP_PROXY", proxy)
     os.Setenv("HTTPS_PROXY", proxy)
@@ -159,8 +167,6 @@ func checkProxy() {
 	} else {
 		color.Cyan("No proxy has been set")
 	}
-
-
 }
 
 func createOutDirectory() {
@@ -302,6 +308,7 @@ func main() {
 			}
 			color.Cyan("Start scan: %v", currentTime.Format("2006-01-02 15:04:05"))
 			checkProxy()
+            displayNetInfo()
 			readFile()
 		},
 	}
@@ -314,6 +321,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
 			checkProxy()
+            displayNetInfo()
 
 			if targetPath == "" {
 				scanDomain(domain)
@@ -339,6 +347,7 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			createOutDirectory()
 			checkProxy()
+            displayNetInfo()
 
 			if targetPath == "" {
 				color.Red("Please provide a list of ips/domains")
