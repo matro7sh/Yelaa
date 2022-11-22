@@ -352,6 +352,7 @@ func main() {
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath
+            httpxConfig["proxy"] = proxy
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
 			if !dryRun {
