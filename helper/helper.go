@@ -15,47 +15,47 @@ func GetHome() (home string) {
 	return
 }
 
-func GetHttpTransport() (*http.Transport) {
-    var proxy = os.Getenv("HTTP_PROXY")
-    url, err := url.Parse(proxy)
+func GetHttpTransport() *http.Transport {
+	var proxy = os.Getenv("HTTP_PROXY")
+	url, err := url.Parse(proxy)
 
-    if proxy != "" && err == nil {
-        return &http.Transport{
+	if proxy != "" && err == nil {
+		return &http.Transport{
 			DisableKeepAlives: true,
-            Proxy: http.ProxyURL(url),
-        }
-    }
-    return &http.Transport{}
+			Proxy:             http.ProxyURL(url),
+		}
+	}
+	return &http.Transport{}
 }
 
 func GetUserAgent() string {
-    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
+	return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 }
 
 func GetCurrentIP() string {
-    ht := GetHttpTransport()
-    ua := GetUserAgent()
+	ht := GetHttpTransport()
+	ua := GetUserAgent()
 
-    cli := &http.Client{
-        Transport: ht,
-    }
+	cli := &http.Client{
+		Transport: ht,
+	}
 
-    req, err := http.NewRequest("GET", "http://icanhazip.com", nil)
-    if err != nil {
-        fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
-    }
+	req, err := http.NewRequest("GET", "http://icanhazip.com", nil)
+	if err != nil {
+		fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+	}
 
-    req.Header.Add("User-Agent", ua)
-    resp, err := cli.Do(req)
+	req.Header.Add("User-Agent", ua)
+	resp, err := cli.Do(req)
 
-    if err != nil {
-        fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
-    }
+	if err != nil {
+		fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+	}
 
-    result, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Printf("[!] Could not IP address: %s\n", err.Error())
-    }
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("[!] Could not IP address: %s\n", err.Error())
+	}
 
-    return string(result)
+	return string(result)
 }

@@ -16,7 +16,7 @@ import (
 type HttpxConfiguration struct {
 	Input  string `json:"input"`
 	Output string `json:"output"`
-    proxy          string
+	proxy  string
 }
 
 type Httpx struct {
@@ -32,7 +32,7 @@ func (h *Httpx) Configure(config interface{}) {
 	b, _ := json.Marshal(config.(map[string]interface{}))
 	var httpxconfiguration HttpxConfiguration
 	_ = json.Unmarshal(b, &httpxconfiguration)
-    proxy := config.(map[string]interface{})["proxy"].(string)
+	proxy := config.(map[string]interface{})["proxy"].(string)
 
 	h.configuration = httpxconfiguration
 	customPorts := customport.CustomPorts{}
@@ -52,16 +52,16 @@ func (h *Httpx) Configure(config interface{}) {
 		Retries:           2,
 		Threads:           50,
 		Timeout:           8,
-        RandomAgent:       true,
+		RandomAgent:       true,
 	}
 
-    if strings.HasPrefix(proxy, "http") {
-        opts.HTTPProxy = proxy
-    }
+	if strings.HasPrefix(proxy, "http") {
+		opts.HTTPProxy = proxy
+	}
 
-    if strings.HasPrefix(proxy, "socks") {
-        opts.SocksProxy = proxy
-    }
+	if strings.HasPrefix(proxy, "socks") {
+		opts.SocksProxy = proxy
+	}
 
 	if httpxconfiguration.Output != "" {
 		opts.Output = httpxconfiguration.Output

@@ -15,7 +15,7 @@ import (
 )
 
 type Nuclei struct {
-    proxy       string
+	proxy       string
 	rateLimiter int32
 }
 
@@ -49,8 +49,8 @@ func (n *Nuclei) Configure(c interface{}) {
 	outputDir := helper.YelaaPath + "/nuclei"
 	n.rateLimiter = c.(map[string]interface{})["rateLimiter"].(int32)
 
-    proxy := c.(map[string]interface{})["proxy"].(string)
-    n.proxy = proxy
+	proxy := c.(map[string]interface{})["proxy"].(string)
+	n.proxy = proxy
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		if err = os.MkdirAll(outputDir, 0750); err != nil {
 			fmt.Println(err)
@@ -66,17 +66,17 @@ func (n *Nuclei) Run(website string) {
 	outputFile := helper.YelaaPath + "/nuclei/scan_log_nuclei-" + time.Now().Format("2006-01-02_15-04-05") + ".txt"
 	templates_path := filepath.Join(helper.GetHome(), "nuclei-templates/")
 
-    proxy, err := goflags.ToNormalizedStringSlice(n.proxy)
-    if err  != nil {
-        fmt.Println(err)
-    }
+	proxy, err := goflags.ToNormalizedStringSlice(n.proxy)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	opts := types.Options{
 		TemplatesDirectory: templates_path,
 		Targets:            []string{website},
 		NoInteractsh:       true,
 		Output:             outputFile,
-        Proxy:              proxy,
+		Proxy:              proxy,
 	}
 
 	installTemplatesIfNeeded(templates_path)
