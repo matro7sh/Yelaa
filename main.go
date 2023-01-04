@@ -154,6 +154,10 @@ func displayNetInfo() {
 	ip := helper.GetCurrentIP()
 	ua := helper.GetUserAgent()
 
+	if ip == "" {
+		os.Exit(1)
+	}
+
 	color.Cyan("Current Public IP: " + ip)
 	color.Cyan("Prefered User-Agent: " + ua)
 }

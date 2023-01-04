@@ -43,18 +43,21 @@ func GetCurrentIP() string {
 	req, err := http.NewRequest("GET", "http://icanhazip.com", nil)
 	if err != nil {
 		fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+		return ""
 	}
 
 	req.Header.Add("User-Agent", ua)
 	resp, err := cli.Do(req)
 
-	if err != nil {
+	if err != nil || resp == nil {
 		fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
+		return ""
 	}
 
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("[!] Could not IP address: %s\n", err.Error())
+		return ""
 	}
 
 	return string(result)
