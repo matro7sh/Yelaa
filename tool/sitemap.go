@@ -24,18 +24,18 @@ func (s *Sitemap) Configure(c interface{}) {}
 func (s *Sitemap) Run(domain string) {
 	domain = strings.TrimSuffix(domain, "/")
 
-    transport := helper.GetHttpTransport()
+	transport := helper.GetHttpTransport()
 	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
-    client := &http.Client{
-        Transport: transport,
-    }
+	client := &http.Client{
+		Transport: transport,
+	}
 
 	for _, u := range getUrls(domain) {
-        req, err := http.NewRequest("GET", fmt.Sprint(u, "/sitemap.xml"), nil)
-        req.Header.Add("User-Agent", helper.GetUserAgent())
+		req, err := http.NewRequest("GET", fmt.Sprint(u, "/sitemap.xml"), nil)
+		req.Header.Add("User-Agent", helper.GetUserAgent())
 
-        resp, err := client.Do(req)
+		resp, err := client.Do(req)
 
 		if err != nil {
 			fmt.Printf("%v", err)

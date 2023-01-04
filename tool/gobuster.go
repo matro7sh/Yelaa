@@ -18,7 +18,7 @@ type GoBuster struct {
 	optDir   *gobusterdir.OptionsDir
 	opts     *libgobuster.Options
 	scanPath string
-    proxy    string
+	proxy    string
 }
 
 func (s *GoBuster) Info(website string) {
@@ -42,9 +42,9 @@ func (g *GoBuster) Configure(c interface{}) {
 		}
 	}
 
-    g.proxy = c.(map[string]interface{})["proxy"].(string)
+	g.proxy = c.(map[string]interface{})["proxy"].(string)
 	g.optDir = gobusterdir.NewOptionsDir()
-    g.optDir.UserAgent = helper.GetUserAgent()
+	g.optDir.UserAgent = helper.GetUserAgent()
 	g.optDir.StatusCodesBlacklistParsed.Add(404)
 	g.optDir.NoTLSValidation = true
 	g.optDir.Method = "GET"
@@ -52,9 +52,9 @@ func (g *GoBuster) Configure(c interface{}) {
 	g.optDir.WildcardForced = true
 	g.optDir.StatusCodesBlacklistParsed = blacklist
 	g.opts = &libgobuster.Options{
-        Threads: 10,
-        Wordlist: wordlist,
-    }
+		Threads:  10,
+		Wordlist: wordlist,
+	}
 }
 
 func (g *GoBuster) Run(website string) {

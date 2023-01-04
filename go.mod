@@ -6,7 +6,7 @@ require (
 	github.com/OJ/gobuster/v3 v3.1.0
 	github.com/apex/log v1.9.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/bogdzn/gork v0.0.4
+	github.com/bogdzn/gork v0.0.5
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/fatih/color v1.13.0
 	github.com/go-playground/validator/v10 v10.11.1
