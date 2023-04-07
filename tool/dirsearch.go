@@ -7,17 +7,17 @@ import (
 )
 
 func run(url string) ([]byte, error) {
-    proxy := os.Getenv("HTTP_PROXY")
+	proxy := os.Getenv("HTTP_PROXY")
 
-    if proxy != "" {
-        proxyCmd := fmt.Sprintf("--proxy=%s", proxy)
-        return exec.Command("dirsearch", "-u", url, proxyCmd).Output()
-    }
-    return exec.Command("dirsearch", "-u", url).Output()
+	if proxy != "" {
+		proxyCmd := fmt.Sprintf("--proxy=%s", proxy)
+		return exec.Command("dirsearch", "-u", url, proxyCmd).Output()
+	}
+	return exec.Command("dirsearch", "-u", url).Output()
 }
 
 func Dirsearch(url string) {
-    out, err := run(url)
+	out, err := run(url)
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
