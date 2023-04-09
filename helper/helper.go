@@ -13,19 +13,19 @@ func GetHome() (home string) {
 	return
 }
 
-func GetHttpTransport() (*http.Transport) {
-    var proxy = os.Getenv("HTTP_PROXY")
-    url, err := url.Parse(proxy)
+func GetHttpTransport() *http.Transport {
+	var proxy = os.Getenv("HTTP_PROXY")
+	url, err := url.Parse(proxy)
 
-    if proxy != "" && err == nil {
-        return &http.Transport{
+	if proxy != "" && err == nil {
+		return &http.Transport{
 			DisableKeepAlives: true,
-            Proxy: http.ProxyURL(url),
-        }
-    }
-    return &http.Transport{}
+			Proxy:             http.ProxyURL(url),
+		}
+	}
+	return &http.Transport{}
 }
 
 func GetUserAgent() string {
-    return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
+	return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
 }

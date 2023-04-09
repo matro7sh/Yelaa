@@ -21,7 +21,7 @@ type SubfinderConfiguration struct {
 type Subfinder struct {
 	filename       string
 	runnerInstance *runner.Runner
-    proxy          string
+	proxy          string
 }
 
 func (s *Subfinder) Info(_ string) {
@@ -40,7 +40,7 @@ func (s *Subfinder) Configure(conf interface{}) {
 		Threads:            3,
 		Timeout:            30,
 		MaxEnumerationTime: 10,
-        Proxy:              conf.(map[string]interface{})["proxy"].(string),
+		Proxy:              conf.(map[string]interface{})["proxy"].(string),
 		YAMLConfig: runner.ConfigFile{
 			Resolvers:  resolve.DefaultResolvers,
 			Sources:    passive.DefaultSources,

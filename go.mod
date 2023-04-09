@@ -18,6 +18,7 @@ require (
 	github.com/projectdiscovery/dnsx v1.0.3
 	github.com/projectdiscovery/fileutil v0.0.0-20210928100737-cab279c5d4b5
 	github.com/projectdiscovery/folderutil v0.0.0-20211210155654-27636c840d7c
+	github.com/projectdiscovery/goflags v0.0.8-0.20211028121123-edf02bc05b1a
 	github.com/projectdiscovery/gologger v1.1.4
 	github.com/projectdiscovery/httpx v1.1.4
 	github.com/projectdiscovery/nuclei-updatecheck-api v0.0.0-20211006155443-c0a8d610a4df
@@ -129,7 +130,6 @@ require (
 	github.com/projectdiscovery/fdmax v0.0.3 // indirect
 	github.com/projectdiscovery/filekv v0.0.0-20210915124239-3467ef45dd08 // indirect
 	github.com/projectdiscovery/goconfig v0.0.0-20210804090219-f893ccd0c69c // indirect
-	github.com/projectdiscovery/goflags v0.0.8-0.20211028121123-edf02bc05b1a // indirect
 	github.com/projectdiscovery/hmap v0.0.2-0.20210917080408-0fd7bd286bfa // indirect
 	github.com/projectdiscovery/httputil v0.0.0-20210816170244-86fd46bc09f5 // indirect
 	github.com/projectdiscovery/interactsh v0.0.8-0.20220112083504-b0b3b2f359a5 // indirect

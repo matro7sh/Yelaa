@@ -65,7 +65,7 @@ func loadTargetFile() *FileScanner {
 }
 
 func readFile() {
-    transport := helper.GetHttpTransport()
+	transport := helper.GetHttpTransport()
 	transport.TLSClientConfig = &tls.Config{InsecureSkipVerify: insecure}
 
 	var toolList []tool.ToolInterface
@@ -73,7 +73,7 @@ func readFile() {
 
 	gb := tool.GoBuster{}
 	cfg := make(map[string]interface{})
-    cfg["proxy"] = proxy
+	cfg["proxy"] = proxy
 	cfg["scanPath"] = scanPath
 	cfg["rateLimiter"] = rateLimit
 	cfg["wordlist"] = wordlist
@@ -151,15 +151,14 @@ func folderNameFactory(names ...string) []folder {
 }
 
 func checkProxy() {
-    os.Setenv("HTTP_PROXY", proxy)
-    os.Setenv("HTTPS_PROXY", proxy)
+	os.Setenv("HTTP_PROXY", proxy)
+	os.Setenv("HTTPS_PROXY", proxy)
 
 	if proxy != "" {
 		color.Cyan("Proxy configuration: %s", proxy)
 	} else {
 		color.Cyan("No proxy has been set")
 	}
-
 
 }
 
@@ -178,7 +177,7 @@ func scanDomain(domain string) {
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 
-    dorksCfg["outfile"] = scanPath + "/dorks.txt"
+	dorksCfg["outfile"] = scanPath + "/dorks.txt"
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
@@ -199,7 +198,7 @@ func scanDomain(domain string) {
 	sf := tool.Subfinder{}
 	configuration := make(map[string]interface{})
 	configuration["filename"] = subdomainsFile.Name()
-    configuration["proxy"] = proxy
+	configuration["proxy"] = proxy
 	sf.Info("")
 	sf.Configure(configuration)
 
@@ -256,11 +255,13 @@ func scanDomain(domain string) {
 	}
 
 	filepath := scanPath + "/osint.domains.txt"
-	httpx := tool.Httpx{}
+	httpx := tool.Httpx{
+		Proxy: proxy,
+	}
 	httpxConfig := make(map[string]interface{})
 	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
-    httpxConfig["proxy"] = proxy
+
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 
@@ -272,7 +273,7 @@ func scanDomain(domain string) {
 	gwConfig := make(map[string]interface{})
 	gwConfig["file"] = filepath
 	gwConfig["scanPath"] = scanPath
-    gwConfig["proxy"] = proxy
+	gwConfig["proxy"] = proxy
 
 	gw.Info("")
 	gw.Configure(gwConfig)
@@ -346,7 +347,9 @@ func main() {
 			}
 
 			filepath := scanPath + "/checkAndScreen.txt"
-			httpx := tool.Httpx{}
+			httpx := tool.Httpx{
+				Proxy: proxy,
+			}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath
@@ -358,7 +361,7 @@ func main() {
 
 			gw := tool.Gowitness{}
 			gwConfig := make(map[string]interface{})
-            gwConfig["proxy"] = proxy
+			gwConfig["proxy"] = proxy
 			gwConfig["scanPath"] = scanPath
 			gwConfig["file"] = filepath
 			gw.Info("")
