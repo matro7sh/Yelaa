@@ -347,7 +347,9 @@ func main() {
 			}
 
 			filepath := scanPath + "/checkAndScreen.txt"
-			httpx := tool.Httpx{}
+			httpx := tool.Httpx{
+				Proxy: proxy,
+			}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath

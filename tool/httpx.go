@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"strings"
 
 	"github.com/fatih/color"
 
@@ -53,14 +52,7 @@ func (h *Httpx) Configure(config interface{}) {
 		Threads:           50,
 		Timeout:           8,
 		RandomAgent:       true,
-	}
-
-	if strings.HasPrefix(h.Proxy, "http") {
-		opts.HTTPProxy = h.Proxy
-	}
-
-	if strings.HasPrefix(h.Proxy, "socks") {
-		opts.SocksProxy = h.Proxy
+		HTTPProxy:         h.Proxy,
 	}
 
 	if httpxconfiguration.Output != "" {
