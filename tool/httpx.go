@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
-	"strings"
 
 	"github.com/fatih/color"
 
@@ -22,6 +21,7 @@ type HttpxConfiguration struct {
 type Httpx struct {
 	configuration  HttpxConfiguration
 	runnerInstance *runner.Runner
+	Proxy          string `json:"proxy,omitempty"`
 }
 
 func (h *Httpx) Info(_ string) {
@@ -32,9 +32,8 @@ func (h *Httpx) Configure(config interface{}) {
 	b, _ := json.Marshal(config.(map[string]interface{}))
 	var httpxconfiguration HttpxConfiguration
 	_ = json.Unmarshal(b, &httpxconfiguration)
-	proxy := config.(map[string]interface{})["proxy"].(string)
-
 	h.configuration = httpxconfiguration
+
 	customPorts := customport.CustomPorts{}
 	customPorts.Set("25,80,81,135,389,443,1080,3000,3306,8080,8443,8888,9090,8089")
 
@@ -53,14 +52,7 @@ func (h *Httpx) Configure(config interface{}) {
 		Threads:           50,
 		Timeout:           8,
 		RandomAgent:       true,
-	}
-
-	if strings.HasPrefix(proxy, "http") {
-		opts.HTTPProxy = proxy
-	}
-
-	if strings.HasPrefix(proxy, "socks") {
-		opts.SocksProxy = proxy
+		HTTPProxy:         h.Proxy,
 	}
 
 	if httpxconfiguration.Output != "" {

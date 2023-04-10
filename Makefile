@@ -32,3 +32,8 @@ dynamic: ## Builds a dynamically linked binary (if you really need to use Proxyc
 .PHONY: clean
 clean: ## Cleans up the project
 	rm -f $(TARGET) $(DynYelaa)
+
+.PHONY: tidy
+tidy: ## runs tidy and formatting
+	@go mod tidy
+	@gofmt -s -w .
