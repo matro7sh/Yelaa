@@ -9,6 +9,8 @@ You need to have the chrome binary in your path:
 google-chrome
 ```
 
+Go version: `1.20`
+
 # How to install
 
 Manually :

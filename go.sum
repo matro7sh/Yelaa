@@ -111,8 +111,6 @@ github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdn
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/bluele/gcache v0.0.2 h1:WcbfdXICg7G/DGBh1PFfcirkWOQV+v077yF1pSy3DGw=
 github.com/bluele/gcache v0.0.2/go.mod h1:m15KV+ECjptwSPxKhOhQoAFQVtUFjTVkc3H8o0t/fp0=
-github.com/bogdzn/gork v0.0.4 h1:q8RoPJ65mGZ0y4t/PlafX9ySg7B6UsrnKS5L810lrzI=
-github.com/bogdzn/gork v0.0.4/go.mod h1:SzLFtdsDZ0iVyF6ALfEvuo5niTvdRKuavvmAcpMivao=
 github.com/bogdzn/gork v0.0.5 h1:TZSgOZusNLjBln63egugGtxZnZtVXvXZ5HHFEKTVnZ4=
 github.com/bogdzn/gork v0.0.5/go.mod h1:SzLFtdsDZ0iVyF6ALfEvuo5niTvdRKuavvmAcpMivao=
 github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 h1:GKTyiRCL6zVf5wWaqKnf+7Qs6GbEPfd4iMOitWzXJx8=

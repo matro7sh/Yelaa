@@ -257,11 +257,13 @@ func scanDomain(domain string) {
 	}
 
 	filepath := scanPath + "/osint.domains.txt"
-	httpx := tool.Httpx{}
+	httpx := tool.Httpx{
+		Proxy: proxy,
+	}
 	httpxConfig := make(map[string]interface{})
 	httpxConfig["input"] = scanPath + "/domains.txt"
 	httpxConfig["output"] = filepath
-	httpxConfig["proxy"] = proxy
+
 	httpx.Info("")
 	httpx.Configure(httpxConfig)
 
@@ -347,7 +349,9 @@ func main() {
 			}
 
 			filepath := scanPath + "/checkAndScreen.txt"
-			httpx := tool.Httpx{}
+			httpx := tool.Httpx{
+				Proxy: proxy,
+			}
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath
