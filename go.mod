@@ -6,7 +6,7 @@ require (
 	github.com/OJ/gobuster/v3 v3.1.0
 	github.com/apex/log v1.9.0
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/bogdzn/gork v0.0.3
+	github.com/bogdzn/gork v0.0.5
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/fatih/color v1.13.0
 	github.com/go-playground/validator/v10 v10.11.1
@@ -37,18 +37,18 @@ require (
 	git.mills.io/prologic/smtpd v0.0.0-20210710122116-a525b76c287a // indirect
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/Mzack9999/ldapserver v1.0.2-0.20211229000134-b44a0d6ad0dd // indirect
-	github.com/PuerkitoBio/goquery v1.6.0 // indirect
+	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/akrylysov/pogreb v0.10.1 // indirect
 	github.com/alecthomas/jsonschema v0.0.0-20211022214203-8b29eab41725 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
 	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
-	github.com/andybalholm/cascadia v1.1.0 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/andygrunwald/go-jira v1.14.0 // indirect
-	github.com/antchfx/htmlquery v1.2.4 // indirect
-	github.com/antchfx/xmlquery v1.0.0 // indirect
-	github.com/antchfx/xpath v1.2.0 // indirect
+	github.com/antchfx/htmlquery v1.2.5 // indirect
+	github.com/antchfx/xmlquery v1.3.12 // indirect
+	github.com/antchfx/xpath v1.2.1 // indirect
 	github.com/aws/aws-sdk-go v1.42.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
@@ -74,7 +74,7 @@ require (
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.1.0 // indirect
-	github.com/gocolly/colly/v2 v2.0.1 // indirect
+	github.com/gocolly/colly/v2 v2.1.0 // indirect
 	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -110,7 +110,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/mholt/acmez v1.0.1 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.16 // indirect
 	github.com/miekg/dns v1.1.45 // indirect
@@ -146,7 +146,6 @@ require (
 	github.com/projectdiscovery/wappalyzergo v0.0.69 // indirect
 	github.com/projectdiscovery/yamldoc-go v1.0.3-0.20211126104922-00d2c6bb43b6 // indirect
 	github.com/rivo/uniseg v0.4.3 // indirect
-	github.com/rocketlaunchr/google-search v1.1.4 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca // indirect
 	github.com/segmentio/ksuid v1.0.4 // indirect
@@ -156,7 +155,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spyse-com/go-spyse v1.2.3 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
-	github.com/temoto/robotstxt v1.1.1 // indirect
+	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/tomnomnom/linkheader v0.0.0-20180905144013-02ca5825eb80 // indirect
@@ -176,13 +175,13 @@ require (
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.20.0 // indirect
 	goftp.io/server/v2 v2.0.0 // indirect
-	golang.org/x/crypto v0.3.0 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
 	golang.org/x/sys v0.2.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
-	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
+	golang.org/x/time v0.2.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
@@ -192,6 +191,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/sqlite v1.4.3 // indirect
-	gorm.io/gorm v1.24.1 // indirect
+	gorm.io/gorm v1.24.0 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )

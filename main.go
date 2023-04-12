@@ -188,7 +188,9 @@ func scanDomain(domain string) {
 	dorks := tool.Dorks{}
 	dorksCfg := make(map[string]interface{})
 
-	dorksCfg["outfile"] = scanPath + "/dorks.txt"
+	dorks_outfile := fmt.Sprintf("%s/dorks_%s.txt", scanPath, domain)
+	dorksCfg["outfile"] = dorks_outfile
+	dorksCfg["proxy"] = proxy
 
 	dorks.Configure(dorksCfg)
 	dorks.Info(domain)
@@ -298,7 +300,7 @@ func scanDomain(domain string) {
 }
 
 func main() {
-	version := figure.NewColorFigure("Yelaa 1.7.0", "", "cyan", true)
+	version := figure.NewColorFigure("Yelaa 1.7.1", "", "cyan", true)
 	version.Print()
 
 	var cmdScan = &cobra.Command{
@@ -367,6 +369,7 @@ func main() {
 			httpxConfig := make(map[string]interface{})
 			httpxConfig["input"] = targetPath
 			httpxConfig["output"] = filepath
+			httpxConfig["proxy"] = proxy
 			httpx.Info("")
 			httpx.Configure(httpxConfig)
 			if !dryRun {
