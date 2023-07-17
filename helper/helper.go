@@ -43,7 +43,7 @@ func GetCurrentIP() string {
 	req, err := http.NewRequest("GET", "http://icanhazip.com", nil)
 	if err != nil {
 		fmt.Printf("[!] Could not query public IP address: %s\n", err.Error())
-		return ""
+		return "127.0.0.1" // if the service is offline or not reachable, we should be able to keep going
 	}
 
 	req.Header.Add("User-Agent", ua)
